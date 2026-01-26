@@ -32,3 +32,15 @@ This project uses the iP.AI approach to minimize hand-coding by leveraging gener
   - Updated greeting/exit messages to be grumpy (matches MONDAY personality)
   - Added horizontal line separators
 - **Observations**: AI made a verification gap - claimed build.gradle was updated but didn't validate the change was correct. Always test Gradle commands after build config changes.
+
+#### Level-1: Echo
+
+- **What was attempted**: Add command echoing and change exit command from 'exit' to 'bye'
+- **What worked**:
+  - Successfully changed exit command to `bye` (case-insensitive)
+  - Command echoing properly wraps input in dividers
+  - Maintained grumpy MONDAY personality in exit message
+  - Text UI tests updated and passing
+  - Clean commit message following se-edu conventions
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Observations**: AI handled this straightforward increment well. Properly extracted divider to constant, used `equalsIgnoreCase()` for robust input handling, and closed Scanner resource. The customized personality ("Finally, you're leaving...") aligns with spec encouragement to personalize the chatbot.
