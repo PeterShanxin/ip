@@ -1,1 +1,3 @@
-exit
+list
+blah
+bye

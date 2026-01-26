@@ -17,11 +17,15 @@ public class Monday {
         while (!isExit) {
             String userInput = scanner.nextLine();
 
-            if (userInput.equalsIgnoreCase("exit")) {
+            if (userInput.equalsIgnoreCase("bye")) {
                 System.out.println(LINE);
                 System.out.println("Finally, you're leaving. Don't come back too soon.");
                 System.out.println(LINE);
                 isExit = true;
+            } else {
+                System.out.println(LINE);
+                System.out.println(userInput);
+                System.out.println(LINE);
             }
         }
 
