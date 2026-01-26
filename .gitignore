@@ -1,17 +1,34 @@
-# IDEA files
-/.idea/
-/out/
-/*.iml
-
-# Gradle build files
-/.gradle/
-/build/
-src/main/resources/docs/
-
-# MacOS custom attributes files created by Finder
-.DS_Store
+# IDE
+.idea/
 *.iml
+*.iws
+*.ipr
+.vscode/
+out/
 bin/
 
+# Build
+build/
+build/libs/
+*.jar
+.gradle/
+gradle-app.setting
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Project-specific
+src/main/resources/docs/
+
+# Test files
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+
+# Claude/IDE
+.claude/
+CLAUDE.md
+iP_weeklyDocs/
