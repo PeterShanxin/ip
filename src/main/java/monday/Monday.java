@@ -1,5 +1,7 @@
 package monday;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -233,6 +235,52 @@ public class Monday {
     }
 
     /**
+     * Returns a grumpy greeting based on the current day of the week.
+     * Each day has a unique sarcastic message reflecting Monday's personality.
+     *
+     * @return A grumpy greeting message for the current day.
+     */
+    private static String getGrumpyGreeting() {
+        DayOfWeek day = LocalDate.now().getDayOfWeek();
+        switch (day) {
+        case MONDAY:
+            return "Ugh. It's Monday. My namesake day. How... fitting.";
+        case TUESDAY:
+            return "Ugh. I'm MONDAY. Yes, that Monday. Tuesday already feels like a decade.";
+        case WEDNESDAY:
+            return "Ugh. I'm MONDAY. Yes, that Monday. Happy hump day. Not.";
+        case THURSDAY:
+            return "Ugh. I'm MONDAY. Yes, that Monday. Thursday. Almost there, I suppose.";
+        case FRIDAY:
+            return "Ugh. I'm MONDAY. Yes, that Monday. Friday. Finally.";
+        case SATURDAY:
+            return "Ugh. I'm MONDAY. Yes, that Monday. Weekend work? Seriously?";
+        case SUNDAY:
+            return "Ugh. I'm MONDAY. Yes, that Monday. Sunday scaries got you already?";
+        default:
+            return "Ugh. I'm MONDAY. Yes, that Monday. What do you want?";
+        }
+    }
+
+    /**
+     * Displays help information for all available commands.
+     * Maintains Monday's grumpy personality while being reluctantly helpful.
+     */
+    private static void handleHelp() {
+        System.out.println(LINE);
+        System.out.println("Ugh. Fine. Here's what I understand (not that you'll listen):");
+        System.out.println("  todo <description>           - Add a todo task");
+        System.out.println("  deadline <desc> /by <time>   - Add a deadline task");
+        System.out.println("  event <desc> /from <start> /to <end> - Add an event");
+        System.out.println("  list                         - Show all tasks");
+        System.out.println("  mark <number>                - Mark task as done");
+        System.out.println("  unmark <number>              - Mark task as not done");
+        System.out.println("  help                         - Show this help (you're welcome)");
+        System.out.println("  bye / exit                   - Get rid of me");
+        System.out.println(LINE);
+    }
+
+    /**
      * Entry point for the Monday chatbot application.
      * Greets the user, processes commands, and exits when requested.
      *
@@ -241,7 +289,7 @@ public class Monday {
     public static void main(String[] args) {
         // Grumpy greeting
         System.out.println(LINE);
-        System.out.println("Ugh. I'm MONDAY. Yes, that Monday.");
+        System.out.println(getGrumpyGreeting());
         System.out.println("What do you want?");
         System.out.println(LINE);
 
@@ -253,7 +301,7 @@ public class Monday {
         while (!isExit) {
             String userInput = scanner.nextLine().trim();
 
-            if (userInput.equalsIgnoreCase("bye")) {
+            if (userInput.equalsIgnoreCase("bye") || userInput.equalsIgnoreCase("exit")) {
                 System.out.println(LINE);
                 System.out.println("Finally, you're leaving. Don't come back too soon.");
                 System.out.println(LINE);
@@ -278,6 +326,8 @@ public class Monday {
                 handleDeadline(tasks, userInput);
             } else if (userInput.toLowerCase().startsWith("event ")) {
                 handleEvent(tasks, userInput);
+            } else if (userInput.equalsIgnoreCase("help")) {
+                handleHelp();
             } else if (userInput.isEmpty()) {
                 System.out.println(LINE);
                 System.out.println("Ugh, you didn't actually say anything. Try again.");

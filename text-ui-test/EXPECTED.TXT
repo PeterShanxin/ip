@@ -1,5 +1,5 @@
 ____________________________________________________________
-Ugh. I'm MONDAY. Yes, that Monday.
+Ugh. I'm MONDAY. Yes, that Monday. Tuesday already feels like a decade.
 What do you want?
 ____________________________________________________________
 ____________________________________________________________
@@ -39,6 +39,17 @@ ____________________________________________________________
 1. [T][ ] borrow book
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
+____________________________________________________________
+____________________________________________________________
+Ugh. Fine. Here's what I understand (not that you'll listen):
+  todo <description>           - Add a todo task
+  deadline <desc> /by <time>   - Add a deadline task
+  event <desc> /from <start> /to <end> - Add an event
+  list                         - Show all tasks
+  mark <number>                - Mark task as done
+  unmark <number>              - Mark task as not done
+  help                         - Show this help (you're welcome)
+  bye / exit                   - Get rid of me
 ____________________________________________________________
 ____________________________________________________________
 Finally, you're leaving. Don't come back too soon.
