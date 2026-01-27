@@ -15,6 +15,19 @@ public class Monday {
     private static final int MAX_TASKS = 100;
 
     /**
+     * Prints a response wrapped with line separators and blank lines around content.
+     *
+     * @param message The response message to display (can contain newlines).
+     */
+    private static void printResponse(String message) {
+        System.out.println(LINE);
+        System.out.println();  // blank line after opening LINE
+        System.out.println(message);
+        System.out.println(LINE);
+        System.out.println();  // blank line after closing LINE
+    }
+
+    /**
      * Handles changing a task's completion status (mark/unmark).
      * Parses the task number from input and updates the task's status.
      *
@@ -26,7 +39,7 @@ public class Monday {
      */
     private static void handleTaskStatusChange(ArrayList<Task> tasks, String userInput,
             String command, boolean markAsDone, String successMessage) {
-        System.out.println(LINE);
+        String response;
         try {
             String[] parts = userInput.trim().split("\\s+", 2);
             int taskNumber = Integer.parseInt(parts[1].trim());
@@ -37,15 +50,14 @@ public class Monday {
                 } else {
                     task.markAsNotDone();
                 }
-                System.out.println(successMessage);
-                System.out.println("  " + task);
+                response = successMessage + "\n" + "  " + task;
             } else {
-                printInvalidTaskError(tasks.size());
+                response = getInvalidTaskErrorMessage(tasks.size());
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            System.out.println("Ugh, that's not a valid number. Try '" + command + " 1' instead.");
+            response = "Ugh, that's not a valid number. Try '" + command + " 1' instead.";
         }
-        System.out.println(LINE);
+        printResponse(response);
     }
 
     /**
@@ -84,15 +96,16 @@ public class Monday {
     }
 
     /**
-     * Prints an error message for invalid task numbers.
+     * Returns an error message for invalid task numbers.
      *
      * @param taskCount The current number of tasks in the list.
+     * @return The error message string.
      */
-    private static void printInvalidTaskError(int taskCount) {
+    private static String getInvalidTaskErrorMessage(int taskCount) {
         if (taskCount == 0) {
-            System.out.println("Skeptical. You haven't told me to do anything yet.");
+            return "Skeptical. You haven't told me to do anything yet.";
         } else {
-            System.out.println("Ugh, that task doesn't exist. Pick between 1 and " + taskCount + ".");
+            return "Ugh, that task doesn't exist. Pick between 1 and " + taskCount + ".";
         }
     }
 
@@ -116,22 +129,21 @@ public class Monday {
      * @param userInput The user input containing the todo command.
      */
     private static void handleToDo(ArrayList<Task> tasks, String userInput) {
-        System.out.println(LINE);
         String description = extractDescription(userInput, "todo").trim();
+        String response;
 
         if (description.isEmpty()) {
-            System.out.println("Ugh, a todo needs a description. Try 'todo borrow book'.");
+            response = "Ugh, a todo needs a description. Try 'todo borrow book'.";
         } else if (tasks.size() >= MAX_TASKS) {
-            System.out.println("Fine. I can't remember more than 100 things. Forget something first.");
+            response = "Fine. I can't remember more than 100 things. Forget something first.";
         } else {
             ToDo todo = new ToDo(description);
             tasks.add(todo);
-            System.out.println("Fine. I've added this todo:");
-            System.out.println("  " + todo);
-            System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                    + " in the list.");
+            response = "Fine. I've added this todo:\n" + "  " + todo + "\n"
+                    + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                    + " in the list.";
         }
-        System.out.println(LINE);
+        printResponse(response);
     }
 
     /**
@@ -142,14 +154,14 @@ public class Monday {
      * @param userInput The user input containing the deadline command.
      */
     private static void handleDeadline(ArrayList<Task> tasks, String userInput) {
-        System.out.println(LINE);
+        String response;
 
         try {
             String content = extractDescription(userInput, "deadline");
 
             if (!content.contains("/by")) {
-                System.out.println("Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.");
-                System.out.println(LINE);
+                response = "Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.";
+                printResponse(response);
                 return;
             }
 
@@ -158,23 +170,22 @@ public class Monday {
             String by = parts[1].trim();
 
             if (description.isEmpty()) {
-                System.out.println("Ugh, what's the deadline for? Try 'deadline return book /by Sunday'.");
+                response = "Ugh, what's the deadline for? Try 'deadline return book /by Sunday'.";
             } else if (by.isEmpty()) {
-                System.out.println("Ugh, when is it due? Try 'deadline return book /by Sunday'.");
+                response = "Ugh, when is it due? Try 'deadline return book /by Sunday'.";
             } else if (tasks.size() >= MAX_TASKS) {
-                System.out.println("Fine. I can't remember more than 100 things. Forget something first.");
+                response = "Fine. I can't remember more than 100 things. Forget something first.";
             } else {
                 Deadline deadline = new Deadline(description, by);
                 tasks.add(deadline);
-                System.out.println("Fine. I've added this deadline:");
-                System.out.println("  " + deadline);
-                System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                        + " in the list.");
+                response = "Fine. I've added this deadline:\n" + "  " + deadline + "\n"
+                        + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                        + " in the list.";
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Ugh, I can't understand that deadline. Try 'deadline return book /by Sunday'.");
+            response = "Ugh, I can't understand that deadline. Try 'deadline return book /by Sunday'.";
         }
-        System.out.println(LINE);
+        printResponse(response);
     }
 
     /**
@@ -185,15 +196,15 @@ public class Monday {
      * @param userInput The user input containing the event command.
      */
     private static void handleEvent(ArrayList<Task> tasks, String userInput) {
-        System.out.println(LINE);
+        String response;
 
         try {
             String content = extractDescription(userInput, "event");
 
             if (!content.contains("/from") || !content.contains("/to")) {
-                System.out.println("Ugh, events need '/from' and '/to' times. "
-                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
-                System.out.println(LINE);
+                response = "Ugh, events need '/from' and '/to' times. "
+                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                printResponse(response);
                 return;
             }
 
@@ -201,9 +212,9 @@ public class Monday {
             String description = fromParts[0].trim();
 
             if (fromParts.length < 2) {
-                System.out.println("Ugh, I can't understand that event. "
-                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
-                System.out.println(LINE);
+                response = "Ugh, I can't understand that event. "
+                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                printResponse(response);
                 return;
             }
 
@@ -212,26 +223,25 @@ public class Monday {
             String to = toParts.length > 1 ? toParts[1].trim() : "";
 
             if (description.isEmpty()) {
-                System.out.println("Ugh, what's the event? Try 'event project meeting /from Mon 2pm /to 4pm'.");
+                response = "Ugh, what's the event? Try 'event project meeting /from Mon 2pm /to 4pm'.";
             } else if (from.isEmpty()) {
-                System.out.println("Ugh, when does it start? Try 'event project meeting /from Mon 2pm /to 4pm'.");
+                response = "Ugh, when does it start? Try 'event project meeting /from Mon 2pm /to 4pm'.";
             } else if (to.isEmpty()) {
-                System.out.println("Ugh, when does it end? Try 'event project meeting /from Mon 2pm /to 4pm'.");
+                response = "Ugh, when does it end? Try 'event project meeting /from Mon 2pm /to 4pm'.";
             } else if (tasks.size() >= MAX_TASKS) {
-                System.out.println("Fine. I can't remember more than 100 things. Forget something first.");
+                response = "Fine. I can't remember more than 100 things. Forget something first.";
             } else {
                 Event event = new Event(description, from, to);
                 tasks.add(event);
-                System.out.println("Fine. I've added this event:");
-                System.out.println("  " + event);
-                System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                        + " in the list.");
+                response = "Fine. I've added this event:\n" + "  " + event + "\n"
+                        + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                        + " in the list.";
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Ugh, I can't understand that event. "
-                    + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
+            response = "Ugh, I can't understand that event. "
+                    + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
         }
-        System.out.println(LINE);
+        printResponse(response);
     }
 
     /**
@@ -282,17 +292,16 @@ public class Monday {
      * Maintains Monday's grumpy personality while being reluctantly helpful.
      */
     private static void handleHelp() {
-        System.out.println(LINE);
-        System.out.println("Ugh. Fine. Here's what I understand (not that you'll listen):");
-        System.out.println("  todo <description>           - Add a todo task");
-        System.out.println("  deadline <desc> /by <time>   - Add a deadline task");
-        System.out.println("  event <desc> /from <start> /to <end> - Add an event");
-        System.out.println("  list                         - Show all tasks");
-        System.out.println("  mark <number>                - Mark task as done");
-        System.out.println("  unmark <number>              - Mark task as not done");
-        System.out.println("  help                         - Show this help (you're welcome)");
-        System.out.println("  bye / exit                   - Get rid of me");
-        System.out.println(LINE);
+        String response = "Ugh. Fine. Here's what I understand (not that you'll listen):\n"
+                + "  todo <description>           - Add a todo task\n"
+                + "  deadline <desc> /by <time>   - Add a deadline task\n"
+                + "  event <desc> /from <start> /to <end> - Add an event\n"
+                + "  list                         - Show all tasks\n"
+                + "  mark <number>                - Mark task as done\n"
+                + "  unmark <number>              - Mark task as not done\n"
+                + "  help                         - Show this help (you're welcome)\n"
+                + "  bye / exit                   - Get rid of me";
+        printResponse(response);
     }
 
     /**
@@ -303,10 +312,8 @@ public class Monday {
      */
     public static void main(String[] args) {
         // Grumpy greeting
-        System.out.println(LINE);
-        System.out.println(getGrumpyGreeting());
-        System.out.println("What do you want?");
-        System.out.println(LINE);
+        String greeting = getGrumpyGreeting() + "\n" + "What do you want?";
+        printResponse(greeting);
 
         // Command loop
         Scanner scanner = new Scanner(System.in);
@@ -317,20 +324,23 @@ public class Monday {
             String userInput = scanner.nextLine().trim();
 
             if (userInput.equalsIgnoreCase("bye") || userInput.equalsIgnoreCase("exit")) {
-                System.out.println(LINE);
-                System.out.println("Finally, you're leaving. Don't come back too soon.");
-                System.out.println(LINE);
+                printResponse("Finally, you're leaving. Don't come back too soon.");
                 isExit = true;
             } else if (userInput.equalsIgnoreCase("list")) {
-                System.out.println(LINE);
+                String listResponse;
                 if (tasks.isEmpty()) {
-                    System.out.println("Skeptical. You haven't told me to do anything yet.");
+                    listResponse = "Skeptical. You haven't told me to do anything yet.";
                 } else {
+                    StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println((i + 1) + ". " + tasks.get(i));
+                        if (i > 0) {
+                            sb.append("\n");
+                        }
+                        sb.append((i + 1)).append(". ").append(tasks.get(i));
                     }
+                    listResponse = sb.toString();
                 }
-                System.out.println(LINE);
+                printResponse(listResponse);
             } else if (userInput.toLowerCase().startsWith("mark ")) {
                 handleMark(tasks, userInput);
             } else if (userInput.toLowerCase().startsWith("unmark ")) {
@@ -344,21 +354,16 @@ public class Monday {
             } else if (userInput.equalsIgnoreCase("help")) {
                 handleHelp();
             } else if (userInput.isEmpty()) {
-                System.out.println(LINE);
-                System.out.println("Ugh, you didn't actually say anything. Try again.");
-                System.out.println(LINE);
+                printResponse("Ugh, you didn't actually say anything. Try again.");
             } else {
+                String addResponse;
                 if (tasks.size() >= MAX_TASKS) {
-                    System.out.println(LINE);
-                    System.out.println("Fine. I can't remember more than 100 things. "
-                            + "Forget something first.");
-                    System.out.println(LINE);
+                    addResponse = "Fine. I can't remember more than 100 things. Forget something first.";
                 } else {
                     tasks.add(new Task(userInput));
-                    System.out.println(LINE);
-                    System.out.println("added: " + userInput);
-                    System.out.println(LINE);
+                    addResponse = "added: " + userInput;
                 }
+                printResponse(addResponse);
             }
         }
 
