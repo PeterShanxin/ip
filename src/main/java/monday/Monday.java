@@ -1,8 +1,21 @@
+package monday;
+
 import java.util.Scanner;
 
+/**
+ * Monday is a grumpy chatbot that reluctantly helps users manage tasks.
+ * Named after everyone's least favorite day of the week, Monday has a
+ * sarcastic personality but gets the job done.
+ */
 public class Monday {
     private static final String LINE = "____________________________________________________________";
 
+    /**
+     * Entry point for the Monday chatbot application.
+     * Greets the user, processes commands, and exits when requested.
+     *
+     * @param args Command line arguments (not used).
+     */
     public static void main(String[] args) {
         // Grumpy greeting
         System.out.println(LINE);
