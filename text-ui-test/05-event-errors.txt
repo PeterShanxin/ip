@@ -1,0 +1,9 @@
+event project meeting
+event project meeting /from Mon 2pm
+event project meeting /to 4pm
+event /from Mon 2pm /to 4pm
+event project meeting /from Mon 2pm /to
+event project meeting /from /to 4pm
+event project meeting /from Mon 2pm /to 4pm
+list
+bye

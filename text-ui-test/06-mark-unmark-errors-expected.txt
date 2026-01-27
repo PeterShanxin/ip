@@ -17,62 +17,85 @@ ____________________________________________________________
 
 ____________________________________________________________
 
-Fine. I've added this deadline:
-  [D][ ] return book (by: Sunday)
+Fine. I've added this todo:
+  [T][ ] return book
 Now you have 2 tasks in the list.
 ____________________________________________________________
 
 ____________________________________________________________
 
-Fine. I've added this event:
-  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+Fine. I've added this deadline:
+  [D][ ] submit report (by: Friday)
 Now you have 3 tasks in the list.
 ____________________________________________________________
 
 ____________________________________________________________
 
 1. [T][ ] borrow book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
+2. [T][ ] return book
+3. [D][ ] submit report (by: Friday)
+____________________________________________________________
+
+____________________________________________________________
+
+added: mark
+____________________________________________________________
+
+____________________________________________________________
+
+Ugh, that's not a valid number. Try 'mark 1' instead.
+____________________________________________________________
+
+____________________________________________________________
+
+Ugh, that task doesn't exist. Pick between 1 and 4.
+____________________________________________________________
+
+____________________________________________________________
+
+Ugh, that task doesn't exist. Pick between 1 and 4.
+____________________________________________________________
+
+____________________________________________________________
+
+Ugh, that task doesn't exist. Pick between 1 and 4.
 ____________________________________________________________
 
 ____________________________________________________________
 
 Fine. I've marked this task as done:
-  [T][X] borrow book
+  [T][X] return book
 ____________________________________________________________
 
 ____________________________________________________________
 
-1. [T][X] borrow book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
+added: unmark
+____________________________________________________________
+
+____________________________________________________________
+
+Ugh, that's not a valid number. Try 'unmark 1' instead.
 ____________________________________________________________
 
 ____________________________________________________________
 
 Ugh, I've marked this task as not done:
-  [T][ ] borrow book
+  [D][ ] submit report (by: Friday)
+____________________________________________________________
+
+____________________________________________________________
+
+Ugh, I've marked this task as not done:
+  [T][ ] return book
 ____________________________________________________________
 
 ____________________________________________________________
 
 1. [T][ ] borrow book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
-____________________________________________________________
-
-____________________________________________________________
-
-Ugh. Fine. Here's what I understand (not that you'll listen):
-  todo <description>           - Add a todo task
-  deadline <desc> /by <time>   - Add a deadline task
-  event <desc> /from <start> /to <end> - Add an event
-  list                         - Show all tasks
-  mark <number>                - Mark task as done
-  unmark <number>              - Mark task as not done
-  help                         - Show this help (you're welcome)
-  bye / exit                   - Get rid of me
+2. [T][ ] return book
+3. [D][ ] submit report (by: Friday)
+4. [][ ] mark
+5. [][ ] unmark
 ____________________________________________________________
 
 ____________________________________________________________

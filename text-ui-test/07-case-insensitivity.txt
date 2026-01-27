@@ -1,0 +1,8 @@
+TODO borrow book
+DeAdLiNe return book /by Sunday
+EVENT project meeting /from Mon 2pm /to 4pm
+LIST
+MARK 1
+UNMARK 1
+HELP
+BYE

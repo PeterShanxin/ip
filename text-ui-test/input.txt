@@ -8,3 +8,61 @@ unmark 1
 list
 help
 bye
+list
+mark 1
+unmark 1
+
+todo borrow book
+list
+bye
+todo
+todo
+todo borrow book
+list
+mark 2
+unmark 1
+bye
+deadline return book
+deadline /by Sunday
+deadline return book /by
+deadline return book /by Sunday
+list
+bye
+event project meeting
+event project meeting /from Mon 2pm
+event project meeting /to 4pm
+event /from Mon 2pm /to 4pm
+event project meeting /from Mon 2pm /to
+event project meeting /from /to 4pm
+event project meeting /from Mon 2pm /to 4pm
+list
+bye
+todo borrow book
+todo return book
+deadline submit report /by Friday
+list
+mark
+mark abc
+mark 0
+mark 5
+mark -1
+mark 2
+unmark
+unmark xyz
+unmark 3
+unmark 2
+list
+bye
+TODO borrow book
+DeAdLiNe return book /by Sunday
+EVENT project meeting /from Mon 2pm /to 4pm
+LIST
+MARK 1
+UNMARK 1
+HELP
+BYE
+read book
+LIST
+MARK 1
+help
+exit

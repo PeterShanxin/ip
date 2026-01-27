@@ -1,0 +1,16 @@
+todo borrow book
+todo return book
+deadline submit report /by Friday
+list
+mark
+mark abc
+mark 0
+mark 5
+mark -1
+mark 2
+unmark
+unmark xyz
+unmark 3
+unmark 2
+list
+bye
