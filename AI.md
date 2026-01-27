@@ -97,3 +97,17 @@ This separation of concerns improves code quality significantly.
   - Text UI test failing (EXPECTED.TXT not updated)
   - No unit tests written for Task class
 - **Observations**: Implementer agent (449994c) produced functional code but with bugs. Separate reviewer agent (4ff1465) caught and fixed: case-sensitivity bug, code duplication, magic strings, redundant calls. **Key insight: Agent self-review has blind spots; use separate review sessions.**
+
+#### Level-4: ToDo, Deadline, Event
+
+- **What was attempted**: Add three task types with date/time tracking (todo, deadline, event)
+- **What worked**:
+  - Excellent inheritance design: Task base class with ToDo/Deadline/Event subclasses
+  - Proper polymorphism with getTypeIcon() and getFullDescription() overrides
+  - Date/time parsing with /by, /from, /to markers working correctly
+  - Comprehensive error messages aligned with grumpy personality
+  - User guide fully documented with examples
+  - Code review caught and fixed: generic Exception catching → specific ArrayIndexOutOfBoundsException
+- **What didn't work**: Initial commit used generic `catch (Exception)` instead of specific exception types
+- **Fixes applied**: Replaced generic Exception with ArrayIndexOutOfBoundsException in handleDeadline/handleEvent
+- **Observations**: AI demonstrated strong OOD principles (inheritance, polymorphism, immutability). Code review workflow essential - caught exception handling issue post-commit. Time saved: ~2 hours (vs manual implementation + debugging).
