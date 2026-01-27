@@ -169,7 +169,7 @@ public class Monday {
                 System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.");
             }
-        } catch (Exception e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Ugh, I can't understand that deadline. Try 'deadline return book /by Sunday'.");
         }
         System.out.println(LINE);
@@ -225,7 +225,7 @@ public class Monday {
                 System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.");
             }
-        } catch (Exception e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Ugh, I can't understand that event. "
                     + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
         }
