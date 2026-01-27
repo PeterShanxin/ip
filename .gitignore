@@ -31,6 +31,7 @@ text-ui-test/EXPECTED-UNIX.TXT
 # Claude/IDE
 .claude/
 CLAUDE.md
+.lsp.json
 iP_weeklyDocs/
 
 # Saved AI interactions
