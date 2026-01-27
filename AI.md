@@ -44,3 +44,19 @@ This project uses the iP.AI approach to minimize hand-coding by leveraging gener
   - Clean commit message following se-edu conventions
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: AI handled this straightforward increment well. Properly extracted divider to constant, used `equalsIgnoreCase()` for robust input handling, and closed Scanner resource. The customized personality ("Finally, you're leaving...") aligns with spec encouragement to personalize the chatbot.
+
+#### Level-2: Add, List
+
+- **What was attempted**: Add ability to store user text and display as numbered list
+- **What worked**:
+  - Used `ArrayList<String>` for flexible task storage (better than fixed array)
+  - Added `MAX_TASKS = 100` constant with proper enforcement
+  - `list` command shows numbered output (1. task, 2. task, etc.)
+  - Edge cases handled: empty input, empty list, max tasks reached
+  - Case-insensitive command matching (`equalsIgnoreCase`)
+  - Grumpy personality maintained in all messages
+  - Text UI tests updated and passing
+  - Clean commit following se-edu conventions
+  - Code review: 100% SE-EDU coding standards compliance
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Observations**: AI made good architectural decisions (ArrayList over fixed array while enforcing limit). Agentic workflows (`/stage-prepare-commit`, `/review-code-quality`) significantly improved consistency - time saved for manual standards checking needed.
