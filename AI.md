@@ -10,6 +10,29 @@ This project uses the iP.AI approach to minimize hand-coding by leveraging gener
 - **Purpose**: AI-assisted Java development for CS2103T Individual Project
 - **Configuration**: Initialized with project documentation (CLAUDE.md), skills, custom workflows
 
+## General Workflow Observations
+
+### Agent Review Best Practices
+
+**Key Insight**: AI agents work better with separate sessions for implementation vs. review.
+
+**Why this matters**:
+
+- The agent that implements code has "blind spots" - they know the intent and may overlook edge cases
+- A separate reviewer (fresh agent/session) has no preconceptions and catches more issues
+- Example: Level-3 implementer wrote functional code but missed:
+  - Failing integration tests (EXPECTED.TXT not updated)
+  - Missing unit tests
+  - Input validation weakness
+
+**Recommended workflow**:
+
+1. **Implementation session** - Focus on feature completion
+2. **Separate review session** - Fresh agent reviews the work without implementation context
+3. **Fix session** - Address issues found by reviewer
+
+This separation of concerns improves code quality significantly.
+
 ## Development Log
 
 *[Weekly updates to include: for which increment, observations on what worked/didn't work, time saved]*
@@ -60,3 +83,17 @@ This project uses the iP.AI approach to minimize hand-coding by leveraging gener
   - Code review: 100% SE-EDU coding standards compliance
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: AI made good architectural decisions (ArrayList over fixed array while enforcing limit). Agentic workflows (`/stage-prepare-commit`, `/review-code-quality`) significantly improved consistency - time saved for manual standards checking needed.
+
+#### Level-3: Mark as Done (with Unmark)
+
+- **What was attempted**: Add task completion tracking with mark/unmark commands
+- **What worked**:
+  - Created `Task` class with proper encapsulation (description, isDone)
+  - Both mark/unmark commands implemented
+  - Proper error handling for invalid input
+  - User guide updated with examples
+- **What didn't work**:
+  - Initial implementation had bugs: case-sensitive commands (inconsistent), code duplication, magic strings
+  - Text UI test failing (EXPECTED.TXT not updated)
+  - No unit tests written for Task class
+- **Observations**: Implementer agent (449994c) produced functional code but with bugs. Separate reviewer agent (4ff1465) caught and fixed: case-sensitivity bug, code duplication, magic strings, redundant calls. **Key insight: Agent self-review has blind spots; use separate review sessions.**
