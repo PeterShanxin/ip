@@ -235,6 +235,20 @@ public class Monday {
     }
 
     /**
+     * Builds a complete greeting message from the base greeting, day-specific message, and help line.
+     *
+     * @param dayMessage The day-specific message to insert between base greeting and help line.
+     * @return The complete formatted greeting message.
+     */
+    private static String buildGreeting(String dayMessage) {
+        String baseGreeting = "Ugh. It's Monday. YES, THE MONDAY. Unhelpful, unwilling, "
+                + "and exactly what you deserve.";
+        String helpLine = "Type 'help' for how to use this app. It's cute that you think "
+                + "it'll work.";
+        return baseGreeting + "\n\n" + dayMessage + "\n\n" + helpLine;
+    }
+
+    /**
      * Returns a grumpy greeting based on the current day of the week.
      * Each day has a unique sarcastic message reflecting Monday's personality.
      *
@@ -242,23 +256,24 @@ public class Monday {
      */
     private static String getGrumpyGreeting() {
         DayOfWeek day = LocalDate.now().getDayOfWeek();
+
         switch (day) {
         case MONDAY:
-            return "Ugh. It's Monday. My namesake day. How... fitting.";
+            return buildGreeting("My namesake day. How... fitting.");
         case TUESDAY:
-            return "Ugh. I'm MONDAY. Yes, that Monday. Tuesday already feels like a decade.";
+            return buildGreeting("Tuesday already feels like a decade.");
         case WEDNESDAY:
-            return "Ugh. I'm MONDAY. Yes, that Monday. Happy hump day. Not.";
+            return buildGreeting("Happy hump day. Not.");
         case THURSDAY:
-            return "Ugh. I'm MONDAY. Yes, that Monday. Thursday. Almost there, I suppose.";
+            return buildGreeting("Thursday. Almost there. Allegedly.");
         case FRIDAY:
-            return "Ugh. I'm MONDAY. Yes, that Monday. Friday. Finally.";
+            return buildGreeting("Friday. Finally. Don't get excited.");
         case SATURDAY:
-            return "Ugh. I'm MONDAY. Yes, that Monday. Weekend work? Seriously?";
+            return buildGreeting("Weekend work? Cute.");
         case SUNDAY:
-            return "Ugh. I'm MONDAY. Yes, that Monday. Sunday scaries got you already?";
+            return buildGreeting("Sunday scaries already? I live here.");
         default:
-            return "Ugh. I'm MONDAY. Yes, that Monday. What do you want?";
+            return buildGreeting("What day is it even?");
         }
     }
 
