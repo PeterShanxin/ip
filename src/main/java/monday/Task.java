@@ -5,7 +5,10 @@ package monday;
  * Each task has a description and a completion status.
  */
 public class Task {
-    private String description;
+    private static final String DONE_ICON = "[X]";
+    private static final String TODO_ICON = "[ ]";
+
+    private final String description;
     private boolean isDone;
 
     /**
@@ -48,7 +51,7 @@ public class Task {
      * @return "[X]" if done, "[ ]" if not done.
      */
     public String getStatusIcon() {
-        return isDone ? "[X]" : "[ ]";
+        return isDone ? DONE_ICON : TODO_ICON;
     }
 
     /**

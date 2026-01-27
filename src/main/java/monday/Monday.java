@@ -13,6 +13,40 @@ public class Monday {
     private static final int MAX_TASKS = 100;
 
     /**
+     * Handles changing a task's completion status (mark/unmark).
+     * Parses the task number from input and updates the task's status.
+     *
+     * @param tasks The list of tasks to modify.
+     * @param userInput The user input containing the command.
+     * @param command The command word used ("mark" or "unmark").
+     * @param markAsDone The new completion status (true for mark, false for unmark).
+     * @param successMessage The message to display on success.
+     */
+    private static void handleTaskStatusChange(ArrayList<Task> tasks, String userInput,
+            String command, boolean markAsDone, String successMessage) {
+        System.out.println(LINE);
+        try {
+            String[] parts = userInput.trim().split("\\s+", 2);
+            int taskNumber = Integer.parseInt(parts[1].trim());
+            if (isValidTaskNumber(tasks, taskNumber)) {
+                Task task = tasks.get(taskNumber - 1);
+                if (markAsDone) {
+                    task.markAsDone();
+                } else {
+                    task.markAsNotDone();
+                }
+                System.out.println(successMessage);
+                System.out.println("  " + task);
+            } else {
+                printInvalidTaskError(tasks.size());
+            }
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            System.out.println("Ugh, that's not a valid number. Try '" + command + " 1' instead.");
+        }
+        System.out.println(LINE);
+    }
+
+    /**
      * Marks a task as done based on user input.
      * Parses the task number from input and updates the task's completion status.
      *
@@ -20,21 +54,8 @@ public class Monday {
      * @param userInput The user input containing the mark command.
      */
     private static void handleMark(ArrayList<Task> tasks, String userInput) {
-        System.out.println(LINE);
-        try {
-            int taskNumber = Integer.parseInt(userInput.substring(5).trim());
-            if (isValidTaskNumber(tasks, taskNumber)) {
-                Task task = tasks.get(taskNumber - 1);
-                task.markAsDone();
-                System.out.println("Fine. I've marked this task as done:");
-                System.out.println("  " + task);
-            } else {
-                printInvalidTaskError(tasks.size());
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Ugh, that's not a valid number. Try 'mark 1' instead.");
-        }
-        System.out.println(LINE);
+        handleTaskStatusChange(tasks, userInput, "mark", true,
+                "Fine. I've marked this task as done:");
     }
 
     /**
@@ -45,21 +66,8 @@ public class Monday {
      * @param userInput The user input containing the unmark command.
      */
     private static void handleUnmark(ArrayList<Task> tasks, String userInput) {
-        System.out.println(LINE);
-        try {
-            int taskNumber = Integer.parseInt(userInput.substring(7).trim());
-            if (isValidTaskNumber(tasks, taskNumber)) {
-                Task task = tasks.get(taskNumber - 1);
-                task.markAsNotDone();
-                System.out.println("Ugh, I've marked this task as not done:");
-                System.out.println("  " + task);
-            } else {
-                printInvalidTaskError(tasks.size());
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Ugh, that's not a valid number. Try 'unmark 1' instead.");
-        }
-        System.out.println(LINE);
+        handleTaskStatusChange(tasks, userInput, "unmark", false,
+                "Ugh, I've marked this task as not done:");
     }
 
     /**
@@ -118,13 +126,13 @@ public class Monday {
                     System.out.println("Skeptical. You haven't told me to do anything yet.");
                 } else {
                     for (int i = 0; i < tasks.size(); i++) {
-                        System.out.println((i + 1) + ". " + tasks.get(i).toString());
+                        System.out.println((i + 1) + ". " + tasks.get(i));
                     }
                 }
                 System.out.println(LINE);
-            } else if (userInput.startsWith("mark ")) {
+            } else if (userInput.toLowerCase().startsWith("mark ")) {
                 handleMark(tasks, userInput);
-            } else if (userInput.startsWith("unmark ")) {
+            } else if (userInput.toLowerCase().startsWith("unmark ")) {
                 handleUnmark(tasks, userInput);
             } else if (userInput.isEmpty()) {
                 System.out.println(LINE);
