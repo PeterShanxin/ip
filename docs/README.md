@@ -28,14 +28,50 @@ Example: `list`
 Expected output:
 
 ```
-1. read book
-2. return book
+1. [ ] read book
+2. [X] return book
 ```
 
 Notes:
 - Tasks are displayed with numbered list format
+- Tasks marked with [X] are completed, while [ ] indicates incomplete tasks
 - If you haven't added any tasks yet, MONDAY will be skeptical about it
 - The `list` command is case-insensitive (works with LIST, List, lIsT, etc.)
+
+## Marking tasks as done
+
+Mark a task as done by typing `mark X`, where X is the task number shown in the list.
+
+Example: `mark 1`
+
+Expected output:
+
+```
+Fine. I've marked this task as done:
+  [X] read book
+```
+
+Notes:
+- Task numbers are based on the order shown in the list command
+- Marked tasks are displayed with [X] to indicate completion
+- If you provide an invalid task number, MONDAY will grumpily tell you the valid range
+
+## Marking tasks as not done
+
+Mark a task as not done by typing `unmark X`, where X is the task number shown in the list.
+
+Example: `unmark 1`
+
+Expected output:
+
+```
+Ugh, I've marked this task as not done:
+  [ ] read book
+```
+
+Notes:
+- Unmarked tasks are displayed with [ ] to indicate they are not yet completed
+- Use this if you accidentally marked the wrong task as done
 
 ## Adding deadlines
 
