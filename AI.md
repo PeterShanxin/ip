@@ -111,3 +111,16 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Initial commit used generic `catch (Exception)` instead of specific exception types
 - **Fixes applied**: Replaced generic Exception with ArrayIndexOutOfBoundsException in handleDeadline/handleEvent
 - **Observations**: AI demonstrated strong OOD principles (inheritance, polymorphism, immutability). Code review workflow essential - caught exception handling issue post-commit. Time saved: ~2 hours (vs manual implementation + debugging).
+
+#### A-TextUiTesting: Automated Text UI Testing
+
+- **What was attempted**: Implement comprehensive automated testing using I/O redirection technique
+- **What worked**:
+  - One-shot success - implementation worked correctly on first attempt
+  - Multiple test files strategy (8 focused tests) for better maintainability
+  - Enhanced test runners with pass/fail tracking and summary reports
+  - Comprehensive coverage: 13 unique error messages + all happy paths
+  - Hybrid approach: multiple files for development, single combined file for grading
+  - Code review: EXCELLENT rating, no critical or major issues found
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Observations**: AI performed very well with thorough exploration before implementation. User consultation on approach (multiple vs single files) and scope (stretch goal) was key decision point. Systematic approach: infrastructure → test files → expected outputs → validation. Time saved: 3-4 hours (vs manual testing).
