@@ -1,5 +1,6 @@
 package monday;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -9,6 +10,7 @@ import java.util.Scanner;
  */
 public class Monday {
     private static final String LINE = "____________________________________________________________";
+    private static final int MAX_TASKS = 100;
 
     /**
      * Entry point for the Monday chatbot application.
@@ -25,20 +27,43 @@ public class Monday {
 
         // Command loop
         Scanner scanner = new Scanner(System.in);
+        ArrayList<String> tasks = new ArrayList<>();
         boolean isExit = false;
 
         while (!isExit) {
-            String userInput = scanner.nextLine();
+            String userInput = scanner.nextLine().trim();
 
             if (userInput.equalsIgnoreCase("bye")) {
                 System.out.println(LINE);
                 System.out.println("Finally, you're leaving. Don't come back too soon.");
                 System.out.println(LINE);
                 isExit = true;
+            } else if (userInput.equalsIgnoreCase("list")) {
+                System.out.println(LINE);
+                if (tasks.isEmpty()) {
+                    System.out.println("Skeptical. You haven't told me to do anything yet.");
+                } else {
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println((i + 1) + ". " + tasks.get(i));
+                    }
+                }
+                System.out.println(LINE);
+            } else if (userInput.isEmpty()) {
+                System.out.println(LINE);
+                System.out.println("Ugh, you didn't actually say anything. Try again.");
+                System.out.println(LINE);
             } else {
-                System.out.println(LINE);
-                System.out.println(userInput);
-                System.out.println(LINE);
+                if (tasks.size() >= MAX_TASKS) {
+                    System.out.println(LINE);
+                    System.out.println("Fine. I can't remember more than 100 things. "
+                            + "Forget something first.");
+                    System.out.println(LINE);
+                } else {
+                    tasks.add(userInput);
+                    System.out.println(LINE);
+                    System.out.println("added: " + userInput);
+                    System.out.println(LINE);
+                }
             }
         }
 
