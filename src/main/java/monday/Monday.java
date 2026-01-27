@@ -122,6 +122,49 @@ public class Monday {
     }
 
     /**
+     * Extracts the first word (command word) from user input.
+     * The command word is the first sequence of non-whitespace characters.
+     *
+     * @param userInput The full user input.
+     * @return The command word in lowercase, or empty string if input is empty.
+     */
+    private static String extractCommandWord(String userInput) {
+        String trimmed = userInput.trim();
+        if (trimmed.isEmpty()) {
+            return "";
+        }
+        int spaceIndex = trimmed.indexOf(' ');
+        return spaceIndex == -1 ? trimmed.toLowerCase()
+                                : trimmed.substring(0, spaceIndex).toLowerCase();
+    }
+
+    /**
+     * Checks if the given word is a known command.
+     *
+     * @param commandWord The command word to check (should be lowercase).
+     * @return true if the word is a known command, false otherwise.
+     */
+    private static boolean isKnownCommand(String commandWord) {
+        return commandWord.equals("todo") || commandWord.equals("deadline")
+            || commandWord.equals("event") || commandWord.equals("list")
+            || commandWord.equals("mark") || commandWord.equals("unmark")
+            || commandWord.equals("help") || commandWord.equals("bye")
+            || commandWord.equals("exit");
+    }
+
+    /**
+     * Generates an error message for unknown commands.
+     * Provides a grumpy response suggesting the help command.
+     *
+     * @param commandWord The unknown command word.
+     * @return The error message.
+     */
+    private static String getUnknownCommandErrorMessage(String commandWord) {
+        return "Ugh, I don't understand '" + commandWord + "'. "
+             + "Type 'help' if you're confused. It's probably hopeless though.";
+    }
+
+    /**
      * Creates a ToDo task from user input.
      * Format: todo borrow book
      *
@@ -323,10 +366,17 @@ public class Monday {
         while (!isExit) {
             String userInput = scanner.nextLine().trim();
 
-            if (userInput.equalsIgnoreCase("bye") || userInput.equalsIgnoreCase("exit")) {
+            if (userInput.isEmpty()) {
+                printResponse("Ugh, you didn't actually say anything. Try again.");
+                continue;
+            }
+
+            String commandWord = extractCommandWord(userInput);
+
+            if (commandWord.equals("bye") || commandWord.equals("exit")) {
                 printResponse("Finally, you're leaving. Don't come back too soon.");
                 isExit = true;
-            } else if (userInput.equalsIgnoreCase("list")) {
+            } else if (commandWord.equals("list")) {
                 String listResponse;
                 if (tasks.isEmpty()) {
                     listResponse = "Skeptical. You haven't told me to do anything yet.";
@@ -341,29 +391,41 @@ public class Monday {
                     listResponse = sb.toString();
                 }
                 printResponse(listResponse);
-            } else if (userInput.toLowerCase().startsWith("mark ")) {
-                handleMark(tasks, userInput);
-            } else if (userInput.toLowerCase().startsWith("unmark ")) {
-                handleUnmark(tasks, userInput);
-            } else if (userInput.toLowerCase().startsWith("todo ")) {
-                handleToDo(tasks, userInput);
-            } else if (userInput.toLowerCase().startsWith("deadline ")) {
-                handleDeadline(tasks, userInput);
-            } else if (userInput.toLowerCase().startsWith("event ")) {
-                handleEvent(tasks, userInput);
-            } else if (userInput.equalsIgnoreCase("help")) {
-                handleHelp();
-            } else if (userInput.isEmpty()) {
-                printResponse("Ugh, you didn't actually say anything. Try again.");
-            } else {
-                String addResponse;
-                if (tasks.size() >= MAX_TASKS) {
-                    addResponse = "Fine. I can't remember more than 100 things. Forget something first.";
+            } else if (commandWord.equals("mark")) {
+                if (userInput.trim().equalsIgnoreCase("mark")) {
+                    printResponse("Ugh, mark which task? Try 'mark 1'.");
                 } else {
-                    tasks.add(new Task(userInput));
-                    addResponse = "added: " + userInput;
+                    handleMark(tasks, userInput);
                 }
-                printResponse(addResponse);
+            } else if (commandWord.equals("unmark")) {
+                if (userInput.trim().equalsIgnoreCase("unmark")) {
+                    printResponse("Ugh, unmark which task? Try 'unmark 1'.");
+                } else {
+                    handleUnmark(tasks, userInput);
+                }
+            } else if (commandWord.equals("todo")) {
+                if (userInput.trim().equalsIgnoreCase("todo")) {
+                    printResponse("Ugh, a todo needs a description. Try 'todo borrow book'.");
+                } else {
+                    handleToDo(tasks, userInput);
+                }
+            } else if (commandWord.equals("deadline")) {
+                if (userInput.trim().equalsIgnoreCase("deadline")) {
+                    printResponse("Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.");
+                } else {
+                    handleDeadline(tasks, userInput);
+                }
+            } else if (commandWord.equals("event")) {
+                if (userInput.trim().equalsIgnoreCase("event")) {
+                    printResponse("Ugh, events need '/from' and '/to' times. "
+                               + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
+                } else {
+                    handleEvent(tasks, userInput);
+                }
+            } else if (commandWord.equals("help")) {
+                handleHelp();
+            } else {
+                printResponse(getUnknownCommandErrorMessage(commandWord));
             }
         }
 
