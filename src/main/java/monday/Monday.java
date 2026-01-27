@@ -139,20 +139,6 @@ public class Monday {
     }
 
     /**
-     * Checks if the given word is a known command.
-     *
-     * @param commandWord The command word to check (should be lowercase).
-     * @return true if the word is a known command, false otherwise.
-     */
-    private static boolean isKnownCommand(String commandWord) {
-        return commandWord.equals("todo") || commandWord.equals("deadline")
-            || commandWord.equals("event") || commandWord.equals("list")
-            || commandWord.equals("mark") || commandWord.equals("unmark")
-            || commandWord.equals("help") || commandWord.equals("bye")
-            || commandWord.equals("exit");
-    }
-
-    /**
      * Generates an error message for unknown commands.
      * Provides a grumpy response suggesting the help command.
      *
