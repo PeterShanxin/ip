@@ -124,3 +124,18 @@ This separation of concerns improves code quality significantly.
   - Code review: EXCELLENT rating, no critical or major issues found
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: AI performed very well with thorough exploration before implementation. User consultation on approach (multiple vs single files) and scope (stretch goal) was key decision point. Systematic approach: infrastructure → test files → expected outputs → validation. Time saved: 3-4 hours (vs manual testing).
+
+#### Level-5: Handle Errors
+
+- **What was attempted**: Add precise unknown command error detection for command-only inputs (e.g., "todo", "mark", "blah")
+- **What worked**:
+  - Implemented `extractCommandWord()` helper for clean first-word extraction
+  - Implemented `getUnknownCommandErrorMessage()` for grumpy error messages
+  - Refactored main loop to use precise command detection (matches command words exactly)
+  - All 8 text UI tests passing with updated expected outputs
+  - Code review: EXCELLENT rating, no issues after cleanup
+  - Plan mode effectively explored codebase and designed approach before implementation
+  - Code review caught unused method (`isKnownCommand()`) for cleaner code
+- **What didn't work**: Initial implementation included unused `isKnownCommand()` method that review agent flagged as minor lint issue
+- **Fixes applied**: Removed unused method during code review cleanup phase
+- **Observations**: Preconfigured workflow highly effective, especially context review agent. Plan mode excellent for codebase exploration. Task agents efficiently handled code review with isolated context. Code review caught unused method that would have been missed. Time saved: 2-3 hours (vs manual implementation + testing).
