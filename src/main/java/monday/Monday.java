@@ -95,6 +95,144 @@ public class Monday {
     }
 
     /**
+     * Extracts the description part from a command input.
+     * Removes the command keyword and returns the rest.
+     *
+     * @param userInput The full user input.
+     * @param command The command keyword to remove (e.g., "todo", "deadline").
+     * @return The description part of the input.
+     */
+    private static String extractDescription(String userInput, String command) {
+        return userInput.substring(command.length()).trim();
+    }
+
+    /**
+     * Creates a ToDo task from user input.
+     * Format: todo borrow book
+     *
+     * @param tasks The list of tasks to add to.
+     * @param userInput The user input containing the todo command.
+     */
+    private static void handleToDo(ArrayList<Task> tasks, String userInput) {
+        System.out.println(LINE);
+        String description = extractDescription(userInput, "todo").trim();
+
+        if (description.isEmpty()) {
+            System.out.println("Ugh, a todo needs a description. Try 'todo borrow book'.");
+        } else if (tasks.size() >= MAX_TASKS) {
+            System.out.println("Fine. I can't remember more than 100 things. Forget something first.");
+        } else {
+            ToDo todo = new ToDo(description);
+            tasks.add(todo);
+            System.out.println("Fine. I've added this todo:");
+            System.out.println("  " + todo);
+            System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                    + " in the list.");
+        }
+        System.out.println(LINE);
+    }
+
+    /**
+     * Creates a Deadline task from user input.
+     * Format: deadline return book /by Sunday
+     *
+     * @param tasks The list of tasks to add to.
+     * @param userInput The user input containing the deadline command.
+     */
+    private static void handleDeadline(ArrayList<Task> tasks, String userInput) {
+        System.out.println(LINE);
+
+        try {
+            String content = extractDescription(userInput, "deadline");
+
+            if (!content.contains("/by")) {
+                System.out.println("Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.");
+                System.out.println(LINE);
+                return;
+            }
+
+            String[] parts = content.split("/by", 2);
+            String description = parts[0].trim();
+            String by = parts[1].trim();
+
+            if (description.isEmpty()) {
+                System.out.println("Ugh, what's the deadline for? Try 'deadline return book /by Sunday'.");
+            } else if (by.isEmpty()) {
+                System.out.println("Ugh, when is it due? Try 'deadline return book /by Sunday'.");
+            } else if (tasks.size() >= MAX_TASKS) {
+                System.out.println("Fine. I can't remember more than 100 things. Forget something first.");
+            } else {
+                Deadline deadline = new Deadline(description, by);
+                tasks.add(deadline);
+                System.out.println("Fine. I've added this deadline:");
+                System.out.println("  " + deadline);
+                System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                        + " in the list.");
+            }
+        } catch (Exception e) {
+            System.out.println("Ugh, I can't understand that deadline. Try 'deadline return book /by Sunday'.");
+        }
+        System.out.println(LINE);
+    }
+
+    /**
+     * Creates an Event task from user input.
+     * Format: event project meeting /from Mon 2pm /to 4pm
+     *
+     * @param tasks The list of tasks to add to.
+     * @param userInput The user input containing the event command.
+     */
+    private static void handleEvent(ArrayList<Task> tasks, String userInput) {
+        System.out.println(LINE);
+
+        try {
+            String content = extractDescription(userInput, "event");
+
+            if (!content.contains("/from") || !content.contains("/to")) {
+                System.out.println("Ugh, events need '/from' and '/to' times. "
+                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
+                System.out.println(LINE);
+                return;
+            }
+
+            String[] fromParts = content.split("/from", 2);
+            String description = fromParts[0].trim();
+
+            if (fromParts.length < 2) {
+                System.out.println("Ugh, I can't understand that event. "
+                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
+                System.out.println(LINE);
+                return;
+            }
+
+            String[] toParts = fromParts[1].split("/to", 2);
+            String from = toParts[0].trim();
+            String to = toParts.length > 1 ? toParts[1].trim() : "";
+
+            if (description.isEmpty()) {
+                System.out.println("Ugh, what's the event? Try 'event project meeting /from Mon 2pm /to 4pm'.");
+            } else if (from.isEmpty()) {
+                System.out.println("Ugh, when does it start? Try 'event project meeting /from Mon 2pm /to 4pm'.");
+            } else if (to.isEmpty()) {
+                System.out.println("Ugh, when does it end? Try 'event project meeting /from Mon 2pm /to 4pm'.");
+            } else if (tasks.size() >= MAX_TASKS) {
+                System.out.println("Fine. I can't remember more than 100 things. Forget something first.");
+            } else {
+                Event event = new Event(description, from, to);
+                tasks.add(event);
+                System.out.println("Fine. I've added this event:");
+                System.out.println("  " + event);
+                System.out.println("Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                        + " in the list.");
+            }
+        } catch (Exception e) {
+            System.out.println("Ugh, I can't understand that event. "
+                    + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
+        }
+        System.out.println(LINE);
+    }
+
+    /**
      * Entry point for the Monday chatbot application.
      * Greets the user, processes commands, and exits when requested.
      *
@@ -134,6 +272,12 @@ public class Monday {
                 handleMark(tasks, userInput);
             } else if (userInput.toLowerCase().startsWith("unmark ")) {
                 handleUnmark(tasks, userInput);
+            } else if (userInput.toLowerCase().startsWith("todo ")) {
+                handleToDo(tasks, userInput);
+            } else if (userInput.toLowerCase().startsWith("deadline ")) {
+                handleDeadline(tasks, userInput);
+            } else if (userInput.toLowerCase().startsWith("event ")) {
+                handleEvent(tasks, userInput);
             } else if (userInput.isEmpty()) {
                 System.out.println(LINE);
                 System.out.println("Ugh, you didn't actually say anything. Try again.");

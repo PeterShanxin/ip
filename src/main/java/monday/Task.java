@@ -64,12 +64,34 @@ public class Task {
     }
 
     /**
+     * Returns the type-specific icon for this task.
+     * Default implementation returns empty icon for backward compatibility.
+     * Subclasses override to provide their type identifier.
+     *
+     * @return The type icon (e.g., "[T]", "[D]", "[E]", or "[]" for generic).
+     */
+    public String getTypeIcon() {
+        return "[]";
+    }
+
+    /**
+     * Returns the full description including type-specific details.
+     * Base implementation returns just the description.
+     * Subclasses override to add date/time information.
+     *
+     * @return The full description.
+     */
+    public String getFullDescription() {
+        return description;
+    }
+
+    /**
      * Returns the string representation of this task.
      *
-     * @return "statusIcon description" format.
+     * @return "typeIcon statusIcon fullDescription" format.
      */
     @Override
     public String toString() {
-        return getStatusIcon() + " " + description;
+        return getTypeIcon() + getStatusIcon() + " " + getFullDescription();
     }
 }

@@ -81,25 +81,68 @@ Notes:
 - Use this if you accidentally marked the wrong task as done
 - The `unmark` command is case-insensitive (works with UNMARK, Unmark, uNmArK, etc.)
 
-## Adding deadlines
+## Adding a todo task
 
-// Describe the action and its outcome.
+Add a simple todo task without any date/time attached to it by typing `todo` followed by the task description.
 
-// Give examples of usage
+Example: `todo borrow book`
 
-Example: `keyword (optional arguments)`
-
-// A description of the expected outcome goes here
+Expected output:
 
 ```
-expected output
+____________________________________________________________
+Fine. I've added this todo:
+  [T][ ] borrow book
+Now you have 1 task in the list.
+____________________________________________________________
 ```
 
-## Feature ABC
+Notes:
+- Todo tasks are displayed with a `[T]` icon to indicate they are simple tasks
+- The task description can contain spaces and any characters
+- Empty descriptions will be rejected with a grumpy error message
 
-// Feature details
+## Adding a deadline
 
+Add a deadline task with a due date/time by typing `deadline` followed by the description and `/by` marker with the due date/time.
 
-## Feature XYZ
+Example: `deadline return book /by Sunday`
 
-// Feature details
+Expected output:
+
+```
+____________________________________________________________
+Fine. I've added this deadline:
+  [D][ ] return book (by: Sunday)
+Now you have 1 task in the list.
+____________________________________________________________
+```
+
+Notes:
+- Deadline tasks are displayed with a `[D]` icon and include the due date/time
+- The `/by` marker is required to separate the description from the due date
+- Due dates can be in any format (e.g., "Sunday", "2024-12-25", "Friday 5pm")
+- Missing the `/by` marker or due date will result in a helpful error message
+
+## Adding an event
+
+Add an event task with start and end date/time by typing `event` followed by the description, `/from` marker with start time, and `/to` marker with end time.
+
+Example: `event project meeting /from Mon 2pm /to 4pm`
+
+Expected output:
+
+```
+____________________________________________________________
+Fine. I've added this event:
+  [E][ ] project meeting (from: Mon 2pm to: 4pm)
+Now you have 1 task in the list.
+____________________________________________________________
+```
+
+Notes:
+
+- Event tasks are displayed with an `[E]` icon and include both start and end times
+- Both `/from` and `/to` markers are required in the correct order
+- Times can be in any format (e.g., "Mon 2pm", "2024-12-25 14:00", "Friday evening")
+- Missing either marker or providing them in the wrong order will trigger an error message
