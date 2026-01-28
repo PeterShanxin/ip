@@ -85,6 +85,47 @@ public class Monday {
     }
 
     /**
+     * Handles task removal (delete operation).
+     * Parses the task number from input and removes the task from the list.
+     *
+     * @param tasks The list of tasks to modify.
+     * @param userInput The user input containing the command.
+     * @param command The command word used ("delete").
+     * @param successMessage The message to display on successful deletion.
+     */
+    private static void handleTaskRemoval(ArrayList<Task> tasks, String userInput,
+            String command, String successMessage) {
+        String response;
+        try {
+            String[] parts = userInput.trim().split("\\s+", 2);
+            int taskNumber = Integer.parseInt(parts[1].trim());
+            if (isValidTaskNumber(tasks, taskNumber)) {
+                Task deletedTask = tasks.remove(taskNumber - 1);
+                response = successMessage + "\n" + "  " + deletedTask + "\n"
+                        + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
+                        + " in the list.";
+            } else {
+                response = getInvalidTaskErrorMessage(tasks.size());
+            }
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+            response = "Ugh, that's not a valid number. Try '" + command + " 1' instead.";
+        }
+        printResponse(response);
+    }
+
+    /**
+     * Deletes a task from the list based on user input.
+     * Parses the task number from input and removes the task.
+     *
+     * @param tasks The list of tasks to modify.
+     * @param userInput The user input containing the delete command.
+     */
+    private static void handleDelete(ArrayList<Task> tasks, String userInput) {
+        handleTaskRemoval(tasks, userInput, "delete",
+                "Noted. I've removed this task:");
+    }
+
+    /**
      * Checks if a task number is valid (within range and list is not empty).
      *
      * @param tasks The list of tasks.
@@ -328,6 +369,7 @@ public class Monday {
                 + "  list                         - Show all tasks\n"
                 + "  mark <number>                - Mark task as done\n"
                 + "  unmark <number>              - Mark task as not done\n"
+                + "  delete <number>              - Delete a task (no going back)\n"
                 + "  help                         - Show this help (you're welcome)\n"
                 + "  bye / exit                   - Get rid of me";
         printResponse(response);
@@ -407,6 +449,12 @@ public class Monday {
                                + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
                 } else {
                     handleEvent(tasks, userInput);
+                }
+            } else if (commandWord.equals("delete")) {
+                if (userInput.trim().equalsIgnoreCase("delete")) {
+                    printResponse("Ugh, delete which task? Try 'delete 1'.");
+                } else {
+                    handleDelete(tasks, userInput);
                 }
             } else if (commandWord.equals("help")) {
                 handleHelp();
