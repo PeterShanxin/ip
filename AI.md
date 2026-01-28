@@ -139,3 +139,18 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Initial implementation included unused `isKnownCommand()` method that review agent flagged as minor lint issue
 - **Fixes applied**: Removed unused method during code review cleanup phase
 - **Observations**: Preconfigured workflow highly effective, especially context review agent. Plan mode excellent for codebase exploration. Task agents efficiently handled code review with isolated context. Code review caught unused method that would have been missed. Time saved: 2-3 hours (vs manual implementation + testing).
+
+#### Level-6: Delete Command
+
+- **What was attempted**: Add delete command to remove tasks from the task list by task number
+- **What worked**:
+  - Pattern-following approach: reused mark/unmark implementation pattern successfully
+  - Created `handleTaskRemoval()` helper method (DRY principle)
+  - Proper validation: non-numeric and out-of-range error handling
+  - Grumpy error messages aligned with MONDAY personality
+  - Updated help text and user guide
+  - Text UI test file created (09-delete-errors) with comprehensive coverage
+  - All 9 tests passing (8 existing + 1 new)
+  - Code review: Grade A, no issues found
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Observations**: One-shot success due to pattern-following approach. The delete command followed the same structure as mark/unmark (validate input → perform action → confirm). This demonstrates the value of recognizing and reusing established patterns. AI avoided code duplication by extracting shared logic. Time saved: ~0.5 hours (vs manual implementation + testing).
