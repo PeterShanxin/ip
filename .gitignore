@@ -25,7 +25,8 @@ Thumbs.db
 src/main/resources/docs/
 
 # Test files
-/text-ui-test/ACTUAL.TXT
+text-ui-test/ACTUAL*.txt
+text-ui-test/ACTUAL*.TXT
 text-ui-test/EXPECTED-UNIX.TXT
 
 # Claude/IDE
