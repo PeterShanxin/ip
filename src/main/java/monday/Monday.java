@@ -2,6 +2,7 @@ package monday;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,6 +14,8 @@ import java.util.Scanner;
 public class Monday {
     private static final String LINE = "____________________________________________________________";
     private static final int MAX_TASKS = 100;
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy");
 
     /**
      * Prints a response wrapped with line separators and blank lines around content.
@@ -326,17 +329,19 @@ public class Monday {
     }
 
     /**
-     * Builds a complete greeting message from the base greeting, day-specific message, and help line.
+     * Builds a complete greeting message from the base greeting, current date, day-specific message, and help line.
      *
-     * @param dayMessage The day-specific message to insert between base greeting and help line.
+     * @param dayMessage The day-specific message to insert after the date.
+     * @param currentDate The current date to display in the greeting.
      * @return The complete formatted greeting message.
      */
-    private static String buildGreeting(String dayMessage) {
+    private static String buildGreeting(String dayMessage, LocalDate currentDate) {
         String baseGreeting = "Ugh. It's Monday. YES, THE MONDAY. Unhelpful, unwilling, "
                 + "and exactly what you deserve.";
-        String helpLine = "Type 'help' for how to use this app. It's cute that you think "
-                + "it'll work.";
-        return baseGreeting + "\n\n" + dayMessage + "\n\n" + helpLine;
+        String dateLine = "Today is " + currentDate.format(DATE_FORMATTER);
+        String helpLine = "Type 'help' for how to use this app. (It's cute that you think "
+                + "it'll work.)";
+        return baseGreeting + "\n\n" + dateLine + "\n\n" + dayMessage + "\n\n" + helpLine;
     }
 
     /**
@@ -346,25 +351,26 @@ public class Monday {
      * @return A grumpy greeting message for the current day.
      */
     private static String getGrumpyGreeting() {
-        DayOfWeek day = LocalDate.now().getDayOfWeek();
+        LocalDate currentDate = LocalDate.now();
+        DayOfWeek day = currentDate.getDayOfWeek();
 
         switch (day) {
         case MONDAY:
-            return buildGreeting("My namesake day. How... fitting.");
+            return buildGreeting("My namesake day. How... fitting.", currentDate);
         case TUESDAY:
-            return buildGreeting("Tuesday already feels like a decade.");
+            return buildGreeting("Tuesday already feels like a decade.", currentDate);
         case WEDNESDAY:
-            return buildGreeting("Happy hump day. Not.");
+            return buildGreeting("Happy hump day. Not.", currentDate);
         case THURSDAY:
-            return buildGreeting("Thursday. Almost there. Allegedly.");
+            return buildGreeting("Thursday. Almost there. Allegedly.", currentDate);
         case FRIDAY:
-            return buildGreeting("Friday. Finally. Don't get excited.");
+            return buildGreeting("Friday. Finally. Don't get excited.", currentDate);
         case SATURDAY:
-            return buildGreeting("Weekend work? Cute.");
+            return buildGreeting("Weekend work? Cute.", currentDate);
         case SUNDAY:
-            return buildGreeting("Sunday scaries already? I live here.");
+            return buildGreeting("Sunday scaries already? I live here.", currentDate);
         default:
-            return buildGreeting("What day is it even?");
+            return buildGreeting("What day is it even?", currentDate);
         }
     }
 
