@@ -32,6 +32,7 @@ Ugh. Fine. Here's what I understand (not that you'll listen):
   list                         - Show all tasks
   mark <number>                - Mark task as done
   unmark <number>              - Mark task as not done
+  delete <number>              - Delete a task (no going back)
   help                         - Show this help (you're welcome)
   bye / exit                   - Get rid of me
 ____________________________________________________________

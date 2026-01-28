@@ -180,6 +180,17 @@ public class Monday {
     }
 
     /**
+     * Checks if the user input contains only the command word with no arguments.
+     *
+     * @param userInput The full user input.
+     * @param commandType The type of command to check for.
+     * @return true if input is just the command word, false otherwise.
+     */
+    private static boolean isCommandOnlyInput(String userInput, CommandType commandType) {
+        return userInput.trim().equalsIgnoreCase(commandType.getCommand());
+    }
+
+    /**
      * Generates an error message for unknown commands.
      * Provides a grumpy response suggesting the help command.
      *
@@ -199,7 +210,7 @@ public class Monday {
      * @param userInput The user input containing the todo command.
      */
     private static void handleToDo(ArrayList<Task> tasks, String userInput) {
-        String description = extractDescription(userInput, "todo").trim();
+        String description = extractDescription(userInput, CommandType.TODO.getCommand()).trim();
         String response;
 
         if (description.isEmpty()) {
@@ -227,15 +238,15 @@ public class Monday {
         String response;
 
         try {
-            String content = extractDescription(userInput, "deadline");
+            String content = extractDescription(userInput, CommandType.DEADLINE.getCommand());
 
-            if (!content.contains("/by")) {
+            if (!content.contains(TaskPrefix.BY.toString())) {
                 response = "Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.";
                 printResponse(response);
                 return;
             }
 
-            String[] parts = content.split("/by", 2);
+            String[] parts = content.split(TaskPrefix.BY.toString(), 2);
             String description = parts[0].trim();
             String by = parts[1].trim();
 
@@ -269,16 +280,16 @@ public class Monday {
         String response;
 
         try {
-            String content = extractDescription(userInput, "event");
+            String content = extractDescription(userInput, CommandType.EVENT.getCommand());
 
-            if (!content.contains("/from") || !content.contains("/to")) {
+            if (!content.contains(TaskPrefix.FROM.toString()) || !content.contains(TaskPrefix.TO.toString())) {
                 response = "Ugh, events need '/from' and '/to' times. "
                         + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
                 printResponse(response);
                 return;
             }
 
-            String[] fromParts = content.split("/from", 2);
+            String[] fromParts = content.split(TaskPrefix.FROM.toString(), 2);
             String description = fromParts[0].trim();
 
             if (fromParts.length < 2) {
@@ -288,7 +299,7 @@ public class Monday {
                 return;
             }
 
-            String[] toParts = fromParts[1].split("/to", 2);
+            String[] toParts = fromParts[1].split(TaskPrefix.TO.toString(), 2);
             String from = toParts[0].trim();
             String to = toParts.length > 1 ? toParts[1].trim() : "";
 
@@ -401,10 +412,19 @@ public class Monday {
 
             String commandWord = extractCommandWord(userInput);
 
-            if (commandWord.equals("bye") || commandWord.equals("exit")) {
+            CommandType commandType = CommandType.fromString(commandWord);
+
+            if (commandType == null) {
+                printResponse(getUnknownCommandErrorMessage(commandWord));
+                continue;
+            }
+
+            switch (commandType) {
+            case BYE:
                 printResponse("Finally, you're leaving. Don't come back too soon.");
                 isExit = true;
-            } else if (commandWord.equals("list")) {
+                break;
+            case LIST:
                 String listResponse;
                 if (tasks.isEmpty()) {
                     listResponse = "Skeptical. You haven't told me to do anything yet.";
@@ -419,47 +439,56 @@ public class Monday {
                     listResponse = sb.toString();
                 }
                 printResponse(listResponse);
-            } else if (commandWord.equals("mark")) {
-                if (userInput.trim().equalsIgnoreCase("mark")) {
+                break;
+            case MARK:
+                if (isCommandOnlyInput(userInput, CommandType.MARK)) {
                     printResponse("Ugh, mark which task? Try 'mark 1'.");
                 } else {
                     handleMark(tasks, userInput);
                 }
-            } else if (commandWord.equals("unmark")) {
-                if (userInput.trim().equalsIgnoreCase("unmark")) {
+                break;
+            case UNMARK:
+                if (isCommandOnlyInput(userInput, CommandType.UNMARK)) {
                     printResponse("Ugh, unmark which task? Try 'unmark 1'.");
                 } else {
                     handleUnmark(tasks, userInput);
                 }
-            } else if (commandWord.equals("todo")) {
-                if (userInput.trim().equalsIgnoreCase("todo")) {
+                break;
+            case TODO:
+                if (isCommandOnlyInput(userInput, CommandType.TODO)) {
                     printResponse("Ugh, a todo needs a description. Try 'todo borrow book'.");
                 } else {
                     handleToDo(tasks, userInput);
                 }
-            } else if (commandWord.equals("deadline")) {
-                if (userInput.trim().equalsIgnoreCase("deadline")) {
+                break;
+            case DEADLINE:
+                if (isCommandOnlyInput(userInput, CommandType.DEADLINE)) {
                     printResponse("Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.");
                 } else {
                     handleDeadline(tasks, userInput);
                 }
-            } else if (commandWord.equals("event")) {
-                if (userInput.trim().equalsIgnoreCase("event")) {
+                break;
+            case EVENT:
+                if (isCommandOnlyInput(userInput, CommandType.EVENT)) {
                     printResponse("Ugh, events need '/from' and '/to' times. "
                                + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
                 } else {
                     handleEvent(tasks, userInput);
                 }
-            } else if (commandWord.equals("delete")) {
-                if (userInput.trim().equalsIgnoreCase("delete")) {
+                break;
+            case DELETE:
+                if (isCommandOnlyInput(userInput, CommandType.DELETE)) {
                     printResponse("Ugh, delete which task? Try 'delete 1'.");
                 } else {
                     handleDelete(tasks, userInput);
                 }
-            } else if (commandWord.equals("help")) {
+                break;
+            case HELP:
                 handleHelp();
-            } else {
+                break;
+            default:
                 printResponse(getUnknownCommandErrorMessage(commandWord));
+                break;
             }
         }
 

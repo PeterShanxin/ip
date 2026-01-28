@@ -65,13 +65,13 @@ public class Task {
 
     /**
      * Returns the type-specific icon for this task.
-     * Default implementation returns empty icon for backward compatibility.
+     * Default implementation returns generic icon for backward compatibility.
      * Subclasses override to provide their type identifier.
      *
      * @return The type icon (e.g., "[T]", "[D]", "[E]", or "[]" for generic).
      */
     public String getTypeIcon() {
-        return "[]";
+        return TaskType.GENERIC.getIcon();
     }
 
     /**
