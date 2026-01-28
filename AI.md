@@ -154,3 +154,17 @@ This separation of concerns improves code quality significantly.
   - Code review: Grade A, no issues found
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: One-shot success due to pattern-following approach. The delete command followed the same structure as mark/unmark (validate input → perform action → confirm). This demonstrates the value of recognizing and reusing established patterns. AI avoided code duplication by extracting shared logic. Time saved: ~0.5 hours (vs manual implementation + testing).
+
+#### A-Enums: Use Java Enums
+
+- **What was attempted**: Replace hardcoded string literals with type-safe Java enums throughout the codebase
+- **What worked**:
+  - Created 3 enums: TaskType (task icons), TaskPrefix (parameter prefixes), CommandType (command words with aliases)
+  - Demonstrated proper enum features: state, methods, factory pattern, switch compatibility
+  - Refactored 5 source files (Task, ToDo, Deadline, Event, Monday) to use enums
+  - Replaced else-if chain with switch statement on CommandType enum
+  - All 8 text UI tests passing
+  - Code review: EXCELLENT rating, 0 issues (3 info-level observations only)
+  - One-shot success - implementation worked correctly on first attempt
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Observations**: AI demonstrated strong understanding of Java enum capabilities. Factory methods in CommandType (fromString(), isCommand(), isValid()) eliminate magic strings throughout codebase. Type safety reduces bugs and improves maintainability. One-shot success saved significant debugging time. Time saved: ~3 hours (vs manual refactoring + testing).
