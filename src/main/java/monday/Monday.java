@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -15,7 +16,7 @@ public class Monday {
     private static final String LINE = "____________________________________________________________";
     private static final int MAX_TASKS = 100;
     private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy");
+            DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
 
     /**
      * Prints a response wrapped with line separators and blank lines around content.
