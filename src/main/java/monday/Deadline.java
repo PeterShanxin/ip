@@ -1,22 +1,12 @@
 package monday;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 /**
  * Represents a task that needs to be done before a specific date/time.
  * Deadline tasks have a due date/time attached to them.
  */
 public class Deadline extends Task {
-    private static final DateTimeFormatter INPUT_FORMATTER_1 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-    private static final DateTimeFormatter INPUT_FORMATTER_2 =
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-    private static final DateTimeFormatter OUTPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("MMM dd yyyy HHmm");
-    private static final DateTimeFormatter STORAGE_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final LocalDateTime by;
 
@@ -48,7 +38,7 @@ public class Deadline extends Task {
      */
     @Override
     public String getFullDescription() {
-        return getDescription() + " (by: " + by.format(OUTPUT_FORMATTER) + ")";
+        return getDescription() + " (by: " + by.format(DateTimeParser.OUTPUT_FORMATTER) + ")";
     }
 
     /**
@@ -57,7 +47,7 @@ public class Deadline extends Task {
      * @return The due date/time formatted for display.
      */
     public String getBy() {
-        return by.format(OUTPUT_FORMATTER);
+        return by.format(DateTimeParser.OUTPUT_FORMATTER);
     }
 
     /**
@@ -75,7 +65,7 @@ public class Deadline extends Task {
      * @return The due date/time formatted for file storage.
      */
     public String getByForStorage() {
-        return by.format(STORAGE_FORMATTER);
+        return by.format(DateTimeParser.STORAGE_FORMATTER);
     }
 
     /**
@@ -84,20 +74,11 @@ public class Deadline extends Task {
      *
      * @param dateTimeString The date/time string to parse.
      * @return The parsed LocalDateTime.
-     * @throws DateTimeParseException If the string cannot be parsed with any format.
+     * @throws java.time.format.DateTimeParseException If the string cannot be parsed
+     *         with any format.
      */
-    public static LocalDateTime parseDateTime(String dateTimeString) throws DateTimeParseException {
-        try {
-            return LocalDateTime.parse(dateTimeString, INPUT_FORMATTER_1);
-        } catch (DateTimeParseException e) {
-            try {
-                return LocalDateTime.parse(dateTimeString, INPUT_FORMATTER_2);
-            } catch (DateTimeParseException e2) {
-                throw new DateTimeParseException(
-                        "Ugh, I can't understand that date. Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm'.",
-                        dateTimeString, 0);
-            }
-        }
+    public static LocalDateTime parseDateTime(String dateTimeString) {
+        return DateTimeParser.parseDateTime(dateTimeString);
     }
 
     /**

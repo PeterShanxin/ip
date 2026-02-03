@@ -20,6 +20,12 @@ public class Monday {
     private static final int MAX_TASKS = 100;
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter VIEW_OUTPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("MMM dd yyyy");
+    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_1 =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_2 =
+            DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Prints a response wrapped with line separators and blank lines around content.
@@ -461,11 +467,11 @@ public class Monday {
 
             if (filteredTasks.isEmpty()) {
                 response = "Skeptical. Nothing scheduled for "
-                        + targetDate.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ".";
+                        + targetDate.format(VIEW_OUTPUT_FORMATTER) + ".";
             } else {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Ugh. Here's what you have on ")
-                  .append(targetDate.format(DateTimeFormatter.ofPattern("MMM dd yyyy")))
+                  .append(targetDate.format(VIEW_OUTPUT_FORMATTER))
                   .append(":\n");
                 for (int i = 0; i < filteredTasks.size(); i++) {
                     if (i > 0) {
@@ -491,15 +497,12 @@ public class Monday {
      * @throws DateTimeParseException If the string cannot be parsed with any format.
      */
     private static LocalDateTime parseViewDate(String dateString) throws DateTimeParseException {
-        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("d/M/yyyy");
-
         try {
-            LocalDate date = LocalDate.parse(dateString, formatter1);
+            LocalDate date = LocalDate.parse(dateString, VIEW_INPUT_FORMATTER_1);
             return date.atStartOfDay();
         } catch (DateTimeParseException e) {
             try {
-                LocalDate date = LocalDate.parse(dateString, formatter2);
+                LocalDate date = LocalDate.parse(dateString, VIEW_INPUT_FORMATTER_2);
                 return date.atStartOfDay();
             } catch (DateTimeParseException e2) {
                 throw new DateTimeParseException(

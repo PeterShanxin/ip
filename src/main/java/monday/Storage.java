@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +22,6 @@ public class Storage {
     private static final Path FILE_PATH = DATA_DIR.resolve(FILE_NAME);
     private static final Path CORRUPTED_FILE_PATH = DATA_DIR.resolve(FILE_NAME + ".corrupted");
     private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
-    private static final DateTimeFormatter STORAGE_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Loads tasks from the storage file.
@@ -120,9 +118,9 @@ public class Storage {
                 return null;
             }
             try {
-                LocalDateTime byDateTime = LocalDateTime.parse(by, STORAGE_FORMATTER);
+                LocalDateTime byDateTime = LocalDateTime.parse(by, DateTimeParser.STORAGE_FORMATTER);
                 task = new Deadline(description, byDateTime);
-            } catch (Exception e) {
+            } catch (DateTimeParseException e) {
                 return null;
             }
             break;
@@ -138,10 +136,10 @@ public class Storage {
                 return null;
             }
             try {
-                LocalDateTime fromDateTime = LocalDateTime.parse(from, STORAGE_FORMATTER);
-                LocalDateTime toDateTime = LocalDateTime.parse(to, STORAGE_FORMATTER);
+                LocalDateTime fromDateTime = LocalDateTime.parse(from, DateTimeParser.STORAGE_FORMATTER);
+                LocalDateTime toDateTime = LocalDateTime.parse(to, DateTimeParser.STORAGE_FORMATTER);
                 task = new Event(description, fromDateTime, toDateTime);
-            } catch (Exception e) {
+            } catch (DateTimeParseException e) {
                 return null;
             }
             break;
