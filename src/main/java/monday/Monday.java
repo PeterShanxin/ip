@@ -426,13 +426,15 @@ public class Monday {
         // Command loop
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks;
-        LoadResult loadResult;
         try {
-            loadResult = Storage.loadTasks();
+            LoadResult loadResult = Storage.loadTasks();
             tasks = loadResult.getTasks();
             if (loadResult.hasCorruption()) {
+                String corruptionUnit = loadResult.getCorruptedLineCount() == 1
+                        ? " corrupted line."
+                        : " corrupted lines.";
                 String corruptionMsg = "Ugh. I skipped " + loadResult.getCorruptedLineCount()
-                        + (loadResult.getCorruptedLineCount() == 1 ? " corrupted line." : " corrupted lines.")
+                        + corruptionUnit
                         + "\nCheck monday.txt.corrupted for recovery.";
                 printResponse(corruptionMsg);
             }

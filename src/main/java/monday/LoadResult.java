@@ -1,6 +1,7 @@
 package monday;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the result of loading tasks from storage.
@@ -27,7 +28,7 @@ public class LoadResult {
      *
      * @return The list of tasks.
      */
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return tasks;
     }
 
