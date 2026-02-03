@@ -69,19 +69,6 @@ public class Deadline extends Task {
     }
 
     /**
-     * Parses a date/time string into a LocalDateTime.
-     * Tries multiple formats: yyyy-MM-dd HHmm, then d/M/yyyy HHmm.
-     *
-     * @param dateTimeString The date/time string to parse.
-     * @return The parsed LocalDateTime.
-     * @throws java.time.format.DateTimeParseException If the string cannot be parsed
-     *         with any format.
-     */
-    public static LocalDateTime parseDateTime(String dateTimeString) {
-        return DateTimeParser.parseDateTime(dateTimeString);
-    }
-
-    /**
      * Checks if this deadline occurs on the specified date.
      * Compares year, month, and day components only.
      *

@@ -288,7 +288,7 @@ public class Monday {
             } else if (tasks.size() >= MAX_TASKS) {
                 response = "Fine. I can't remember more than 100 things. Forget something first.";
             } else {
-                LocalDateTime byDateTime = Deadline.parseDateTime(by);
+                LocalDateTime byDateTime = DateTimeParser.parseDateTime(by);
                 Deadline deadline = new Deadline(description, byDateTime);
                 tasks.add(deadline);
                 saveTasksIfPossible(tasks);
@@ -352,8 +352,8 @@ public class Monday {
             } else if (tasks.size() >= MAX_TASKS) {
                 response = "Fine. I can't remember more than 100 things. Forget something first.";
             } else {
-                LocalDateTime fromDateTime = Event.parseDateTime(from);
-                LocalDateTime toDateTime = Event.parseDateTime(to);
+                LocalDateTime fromDateTime = DateTimeParser.parseDateTime(from);
+                LocalDateTime toDateTime = DateTimeParser.parseDateTime(to);
                 Event event = new Event(description, fromDateTime, toDateTime);
                 tasks.add(event);
                 saveTasksIfPossible(tasks);
