@@ -36,6 +36,12 @@ if not exist ..\bin (
     echo Created bin directory
 )
 
+REM Clean up data directory before tests
+if exist ..\data (
+    rmdir /s /q ..\data
+    echo Cleaned up data directory
+)
+
 if exist ACTUAL.TXT (
     del ACTUAL.TXT
     echo Cleaned up previous test outputs

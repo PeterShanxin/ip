@@ -29,6 +29,9 @@ text-ui-test/ACTUAL*.txt
 text-ui-test/ACTUAL*.TXT
 text-ui-test/EXPECTED-UNIX.TXT
 
+# Data files (user's persisted tasks)
+data/
+
 # Claude/IDE
 .claude/
 CLAUDE.md
