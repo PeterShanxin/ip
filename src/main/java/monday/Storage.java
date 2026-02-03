@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,7 +117,12 @@ public class Storage {
             if (by.isEmpty()) {
                 return null;
             }
-            task = new Deadline(description, by);
+            try {
+                LocalDateTime byDateTime = LocalDateTime.parse(by, DateTimeParser.STORAGE_FORMATTER);
+                task = new Deadline(description, byDateTime);
+            } catch (DateTimeParseException e) {
+                return null;
+            }
             break;
         case "E":
             if (parts.length < 5) {
@@ -128,7 +135,13 @@ public class Storage {
             if (from.isEmpty() || to.isEmpty()) {
                 return null;
             }
-            task = new Event(description, from, to);
+            try {
+                LocalDateTime fromDateTime = LocalDateTime.parse(from, DateTimeParser.STORAGE_FORMATTER);
+                LocalDateTime toDateTime = LocalDateTime.parse(to, DateTimeParser.STORAGE_FORMATTER);
+                task = new Event(description, fromDateTime, toDateTime);
+            } catch (DateTimeParseException e) {
+                return null;
+            }
             break;
         default:
             // Unknown type, skip this line
@@ -221,11 +234,11 @@ public class Storage {
         String desc = task.getDescription();
 
         if (task instanceof Deadline) {
-            String by = ((Deadline) task).getBy();
+            String by = ((Deadline) task).getByForStorage();
             return String.format("%s | %s | %s | by: %s", type, done, desc, by);
         } else if (task instanceof Event) {
-            String from = ((Event) task).getFrom();
-            String to = ((Event) task).getTo();
+            String from = ((Event) task).getFromForStorage();
+            String to = ((Event) task).getToForStorage();
             return String.format("%s | %s | %s | from: %s | to: %s", type, done, desc, from, to);
         } else {
             return String.format("%s | %s | %s", type, done, desc);

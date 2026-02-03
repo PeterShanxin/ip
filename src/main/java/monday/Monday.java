@@ -2,7 +2,9 @@ package monday;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -18,6 +20,12 @@ public class Monday {
     private static final int MAX_TASKS = 100;
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter VIEW_OUTPUT_FORMATTER =
+            DateTimeFormatter.ofPattern("MMM dd yyyy");
+    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_1 =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_2 =
+            DateTimeFormatter.ofPattern("d/M/yyyy");
 
     /**
      * Prints a response wrapped with line separators and blank lines around content.
@@ -251,7 +259,7 @@ public class Monday {
 
     /**
      * Creates a Deadline task from user input.
-     * Format: deadline return book /by Sunday
+     * Format: deadline return book /by 2019-12-02 1800
      *
      * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the deadline command.
@@ -263,7 +271,8 @@ public class Monday {
             String content = extractDescription(userInput, CommandType.DEADLINE.getCommand());
 
             if (!content.contains(TaskPrefix.BY.toString())) {
-                response = "Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.";
+                response = "Ugh, deadlines need a '/by' time. "
+                        + "Try 'deadline return book /by 2019-12-02 1800'.";
                 printResponse(response);
                 return;
             }
@@ -273,28 +282,33 @@ public class Monday {
             String by = parts[1].trim();
 
             if (description.isEmpty()) {
-                response = "Ugh, what's the deadline for? Try 'deadline return book /by Sunday'.";
+                response = "Ugh, what's the deadline for? Try 'deadline return book /by 2019-12-02 1800'.";
             } else if (by.isEmpty()) {
-                response = "Ugh, when is it due? Try 'deadline return book /by Sunday'.";
+                response = "Ugh, when is it due? Try 'deadline return book /by 2019-12-02 1800'.";
             } else if (tasks.size() >= MAX_TASKS) {
                 response = "Fine. I can't remember more than 100 things. Forget something first.";
             } else {
-                Deadline deadline = new Deadline(description, by);
+                LocalDateTime byDateTime = DateTimeParser.parseDateTime(by);
+                Deadline deadline = new Deadline(description, byDateTime);
                 tasks.add(deadline);
                 saveTasksIfPossible(tasks);
                 response = "Fine. I've added this deadline:\n" + "  " + deadline + "\n"
                         + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.";
             }
+        } catch (DateTimeParseException e) {
+            response = "Ugh, I can't understand that date. "
+                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.";
         } catch (ArrayIndexOutOfBoundsException e) {
-            response = "Ugh, I can't understand that deadline. Try 'deadline return book /by Sunday'.";
+            response = "Ugh, I can't understand that deadline. "
+                    + "Try 'deadline return book /by 2019-12-02 1800'.";
         }
         printResponse(response);
     }
 
     /**
      * Creates an Event task from user input.
-     * Format: event project meeting /from Mon 2pm /to 4pm
+     * Format: event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800
      *
      * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the event command.
@@ -307,7 +321,7 @@ public class Monday {
 
             if (!content.contains(TaskPrefix.FROM.toString()) || !content.contains(TaskPrefix.TO.toString())) {
                 response = "Ugh, events need '/from' and '/to' times. "
-                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
                 printResponse(response);
                 return;
             }
@@ -317,7 +331,7 @@ public class Monday {
 
             if (fromParts.length < 2) {
                 response = "Ugh, I can't understand that event. "
-                        + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
                 printResponse(response);
                 return;
             }
@@ -327,24 +341,32 @@ public class Monday {
             String to = toParts.length > 1 ? toParts[1].trim() : "";
 
             if (description.isEmpty()) {
-                response = "Ugh, what's the event? Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                response = "Ugh, what's the event? "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
             } else if (from.isEmpty()) {
-                response = "Ugh, when does it start? Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                response = "Ugh, when does it start? "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
             } else if (to.isEmpty()) {
-                response = "Ugh, when does it end? Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                response = "Ugh, when does it end? "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
             } else if (tasks.size() >= MAX_TASKS) {
                 response = "Fine. I can't remember more than 100 things. Forget something first.";
             } else {
-                Event event = new Event(description, from, to);
+                LocalDateTime fromDateTime = DateTimeParser.parseDateTime(from);
+                LocalDateTime toDateTime = DateTimeParser.parseDateTime(to);
+                Event event = new Event(description, fromDateTime, toDateTime);
                 tasks.add(event);
                 saveTasksIfPossible(tasks);
                 response = "Fine. I've added this event:\n" + "  " + event + "\n"
                         + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.";
             }
+        } catch (DateTimeParseException e) {
+            response = "Ugh, I can't understand that date. "
+                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.";
         } catch (ArrayIndexOutOfBoundsException e) {
             response = "Ugh, I can't understand that event. "
-                    + "Try 'event project meeting /from Mon 2pm /to 4pm'.";
+                    + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
         }
         printResponse(response);
     }
@@ -409,6 +431,88 @@ public class Monday {
     }
 
     /**
+     * Displays tasks scheduled for a specific date.
+     * Parses the date from user input and filters tasks that occur on that date.
+     *
+     * @param tasks The list of tasks to filter.
+     * @param userInput The user input containing the view command.
+     */
+    private static void handleView(List<Task> tasks, String userInput) {
+        String response;
+        String dateString = extractDescription(userInput, CommandType.VIEW.getCommand()).trim();
+
+        if (dateString.isEmpty()) {
+            response = "Ugh, what date do you want to view? Try 'view 2019-12-25'.";
+            printResponse(response);
+            return;
+        }
+
+        try {
+            LocalDateTime targetDate = parseViewDate(dateString);
+            List<Task> filteredTasks = new ArrayList<>();
+
+            for (Task task : tasks) {
+                if (task instanceof Deadline) {
+                    Deadline deadline = (Deadline) task;
+                    if (deadline.isOnDate(targetDate)) {
+                        filteredTasks.add(task);
+                    }
+                } else if (task instanceof Event) {
+                    Event event = (Event) task;
+                    if (event.isOnDate(targetDate)) {
+                        filteredTasks.add(task);
+                    }
+                }
+            }
+
+            if (filteredTasks.isEmpty()) {
+                response = "Skeptical. Nothing scheduled for "
+                        + targetDate.format(VIEW_OUTPUT_FORMATTER) + ".";
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append("Ugh. Here's what you have on ")
+                  .append(targetDate.format(VIEW_OUTPUT_FORMATTER))
+                  .append(":\n");
+                for (int i = 0; i < filteredTasks.size(); i++) {
+                    if (i > 0) {
+                        sb.append("\n");
+                    }
+                    sb.append((i + 1)).append(". ").append(filteredTasks.get(i));
+                }
+                response = sb.toString();
+            }
+        } catch (DateTimeParseException e) {
+            response = "Ugh, I can't understand that date. "
+                    + "Try 'yyyy-MM-dd' or 'd/M/yyyy' format.";
+        }
+        printResponse(response);
+    }
+
+    /**
+     * Parses a date string for the view command.
+     * Tries multiple formats: yyyy-MM-dd, then d/M/yyyy.
+     *
+     * @param dateString The date string to parse.
+     * @return The parsed LocalDateTime (time set to midnight).
+     * @throws DateTimeParseException If the string cannot be parsed with any format.
+     */
+    private static LocalDateTime parseViewDate(String dateString) throws DateTimeParseException {
+        try {
+            LocalDate date = LocalDate.parse(dateString, VIEW_INPUT_FORMATTER_1);
+            return date.atStartOfDay();
+        } catch (DateTimeParseException e) {
+            try {
+                LocalDate date = LocalDate.parse(dateString, VIEW_INPUT_FORMATTER_2);
+                return date.atStartOfDay();
+            } catch (DateTimeParseException e2) {
+                throw new DateTimeParseException(
+                        "Ugh, I can't understand that date. Try 'yyyy-MM-dd' or 'd/M/yyyy' format.",
+                        dateString, 0);
+            }
+        }
+    }
+
+    /**
      * Displays help information for all available commands.
      * Maintains Monday's grumpy personality while being reluctantly helpful.
      */
@@ -418,6 +522,7 @@ public class Monday {
                 + "  deadline <desc> /by <time>   - Add a deadline task\n"
                 + "  event <desc> /from <start> /to <end> - Add an event\n"
                 + "  list                         - Show all tasks\n"
+                + "  view <date>                  - Show tasks for a specific date (yyyy-MM-dd)\n"
                 + "  mark <number>                - Mark task as done\n"
                 + "  unmark <number>              - Mark task as not done\n"
                 + "  delete <number>              - Delete a task (no going back)\n"
@@ -515,7 +620,8 @@ public class Monday {
                 break;
             case DEADLINE:
                 if (isCommandOnlyInput(userInput, CommandType.DEADLINE)) {
-                    printResponse("Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.");
+                    printResponse("Ugh, deadlines need a '/by' time. "
+                            + "Try 'deadline return book /by 2019-12-02 1800'.");
                 } else {
                     handleDeadline(tasks, userInput);
                 }
@@ -533,6 +639,13 @@ public class Monday {
                     printResponse("Ugh, delete which task? Try 'delete 1'.");
                 } else {
                     handleDelete(tasks, userInput);
+                }
+                break;
+            case VIEW:
+                if (isCommandOnlyInput(userInput, CommandType.VIEW)) {
+                    printResponse("Ugh, what date do you want to view? Try 'view 2019-12-25'.");
+                } else {
+                    handleView(tasks, userInput);
                 }
                 break;
             case HELP:
