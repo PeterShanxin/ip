@@ -620,7 +620,8 @@ public class Monday {
                 break;
             case DEADLINE:
                 if (isCommandOnlyInput(userInput, CommandType.DEADLINE)) {
-                    printResponse("Ugh, deadlines need a '/by' time. Try 'deadline return book /by Sunday'.");
+                    printResponse("Ugh, deadlines need a '/by' time. "
+                            + "Try 'deadline return book /by 2019-12-02 1800'.");
                 } else {
                     handleDeadline(tasks, userInput);
                 }
