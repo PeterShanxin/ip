@@ -168,3 +168,19 @@ This separation of concerns improves code quality significantly.
   - One-shot success - implementation worked correctly on first attempt
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: AI demonstrated strong understanding of Java enum capabilities. Factory methods in CommandType (fromString(), isCommand(), isValid()) eliminate magic strings throughout codebase. Type safety reduces bugs and improves maintainability. One-shot success saved significant debugging time. Time saved: ~3 hours (vs manual refactoring + testing).
+
+#### Level-7: File Persistence
+
+- **What was attempted**: Add automatic save/load functionality for tasks to enable data persistence between sessions
+- **What worked**:
+  - Created Storage class with load/save methods using java.nio.file for OS-independent paths
+  - Pipe-delimited file format (human-readable): "T | 0 | read book", "D | 1 | task | by: deadline"
+  - Auto-load on startup, auto-save after every task modification (add/delete/mark/unmark)
+  - Graceful handling: missing files created automatically, corrupted lines skipped with warnings
+  - MondayStorageException custom exception for error handling
+  - GitHub Copilot review: only 1 minor privacy suggestion (removed line content from error message)
+  - Code review: EXCELLENT rating, 0 issues found
+  - All text UI tests passing with data/ cleanup in test runner
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Fixes applied**: Removed corrupted line content from stderr output (privacy improvement per Copilot review)
+- **Observations**: Surprisingly effective - GLM-4.7 (open-source) handled this longer, complex task very well. Code review only gave 1 tiny suggestion. Branch workflow (--no-ff merge, separate branch, tagging) executed correctly. Time saved: ~3 hours (vs manual file I/O implementation + testing).
