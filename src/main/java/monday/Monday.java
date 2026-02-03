@@ -440,10 +440,12 @@ public class Monday {
         // Command loop
         Scanner scanner = new Scanner(System.in);
         List<Task> tasks;
+        boolean hasCorruption = false;
         try {
             LoadResult loadResult = Storage.loadTasks();
             tasks = loadResult.getTasks();
-            if (loadResult.hasCorruption()) {
+            hasCorruption = loadResult.hasCorruption();
+            if (hasCorruption) {
                 printResponse(formatCorruptionMessage(loadResult.getCorruptedLineCount()));
             }
         } catch (MondayStorageException e) {
@@ -540,6 +542,13 @@ public class Monday {
                 printResponse(getUnknownCommandErrorMessage(commandWord));
                 break;
             }
+        }
+
+        // Save on exit if corruption was detected during load
+        // This ensures corrupted lines are removed from monday.txt
+        // even if user didn't make any changes
+        if (hasCorruption) {
+            saveTasksIfPossible(tasks);
         }
 
         scanner.close();
