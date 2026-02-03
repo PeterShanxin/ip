@@ -184,3 +184,17 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Fixes applied**: Removed corrupted line content from stderr output (privacy improvement per Copilot review)
 - **Observations**: Surprisingly effective - GLM-4.7 (open-source) handled this longer, complex task very well. Code review only gave 1 tiny suggestion. Branch workflow (--no-ff merge, separate branch, tagging) executed correctly. Time saved: ~3 hours (vs manual file I/O implementation + testing).
+
+#### Level-7 Stretch Goal: Enhanced Corrupted Data Handling
+
+- **What was attempted**: Handle corrupted data in monday.txt with field validation, corruption summary, and automatic backup
+- **What worked**:
+  - Created LoadResult wrapper class to return both tasks and corruption metadata
+  - Field validation: rejects empty descriptions and empty date/time fields
+  - Corruption summary: displays count of corrupted lines to user on load
+  - Corrupted line backup: saves to monday.txt.corrupted for recovery
+  - Save on exit: cleans file even if user only views list (user-requested enhancement)
+  - All 8 text UI tests passing
+- **What didn't work**: First attempt needed code review fixes (hollow state, interface types), and a behavior enhancement (save on exit) was added only after user pointed out the issue
+- **Fixes applied**: Fixed hollow state in Monday.java, changed to List<Task> interface, extracted constants/helper methods
+- **Observations**: AI took longer on this task and had room for improvement. Code review found several issues (2 P1, 4 P2) that needed fixing. Save-on-exit behavior wasn't considered until user questioned it - highlights the importance of providing clear guidance to AI. Still, GLM-4.7 performed competently overall.
