@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles file storage operations for MONDAY's task list.
@@ -16,15 +18,17 @@ public class Storage {
     private static final String FILE_NAME = "monday.txt";
     private static final Path DATA_DIR = Paths.get(DATA_DIR_NAME);
     private static final Path FILE_PATH = DATA_DIR.resolve(FILE_NAME);
+    private static final Path CORRUPTED_FILE_PATH = DATA_DIR.resolve(FILE_NAME + ".corrupted");
+    private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
 
     /**
      * Loads tasks from the storage file.
-     * If the file does not exist, creates it and returns an empty list.
+     * If the file does not exist, creates it and returns an empty result.
      *
-     * @return The list of loaded tasks, or an empty list if file doesn't exist.
+     * @return The load result containing tasks and corruption statistics.
      * @throws MondayStorageException If an I/O error occurs during loading.
      */
-    public static ArrayList<Task> loadTasks() throws MondayStorageException {
+    public static LoadResult loadTasks() throws MondayStorageException {
         try {
             // Create directory and file if they don't exist
             if (!Files.exists(DATA_DIR)) {
@@ -32,11 +36,12 @@ public class Storage {
             }
             if (!Files.exists(FILE_PATH)) {
                 Files.createFile(FILE_PATH);
-                return new ArrayList<>();
+                return new LoadResult(new ArrayList<>(), 0);
             }
 
-            ArrayList<Task> tasks = new ArrayList<>();
+            List<Task> tasks = new ArrayList<>();
             ArrayList<String> lines = new ArrayList<>(Files.readAllLines(FILE_PATH));
+            int corruptedCount = 0;
 
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i).trim();
@@ -50,14 +55,21 @@ public class Storage {
                     Task task = parseTask(line);
                     if (task != null) {
                         tasks.add(task);
+                    } else {
+                        // Parse returned null - corrupted line
+                        corruptedCount++;
+                        System.err.println(CORRUPTED_LINE_MESSAGE + (i + 1));
+                        backupCorruptedLine(lines.get(i));
                     }
                 } catch (Exception e) {
-                    // Skip corrupted lines but warn the user (line number only for privacy)
-                    System.err.println("Ugh. Skipping corrupted line " + (i + 1));
+                    // Exception during parsing - corrupted line
+                    corruptedCount++;
+                    System.err.println(CORRUPTED_LINE_MESSAGE + (i + 1));
+                    backupCorruptedLine(lines.get(i));
                 }
             }
 
-            return tasks;
+            return new LoadResult(tasks, corruptedCount);
         } catch (IOException e) {
             throw new MondayStorageException("Ugh. I can't access your data file. " + e.getMessage());
         }
@@ -82,6 +94,11 @@ public class Storage {
         boolean isDone = parts[1].trim().equals("1");
         String description = parts[2].trim();
 
+        // Validate description is not empty
+        if (description.isEmpty()) {
+            return null;
+        }
+
         Task task;
 
         switch (type) {
@@ -94,6 +111,10 @@ public class Storage {
             }
             // Format: D | 0 | description | by: deadline
             String by = extractFieldValue(parts[3]);
+            // Validate by field is not empty
+            if (by.isEmpty()) {
+                return null;
+            }
             task = new Deadline(description, by);
             break;
         case "E":
@@ -103,6 +124,10 @@ public class Storage {
             // Format: E | 0 | description | from: start | to: end
             String from = extractFieldValue(parts[3]);
             String to = extractFieldValue(parts[4]);
+            // Validate from and to fields are not empty
+            if (from.isEmpty() || to.isEmpty()) {
+                return null;
+            }
             task = new Event(description, from, to);
             break;
         default:
@@ -133,12 +158,33 @@ public class Storage {
     }
 
     /**
+     * Backs up a corrupted line to the corrupted file for possible recovery.
+     *
+     * @param line The corrupted line to backup.
+     */
+    private static void backupCorruptedLine(String line) {
+        try {
+            // Ensure directory exists
+            if (!Files.exists(DATA_DIR)) {
+                Files.createDirectories(DATA_DIR);
+            }
+            // Append to corrupted file (create if doesn't exist)
+            String lineWithNewline = line + System.lineSeparator();
+            Files.write(CORRUPTED_FILE_PATH, lineWithNewline.getBytes(),
+                    StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            // Backup failure should not prevent loading - just warn
+            System.err.println("Warning: Couldn't backup corrupted line.");
+        }
+    }
+
+    /**
      * Saves all tasks to the storage file.
      *
      * @param tasks The list of tasks to save.
      * @throws MondayStorageException If an I/O error occurs during saving.
      */
-    public static void saveTasks(ArrayList<Task> tasks) throws MondayStorageException {
+    public static void saveTasks(List<Task> tasks) throws MondayStorageException {
         try {
             // Ensure directory exists
             if (!Files.exists(DATA_DIR)) {

@@ -42,6 +42,11 @@ if exist ..\data (
     echo Cleaned up data directory
 )
 
+if exist data (
+    rmdir /s /q data
+    echo Cleaned up local data directory
+)
+
 if exist ACTUAL.TXT (
     del ACTUAL.TXT
     echo Cleaned up previous test outputs
@@ -71,6 +76,15 @@ set FAILED=0
 
 for %%f in (%TEST_FILES%) do (
     echo Testing: %%f
+
+    REM Clean up data directory before each test
+    if exist data (
+        rmdir /s /q data
+    )
+    if exist ..\data (
+        rmdir /s /q ..\data
+    )
+
     java -classpath ..\bin monday.Monday < %%f > ACTUAL.TXT
 
     FC ACTUAL.TXT %%~nf-expected.txt > nul
