@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public class Storage {
     private static final Path FILE_PATH = DATA_DIR.resolve(FILE_NAME);
     private static final Path CORRUPTED_FILE_PATH = DATA_DIR.resolve(FILE_NAME + ".corrupted");
     private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
+    private static final DateTimeFormatter STORAGE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Loads tasks from the storage file.
@@ -115,7 +119,12 @@ public class Storage {
             if (by.isEmpty()) {
                 return null;
             }
-            task = new Deadline(description, by);
+            try {
+                LocalDateTime byDateTime = LocalDateTime.parse(by, STORAGE_FORMATTER);
+                task = new Deadline(description, byDateTime);
+            } catch (Exception e) {
+                return null;
+            }
             break;
         case "E":
             if (parts.length < 5) {
@@ -128,7 +137,13 @@ public class Storage {
             if (from.isEmpty() || to.isEmpty()) {
                 return null;
             }
-            task = new Event(description, from, to);
+            try {
+                LocalDateTime fromDateTime = LocalDateTime.parse(from, STORAGE_FORMATTER);
+                LocalDateTime toDateTime = LocalDateTime.parse(to, STORAGE_FORMATTER);
+                task = new Event(description, fromDateTime, toDateTime);
+            } catch (Exception e) {
+                return null;
+            }
             break;
         default:
             // Unknown type, skip this line
@@ -221,11 +236,11 @@ public class Storage {
         String desc = task.getDescription();
 
         if (task instanceof Deadline) {
-            String by = ((Deadline) task).getBy();
+            String by = ((Deadline) task).getByForStorage();
             return String.format("%s | %s | %s | by: %s", type, done, desc, by);
         } else if (task instanceof Event) {
-            String from = ((Event) task).getFrom();
-            String to = ((Event) task).getTo();
+            String from = ((Event) task).getFromForStorage();
+            String to = ((Event) task).getToForStorage();
             return String.format("%s | %s | %s | from: %s | to: %s", type, done, desc, from, to);
         } else {
             return String.format("%s | %s | %s", type, done, desc);

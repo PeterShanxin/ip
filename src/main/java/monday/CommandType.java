@@ -29,6 +29,9 @@ public enum CommandType {
     /** Delete command - removes a task */
     DELETE("delete"),
 
+    /** View command - displays tasks for a specific date */
+    VIEW("view"),
+
     /** Help command - displays usage information */
     HELP("help");
 
