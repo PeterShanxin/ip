@@ -54,6 +54,7 @@ public class Monday {
                 } else {
                     task.markAsNotDone();
                 }
+                saveTasksIfPossible(tasks);
                 response = successMessage + "\n" + "  " + task;
             } else {
                 response = getInvalidTaskErrorMessage(tasks.size());
@@ -105,6 +106,7 @@ public class Monday {
             int taskNumber = Integer.parseInt(parts[1].trim());
             if (isValidTaskNumber(tasks, taskNumber)) {
                 Task deletedTask = tasks.remove(taskNumber - 1);
+                saveTasksIfPossible(tasks);
                 response = successMessage + "\n" + "  " + deletedTask + "\n"
                         + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.";
@@ -151,6 +153,20 @@ public class Monday {
             return "Skeptical. You haven't told me to do anything yet.";
         } else {
             return "Ugh, that task doesn't exist. Pick between 1 and " + taskCount + ".";
+        }
+    }
+
+    /**
+     * Saves tasks to disk if possible.
+     * Catches any storage exceptions and prints a warning to stderr.
+     *
+     * @param tasks The list of tasks to save.
+     */
+    private static void saveTasksIfPossible(ArrayList<Task> tasks) {
+        try {
+            Storage.saveTasks(tasks);
+        } catch (MondayStorageException e) {
+            System.err.println("Warning: " + e.getMessage());
         }
     }
 
@@ -224,6 +240,7 @@ public class Monday {
         } else {
             ToDo todo = new ToDo(description);
             tasks.add(todo);
+            saveTasksIfPossible(tasks);
             response = "Fine. I've added this todo:\n" + "  " + todo + "\n"
                     + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                     + " in the list.";
@@ -263,6 +280,7 @@ public class Monday {
             } else {
                 Deadline deadline = new Deadline(description, by);
                 tasks.add(deadline);
+                saveTasksIfPossible(tasks);
                 response = "Fine. I've added this deadline:\n" + "  " + deadline + "\n"
                         + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.";
@@ -318,6 +336,7 @@ public class Monday {
             } else {
                 Event event = new Event(description, from, to);
                 tasks.add(event);
+                saveTasksIfPossible(tasks);
                 response = "Fine. I've added this event:\n" + "  " + event + "\n"
                         + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
                         + " in the list.";
@@ -406,7 +425,13 @@ public class Monday {
 
         // Command loop
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks;
+        try {
+            tasks = Storage.loadTasks();
+        } catch (MondayStorageException e) {
+            System.err.println("Warning: " + e.getMessage());
+            tasks = new ArrayList<>();
+        }
         boolean isExit = false;
 
         while (!isExit) {
