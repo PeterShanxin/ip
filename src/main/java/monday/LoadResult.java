@@ -1,6 +1,5 @@
 package monday;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +8,7 @@ import java.util.List;
  */
 public class LoadResult {
 
-    private final ArrayList<Task> tasks;
+    private final List<Task> tasks;
     private final int corruptedLineCount;
 
     /**
@@ -18,7 +17,7 @@ public class LoadResult {
      * @param tasks The list of successfully loaded tasks.
      * @param corruptedLineCount The number of corrupted lines that were skipped.
      */
-    public LoadResult(ArrayList<Task> tasks, int corruptedLineCount) {
+    public LoadResult(List<Task> tasks, int corruptedLineCount) {
         this.tasks = tasks;
         this.corruptedLineCount = corruptedLineCount;
     }

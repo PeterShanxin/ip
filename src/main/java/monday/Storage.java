@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles file storage operations for MONDAY's task list.
@@ -18,6 +19,7 @@ public class Storage {
     private static final Path DATA_DIR = Paths.get(DATA_DIR_NAME);
     private static final Path FILE_PATH = DATA_DIR.resolve(FILE_NAME);
     private static final Path CORRUPTED_FILE_PATH = DATA_DIR.resolve(FILE_NAME + ".corrupted");
+    private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
 
     /**
      * Loads tasks from the storage file.
@@ -37,7 +39,7 @@ public class Storage {
                 return new LoadResult(new ArrayList<>(), 0);
             }
 
-            ArrayList<Task> tasks = new ArrayList<>();
+            List<Task> tasks = new ArrayList<>();
             ArrayList<String> lines = new ArrayList<>(Files.readAllLines(FILE_PATH));
             int corruptedCount = 0;
 
@@ -56,13 +58,13 @@ public class Storage {
                     } else {
                         // Parse returned null - corrupted line
                         corruptedCount++;
-                        System.err.println("Ugh. Skipping corrupted line " + (i + 1));
+                        System.err.println(CORRUPTED_LINE_MESSAGE + (i + 1));
                         backupCorruptedLine(lines.get(i));
                     }
                 } catch (Exception e) {
                     // Exception during parsing - corrupted line
                     corruptedCount++;
-                    System.err.println("Ugh. Skipping corrupted line " + (i + 1));
+                    System.err.println(CORRUPTED_LINE_MESSAGE + (i + 1));
                     backupCorruptedLine(lines.get(i));
                 }
             }
@@ -182,7 +184,7 @@ public class Storage {
      * @param tasks The list of tasks to save.
      * @throws MondayStorageException If an I/O error occurs during saving.
      */
-    public static void saveTasks(ArrayList<Task> tasks) throws MondayStorageException {
+    public static void saveTasks(List<Task> tasks) throws MondayStorageException {
         try {
             // Ensure directory exists
             if (!Files.exists(DATA_DIR)) {

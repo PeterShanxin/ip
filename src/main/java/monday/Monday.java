@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -41,7 +42,7 @@ public class Monday {
      * @param markAsDone The new completion status (true for mark, false for unmark).
      * @param successMessage The message to display on success.
      */
-    private static void handleTaskStatusChange(ArrayList<Task> tasks, String userInput,
+    private static void handleTaskStatusChange(List<Task> tasks, String userInput,
             String command, boolean markAsDone, String successMessage) {
         String response;
         try {
@@ -72,7 +73,7 @@ public class Monday {
      * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the mark command.
      */
-    private static void handleMark(ArrayList<Task> tasks, String userInput) {
+    private static void handleMark(List<Task> tasks, String userInput) {
         handleTaskStatusChange(tasks, userInput, "mark", true,
                 "Fine. I've marked this task as done:");
     }
@@ -84,7 +85,7 @@ public class Monday {
      * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the unmark command.
      */
-    private static void handleUnmark(ArrayList<Task> tasks, String userInput) {
+    private static void handleUnmark(List<Task> tasks, String userInput) {
         handleTaskStatusChange(tasks, userInput, "unmark", false,
                 "Ugh, I've marked this task as not done:");
     }
@@ -98,7 +99,7 @@ public class Monday {
      * @param command The command word used ("delete").
      * @param successMessage The message to display on successful deletion.
      */
-    private static void handleTaskRemoval(ArrayList<Task> tasks, String userInput,
+    private static void handleTaskRemoval(List<Task> tasks, String userInput,
             String command, String successMessage) {
         String response;
         try {
@@ -126,7 +127,7 @@ public class Monday {
      * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the delete command.
      */
-    private static void handleDelete(ArrayList<Task> tasks, String userInput) {
+    private static void handleDelete(List<Task> tasks, String userInput) {
         handleTaskRemoval(tasks, userInput, "delete",
                 "Noted. I've removed this task:");
     }
@@ -138,7 +139,7 @@ public class Monday {
      * @param taskNumber The task number to validate (1-indexed).
      * @return true if the task number is valid, false otherwise.
      */
-    private static boolean isValidTaskNumber(ArrayList<Task> tasks, int taskNumber) {
+    private static boolean isValidTaskNumber(List<Task> tasks, int taskNumber) {
         return !tasks.isEmpty() && taskNumber >= 1 && taskNumber <= tasks.size();
     }
 
@@ -162,7 +163,7 @@ public class Monday {
      *
      * @param tasks The list of tasks to save.
      */
-    private static void saveTasksIfPossible(ArrayList<Task> tasks) {
+    private static void saveTasksIfPossible(List<Task> tasks) {
         try {
             Storage.saveTasks(tasks);
         } catch (MondayStorageException e) {
@@ -229,7 +230,7 @@ public class Monday {
      * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the todo command.
      */
-    private static void handleToDo(ArrayList<Task> tasks, String userInput) {
+    private static void handleToDo(List<Task> tasks, String userInput) {
         String description = extractDescription(userInput, CommandType.TODO.getCommand()).trim();
         String response;
 
@@ -255,7 +256,7 @@ public class Monday {
      * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the deadline command.
      */
-    private static void handleDeadline(ArrayList<Task> tasks, String userInput) {
+    private static void handleDeadline(List<Task> tasks, String userInput) {
         String response;
 
         try {
@@ -298,7 +299,7 @@ public class Monday {
      * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the event command.
      */
-    private static void handleEvent(ArrayList<Task> tasks, String userInput) {
+    private static void handleEvent(List<Task> tasks, String userInput) {
         String response;
 
         try {
@@ -390,8 +391,21 @@ public class Monday {
         case SUNDAY:
             return buildGreeting("Sunday scaries already? I live here.", currentDate);
         default:
-            return buildGreeting("What day is it even?", currentDate);
+            // Unreachable: DayOfWeek enum covers all 7 days
+            throw new AssertionError("Unknown day: " + day);
         }
+    }
+
+    /**
+     * Formats a corruption message based on the count of corrupted lines.
+     * Uses singular or plural form of "corrupted line" appropriately.
+     *
+     * @param count The number of corrupted lines.
+     * @return The formatted corruption message.
+     */
+    private static String formatCorruptionMessage(int count) {
+        String unit = count == 1 ? " corrupted line." : " corrupted lines.";
+        return "Ugh. I skipped " + count + unit + "\nCheck monday.txt.corrupted for recovery.";
     }
 
     /**
@@ -425,18 +439,12 @@ public class Monday {
 
         // Command loop
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks;
+        List<Task> tasks;
         try {
             LoadResult loadResult = Storage.loadTasks();
             tasks = loadResult.getTasks();
             if (loadResult.hasCorruption()) {
-                String corruptionUnit = loadResult.getCorruptedLineCount() == 1
-                        ? " corrupted line."
-                        : " corrupted lines.";
-                String corruptionMsg = "Ugh. I skipped " + loadResult.getCorruptedLineCount()
-                        + corruptionUnit
-                        + "\nCheck monday.txt.corrupted for recovery.";
-                printResponse(corruptionMsg);
+                printResponse(formatCorruptionMessage(loadResult.getCorruptedLineCount()));
             }
         } catch (MondayStorageException e) {
             System.err.println("Warning: " + e.getMessage());
