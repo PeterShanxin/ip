@@ -426,8 +426,16 @@ public class Monday {
         // Command loop
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> tasks;
+        LoadResult loadResult;
         try {
-            tasks = Storage.loadTasks();
+            loadResult = Storage.loadTasks();
+            tasks = loadResult.getTasks();
+            if (loadResult.hasCorruption()) {
+                String corruptionMsg = "Ugh. I skipped " + loadResult.getCorruptedLineCount()
+                        + (loadResult.getCorruptedLineCount() == 1 ? " corrupted line." : " corrupted lines.")
+                        + "\nCheck monday.txt.corrupted for recovery.";
+                printResponse(corruptionMsg);
+            }
         } catch (MondayStorageException e) {
             System.err.println("Warning: " + e.getMessage());
             tasks = new ArrayList<>();
