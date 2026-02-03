@@ -198,3 +198,25 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: First attempt needed code review fixes (hollow state, interface types), and a behavior enhancement (save on exit) was added only after user pointed out the issue
 - **Fixes applied**: Fixed hollow state in Monday.java, changed to List<Task> interface, extracted constants/helper methods
 - **Observations**: AI took longer on this task and had room for improvement. Code review found several issues (2 P1, 4 P2) that needed fixing. Save-on-exit behavior wasn't considered until user questioned it - highlights the importance of providing clear guidance to AI. Still, GLM-4.7 performed competently overall.
+
+#### Level-8: Dates and Times
+
+- **What was attempted**: Replace string-based date storage with java.time.LocalDateTime and add view command to filter tasks by date
+- **What worked**:
+  - Created DateTimeParser utility class with multi-format parsing (yyyy-MM-dd HHmm OR d/M/yyyy HHmm)
+  - Changed Deadline/Event to use LocalDateTime instead of String storage
+  - Added view <date> command filtering both deadlines and events by date
+  - Supports multiple input formats with graceful fallback
+  - Storage format: yyyy-MM-dd HH:mm (sortable), Display format: MMM dd yyyy HHmm
+  - Copilot review: 6 suggestions (1 accepted, 5 rejected - valid design/personality choices)
+  - Two code review cycles: 2 major + 6 minor → 0 major + 2 minor → 0 issues
+  - All changes merged to master, tagged as Level-8, pushed
+- **What didn't work**:
+  - Error message format bug (old 'Sunday' example in Monday.java:623)
+  - Copilot suggested multi-day event support (rejected - not in spec)
+- **Fixes applied**:
+  - Fixed error message to use new datetime format (Copilot review)
+  - Extracted DateTimeParser utility (eliminated duplicate formatters)
+  - Replaced generic Exception with DateTimeParseException in Storage
+  - Removed redundant wrapper methods after second review
+- **Observations**: AI sometimes moves too fast - need careful prompt engineering and monitoring. Performance was acceptable overall. Multiple review cycles improved quality (2+6 issues → 0). Time saved: ~2 hours (vs manual LocalDateTime refactoring + multi-format parsing).
