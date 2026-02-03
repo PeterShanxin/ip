@@ -52,8 +52,8 @@ public class Storage {
                         tasks.add(task);
                     }
                 } catch (Exception e) {
-                    // Skip corrupted lines but warn the user
-                    System.err.println("Ugh. Skipping corrupted line " + (i + 1) + ": " + line);
+                    // Skip corrupted lines but warn the user (line number only for privacy)
+                    System.err.println("Ugh. Skipping corrupted line " + (i + 1));
                 }
             }
 
