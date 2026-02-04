@@ -1,7 +1,5 @@
 package monday.command;
 
-import monday.task.TaskPrefix;
-
 /**
  * Represents a command that can be issued to Monday.
  * Commands are case-insensitive and may have aliases.
