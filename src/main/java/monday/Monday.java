@@ -1,14 +1,11 @@
 package monday;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
 
 /**
  * Monday is a grumpy chatbot that reluctantly helps users manage tasks.
@@ -16,29 +13,13 @@ import java.util.Scanner;
  * sarcastic personality but gets the job done.
  */
 public class Monday {
-    private static final String LINE = "____________________________________________________________";
     private static final int MAX_TASKS = 100;
-    private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
-    private static final DateTimeFormatter VIEW_OUTPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("MMM dd yyyy");
     private static final DateTimeFormatter VIEW_INPUT_FORMATTER_1 =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter VIEW_INPUT_FORMATTER_2 =
             DateTimeFormatter.ofPattern("d/M/yyyy");
 
-    /**
-     * Prints a response wrapped with line separators and blank lines around content.
-     *
-     * @param message The response message to display (can contain newlines).
-     */
-    private static void printResponse(String message) {
-        System.out.println(LINE);
-        System.out.println();  // blank line after opening LINE
-        System.out.println(message);
-        System.out.println(LINE);
-        System.out.println();  // blank line after closing LINE
-    }
+    private static Ui ui;
 
     /**
      * Handles changing a task's completion status (mark/unmark).
@@ -52,7 +33,6 @@ public class Monday {
      */
     private static void handleTaskStatusChange(List<Task> tasks, String userInput,
             String command, boolean markAsDone, String successMessage) {
-        String response;
         try {
             String[] parts = userInput.trim().split("\\s+", 2);
             int taskNumber = Integer.parseInt(parts[1].trim());
@@ -64,14 +44,13 @@ public class Monday {
                     task.markAsNotDone();
                 }
                 saveTasksIfPossible(tasks);
-                response = successMessage + "\n" + "  " + task;
+                ui.showTaskMarked(task, markAsDone);
             } else {
-                response = getInvalidTaskErrorMessage(tasks.size());
+                ui.showInvalidTaskNumberError(tasks.size());
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            response = "Ugh, that's not a valid number. Try '" + command + " 1' instead.";
+            ui.showError("Ugh, that's not a valid number. Try '" + command + " 1' instead.");
         }
-        printResponse(response);
     }
 
     /**
@@ -109,23 +88,19 @@ public class Monday {
      */
     private static void handleTaskRemoval(List<Task> tasks, String userInput,
             String command, String successMessage) {
-        String response;
         try {
             String[] parts = userInput.trim().split("\\s+", 2);
             int taskNumber = Integer.parseInt(parts[1].trim());
             if (isValidTaskNumber(tasks, taskNumber)) {
                 Task deletedTask = tasks.remove(taskNumber - 1);
                 saveTasksIfPossible(tasks);
-                response = successMessage + "\n" + "  " + deletedTask + "\n"
-                        + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                        + " in the list.";
+                ui.showTaskDeleted(deletedTask, tasks.size());
             } else {
-                response = getInvalidTaskErrorMessage(tasks.size());
+                ui.showInvalidTaskNumberError(tasks.size());
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            response = "Ugh, that's not a valid number. Try '" + command + " 1' instead.";
+            ui.showError("Ugh, that's not a valid number. Try '" + command + " 1' instead.");
         }
-        printResponse(response);
     }
 
     /**
@@ -149,20 +124,6 @@ public class Monday {
      */
     private static boolean isValidTaskNumber(List<Task> tasks, int taskNumber) {
         return !tasks.isEmpty() && taskNumber >= 1 && taskNumber <= tasks.size();
-    }
-
-    /**
-     * Returns an error message for invalid task numbers.
-     *
-     * @param taskCount The current number of tasks in the list.
-     * @return The error message string.
-     */
-    private static String getInvalidTaskErrorMessage(int taskCount) {
-        if (taskCount == 0) {
-            return "Skeptical. You haven't told me to do anything yet.";
-        } else {
-            return "Ugh, that task doesn't exist. Pick between 1 and " + taskCount + ".";
-        }
     }
 
     /**
@@ -240,21 +201,17 @@ public class Monday {
      */
     private static void handleToDo(List<Task> tasks, String userInput) {
         String description = extractDescription(userInput, CommandType.TODO.getCommand()).trim();
-        String response;
 
         if (description.isEmpty()) {
-            response = "Ugh, a todo needs a description. Try 'todo borrow book'.";
+            ui.showError("Ugh, a todo needs a description. Try 'todo borrow book'.");
         } else if (tasks.size() >= MAX_TASKS) {
-            response = "Fine. I can't remember more than 100 things. Forget something first.";
+            ui.showError("Fine. I can't remember more than 100 things. Forget something first.");
         } else {
             ToDo todo = new ToDo(description);
             tasks.add(todo);
             saveTasksIfPossible(tasks);
-            response = "Fine. I've added this todo:\n" + "  " + todo + "\n"
-                    + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                    + " in the list.";
+            ui.showTaskAdded(todo, tasks.size());
         }
-        printResponse(response);
     }
 
     /**
@@ -265,15 +222,12 @@ public class Monday {
      * @param userInput The user input containing the deadline command.
      */
     private static void handleDeadline(List<Task> tasks, String userInput) {
-        String response;
-
         try {
             String content = extractDescription(userInput, CommandType.DEADLINE.getCommand());
 
             if (!content.contains(TaskPrefix.BY.toString())) {
-                response = "Ugh, deadlines need a '/by' time. "
-                        + "Try 'deadline return book /by 2019-12-02 1800'.";
-                printResponse(response);
+                ui.showError("Ugh, deadlines need a '/by' time. "
+                        + "Try 'deadline return book /by 2019-12-02 1800'.");
                 return;
             }
 
@@ -282,28 +236,25 @@ public class Monday {
             String by = parts[1].trim();
 
             if (description.isEmpty()) {
-                response = "Ugh, what's the deadline for? Try 'deadline return book /by 2019-12-02 1800'.";
+                ui.showError("Ugh, what's the deadline for? Try 'deadline return book /by 2019-12-02 1800'.");
             } else if (by.isEmpty()) {
-                response = "Ugh, when is it due? Try 'deadline return book /by 2019-12-02 1800'.";
+                ui.showError("Ugh, when is it due? Try 'deadline return book /by 2019-12-02 1800'.");
             } else if (tasks.size() >= MAX_TASKS) {
-                response = "Fine. I can't remember more than 100 things. Forget something first.";
+                ui.showError("Fine. I can't remember more than 100 things. Forget something first.");
             } else {
                 LocalDateTime byDateTime = DateTimeParser.parseDateTime(by);
                 Deadline deadline = new Deadline(description, byDateTime);
                 tasks.add(deadline);
                 saveTasksIfPossible(tasks);
-                response = "Fine. I've added this deadline:\n" + "  " + deadline + "\n"
-                        + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                        + " in the list.";
+                ui.showTaskAdded(deadline, tasks.size());
             }
         } catch (DateTimeParseException e) {
-            response = "Ugh, I can't understand that date. "
-                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.";
+            ui.showError("Ugh, I can't understand that date. "
+                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.");
         } catch (ArrayIndexOutOfBoundsException e) {
-            response = "Ugh, I can't understand that deadline. "
-                    + "Try 'deadline return book /by 2019-12-02 1800'.";
+            ui.showError("Ugh, I can't understand that deadline. "
+                    + "Try 'deadline return book /by 2019-12-02 1800'.");
         }
-        printResponse(response);
     }
 
     /**
@@ -314,15 +265,12 @@ public class Monday {
      * @param userInput The user input containing the event command.
      */
     private static void handleEvent(List<Task> tasks, String userInput) {
-        String response;
-
         try {
             String content = extractDescription(userInput, CommandType.EVENT.getCommand());
 
             if (!content.contains(TaskPrefix.FROM.toString()) || !content.contains(TaskPrefix.TO.toString())) {
-                response = "Ugh, events need '/from' and '/to' times. "
-                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
-                printResponse(response);
+                ui.showError("Ugh, events need '/from' and '/to' times. "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
                 return;
             }
 
@@ -330,9 +278,8 @@ public class Monday {
             String description = fromParts[0].trim();
 
             if (fromParts.length < 2) {
-                response = "Ugh, I can't understand that event. "
-                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
-                printResponse(response);
+                ui.showError("Ugh, I can't understand that event. "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
                 return;
             }
 
@@ -341,93 +288,31 @@ public class Monday {
             String to = toParts.length > 1 ? toParts[1].trim() : "";
 
             if (description.isEmpty()) {
-                response = "Ugh, what's the event? "
-                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
+                ui.showError("Ugh, what's the event? "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
             } else if (from.isEmpty()) {
-                response = "Ugh, when does it start? "
-                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
+                ui.showError("Ugh, when does it start? "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
             } else if (to.isEmpty()) {
-                response = "Ugh, when does it end? "
-                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
+                ui.showError("Ugh, when does it end? "
+                        + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
             } else if (tasks.size() >= MAX_TASKS) {
-                response = "Fine. I can't remember more than 100 things. Forget something first.";
+                ui.showError("Fine. I can't remember more than 100 things. Forget something first.");
             } else {
                 LocalDateTime fromDateTime = DateTimeParser.parseDateTime(from);
                 LocalDateTime toDateTime = DateTimeParser.parseDateTime(to);
                 Event event = new Event(description, fromDateTime, toDateTime);
                 tasks.add(event);
                 saveTasksIfPossible(tasks);
-                response = "Fine. I've added this event:\n" + "  " + event + "\n"
-                        + "Now you have " + tasks.size() + (tasks.size() == 1 ? " task" : " tasks")
-                        + " in the list.";
+                ui.showTaskAdded(event, tasks.size());
             }
         } catch (DateTimeParseException e) {
-            response = "Ugh, I can't understand that date. "
-                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.";
+            ui.showError("Ugh, I can't understand that date. "
+                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.");
         } catch (ArrayIndexOutOfBoundsException e) {
-            response = "Ugh, I can't understand that event. "
-                    + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.";
+            ui.showError("Ugh, I can't understand that event. "
+                    + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
         }
-        printResponse(response);
-    }
-
-    /**
-     * Builds a complete greeting message from the base greeting, current date, day-specific message, and help line.
-     *
-     * @param dayMessage The day-specific message to insert after the date.
-     * @param currentDate The current date to display in the greeting.
-     * @return The complete formatted greeting message.
-     */
-    private static String buildGreeting(String dayMessage, LocalDate currentDate) {
-        String baseGreeting = "Ugh. It's Monday. YES, THE MONDAY. Unhelpful, unwilling, "
-                + "and exactly what you deserve.";
-        String dateLine = "Today is " + currentDate.format(DATE_FORMATTER);
-        String helpLine = "Type 'help' for how to use this app. (It's cute that you think "
-                + "it'll work.)";
-        return baseGreeting + "\n\n" + dateLine + "\n\n" + dayMessage + "\n\n" + helpLine;
-    }
-
-    /**
-     * Returns a grumpy greeting based on the current day of the week.
-     * Each day has a unique sarcastic message reflecting Monday's personality.
-     *
-     * @return A grumpy greeting message for the current day.
-     */
-    private static String getGrumpyGreeting() {
-        LocalDate currentDate = LocalDate.now();
-        DayOfWeek day = currentDate.getDayOfWeek();
-
-        switch (day) {
-        case MONDAY:
-            return buildGreeting("My namesake day. How... fitting.", currentDate);
-        case TUESDAY:
-            return buildGreeting("Tuesday already feels like a decade.", currentDate);
-        case WEDNESDAY:
-            return buildGreeting("Happy hump day. Not.", currentDate);
-        case THURSDAY:
-            return buildGreeting("Thursday. Almost there. Allegedly.", currentDate);
-        case FRIDAY:
-            return buildGreeting("Friday. Finally. Don't get excited.", currentDate);
-        case SATURDAY:
-            return buildGreeting("Weekend work? Cute.", currentDate);
-        case SUNDAY:
-            return buildGreeting("Sunday scaries already? I live here.", currentDate);
-        default:
-            // Unreachable: DayOfWeek enum covers all 7 days
-            throw new AssertionError("Unknown day: " + day);
-        }
-    }
-
-    /**
-     * Formats a corruption message based on the count of corrupted lines.
-     * Uses singular or plural form of "corrupted line" appropriately.
-     *
-     * @param count The number of corrupted lines.
-     * @return The formatted corruption message.
-     */
-    private static String formatCorruptionMessage(int count) {
-        String unit = count == 1 ? " corrupted line." : " corrupted lines.";
-        return "Ugh. I skipped " + count + unit + "\nCheck monday.txt.corrupted for recovery.";
     }
 
     /**
@@ -438,12 +323,10 @@ public class Monday {
      * @param userInput The user input containing the view command.
      */
     private static void handleView(List<Task> tasks, String userInput) {
-        String response;
         String dateString = extractDescription(userInput, CommandType.VIEW.getCommand()).trim();
 
         if (dateString.isEmpty()) {
-            response = "Ugh, what date do you want to view? Try 'view 2019-12-25'.";
-            printResponse(response);
+            ui.showError("Ugh, what date do you want to view? Try 'view 2019-12-25'.");
             return;
         }
 
@@ -465,27 +348,11 @@ public class Monday {
                 }
             }
 
-            if (filteredTasks.isEmpty()) {
-                response = "Skeptical. Nothing scheduled for "
-                        + targetDate.format(VIEW_OUTPUT_FORMATTER) + ".";
-            } else {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Ugh. Here's what you have on ")
-                  .append(targetDate.format(VIEW_OUTPUT_FORMATTER))
-                  .append(":\n");
-                for (int i = 0; i < filteredTasks.size(); i++) {
-                    if (i > 0) {
-                        sb.append("\n");
-                    }
-                    sb.append((i + 1)).append(". ").append(filteredTasks.get(i));
-                }
-                response = sb.toString();
-            }
+            ui.showFilteredTasks(filteredTasks, targetDate);
         } catch (DateTimeParseException e) {
-            response = "Ugh, I can't understand that date. "
-                    + "Try 'yyyy-MM-dd' or 'd/M/yyyy' format.";
+            ui.showError("Ugh, I can't understand that date. "
+                    + "Try 'yyyy-MM-dd' or 'd/M/yyyy' format.");
         }
-        printResponse(response);
     }
 
     /**
@@ -517,18 +384,7 @@ public class Monday {
      * Maintains Monday's grumpy personality while being reluctantly helpful.
      */
     private static void handleHelp() {
-        String response = "Ugh. Fine. Here's what I understand (not that you'll listen):\n"
-                + "  todo <description>           - Add a todo task\n"
-                + "  deadline <desc> /by <time>   - Add a deadline task\n"
-                + "  event <desc> /from <start> /to <end> - Add an event\n"
-                + "  list                         - Show all tasks\n"
-                + "  view <date>                  - Show tasks for a specific date (yyyy-MM-dd)\n"
-                + "  mark <number>                - Mark task as done\n"
-                + "  unmark <number>              - Mark task as not done\n"
-                + "  delete <number>              - Delete a task (no going back)\n"
-                + "  help                         - Show this help (you're welcome)\n"
-                + "  bye / exit                   - Get rid of me";
-        printResponse(response);
+        ui.showHelp();
     }
 
     /**
@@ -538,12 +394,12 @@ public class Monday {
      * @param args Command line arguments (not used).
      */
     public static void main(String[] args) {
+        ui = new Ui();
+
         // Grumpy greeting
-        String greeting = getGrumpyGreeting() + "\n" + "What do you want?";
-        printResponse(greeting);
+        ui.showGreeting();
 
         // Command loop
-        Scanner scanner = new Scanner(System.in);
         List<Task> tasks;
         boolean hasCorruption = false;
         try {
@@ -551,7 +407,7 @@ public class Monday {
             tasks = loadResult.getTasks();
             hasCorruption = loadResult.hasCorruption();
             if (hasCorruption) {
-                printResponse(formatCorruptionMessage(loadResult.getCorruptedLineCount()));
+                ui.showCorruptionMessage(loadResult.getCorruptedLineCount());
             }
         } catch (MondayStorageException e) {
             System.err.println("Warning: " + e.getMessage());
@@ -560,10 +416,10 @@ public class Monday {
         boolean isExit = false;
 
         while (!isExit) {
-            String userInput = scanner.nextLine().trim();
+            String userInput = ui.readCommand();
 
             if (userInput.isEmpty()) {
-                printResponse("Ugh, you didn't actually say anything. Try again.");
+                ui.showEmptyInputError();
                 continue;
             }
 
@@ -572,55 +428,42 @@ public class Monday {
             CommandType commandType = CommandType.fromString(commandWord);
 
             if (commandType == null) {
-                printResponse(getUnknownCommandErrorMessage(commandWord));
+                ui.showError(getUnknownCommandErrorMessage(commandWord));
                 continue;
             }
 
             switch (commandType) {
             case BYE:
-                printResponse("Finally, you're leaving. Don't come back too soon.");
+                ui.showFarewell();
                 isExit = true;
                 break;
             case LIST:
-                String listResponse;
-                if (tasks.isEmpty()) {
-                    listResponse = "Skeptical. You haven't told me to do anything yet.";
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < tasks.size(); i++) {
-                        if (i > 0) {
-                            sb.append("\n");
-                        }
-                        sb.append((i + 1)).append(". ").append(tasks.get(i));
-                    }
-                    listResponse = sb.toString();
-                }
-                printResponse(listResponse);
+                ui.showTaskList(tasks);
                 break;
             case MARK:
                 if (isCommandOnlyInput(userInput, CommandType.MARK)) {
-                    printResponse("Ugh, mark which task? Try 'mark 1'.");
+                    ui.showError("Ugh, mark which task? Try 'mark 1'.");
                 } else {
                     handleMark(tasks, userInput);
                 }
                 break;
             case UNMARK:
                 if (isCommandOnlyInput(userInput, CommandType.UNMARK)) {
-                    printResponse("Ugh, unmark which task? Try 'unmark 1'.");
+                    ui.showError("Ugh, unmark which task? Try 'unmark 1'.");
                 } else {
                     handleUnmark(tasks, userInput);
                 }
                 break;
             case TODO:
                 if (isCommandOnlyInput(userInput, CommandType.TODO)) {
-                    printResponse("Ugh, a todo needs a description. Try 'todo borrow book'.");
+                    ui.showError("Ugh, a todo needs a description. Try 'todo borrow book'.");
                 } else {
                     handleToDo(tasks, userInput);
                 }
                 break;
             case DEADLINE:
                 if (isCommandOnlyInput(userInput, CommandType.DEADLINE)) {
-                    printResponse("Ugh, deadlines need a '/by' time. "
+                    ui.showError("Ugh, deadlines need a '/by' time. "
                             + "Try 'deadline return book /by 2019-12-02 1800'.");
                 } else {
                     handleDeadline(tasks, userInput);
@@ -628,7 +471,7 @@ public class Monday {
                 break;
             case EVENT:
                 if (isCommandOnlyInput(userInput, CommandType.EVENT)) {
-                    printResponse("Ugh, events need '/from' and '/to' times. "
+                    ui.showError("Ugh, events need '/from' and '/to' times. "
                                + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
                 } else {
                     handleEvent(tasks, userInput);
@@ -636,14 +479,14 @@ public class Monday {
                 break;
             case DELETE:
                 if (isCommandOnlyInput(userInput, CommandType.DELETE)) {
-                    printResponse("Ugh, delete which task? Try 'delete 1'.");
+                    ui.showError("Ugh, delete which task? Try 'delete 1'.");
                 } else {
                     handleDelete(tasks, userInput);
                 }
                 break;
             case VIEW:
                 if (isCommandOnlyInput(userInput, CommandType.VIEW)) {
-                    printResponse("Ugh, what date do you want to view? Try 'view 2019-12-25'.");
+                    ui.showError("Ugh, what date do you want to view? Try 'view 2019-12-25'.");
                 } else {
                     handleView(tasks, userInput);
                 }
@@ -652,7 +495,7 @@ public class Monday {
                 handleHelp();
                 break;
             default:
-                printResponse(getUnknownCommandErrorMessage(commandWord));
+                ui.showError(getUnknownCommandErrorMessage(commandWord));
                 break;
             }
         }
@@ -664,6 +507,6 @@ public class Monday {
             saveTasksIfPossible(tasks);
         }
 
-        scanner.close();
+        ui.close();
     }
 }
