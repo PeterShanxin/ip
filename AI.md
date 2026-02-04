@@ -235,3 +235,18 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt with only tidy-up fixes needed after review
 - **Fixes applied**: Minor tidy-ups after code review (extracted duplicate error method, constant ordering)
 - **Observations**: AI pushed beyond optional requirements with production-quality plan. Prompt engineering matters significantly - engaged another agent to craft the prompt. Frequent commits as instructed improved workflow vs previous increments (no explicit instruction = no commits before). Time saved: ~4 hours (vs manual OOP refactoring + testing).
+
+#### A-Packages: Multiple package organization/stretch goal
+
+- **What was attempted**: Reorganize codebase from single package to logical multi-package structure per Java conventions
+- **What worked**:
+  - Agent correctly identified repo already met Requirement 1 (single package acceptable)
+  - Detailed plan for Requirement 2 (stretch goal) with 7 logical subpackages
+  - One-shot implementation: organized 24 files into task, command, parser, storage, ui, exception, util
+  - All package declarations and imports updated correctly
+  - Cleaned up empty seedu/duke/ directory
+  - Updated runtest.bat to use Gradle-built JAR
+  - Code review passed with no critical issues
+  - Successfully merged to master, tagged, and pushed
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Observations**: Agent demonstrated strong understanding of package organization principles and Java project structure. Correctly assessed that Requirement 1 was already satisfied before proceeding to stretch goal. Clean one-shot execution with minimal errors. Time saved: ~2 hours (vs manual package refactoring + import updates).
