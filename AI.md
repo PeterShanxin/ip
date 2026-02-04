@@ -250,3 +250,20 @@ This separation of concerns improves code quality significantly.
   - Successfully merged to master, tagged, and pushed
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: Agent demonstrated strong understanding of package organization principles and Java project structure. Correctly assessed that Requirement 1 was already satisfied before proceeding to stretch goal. Clean one-shot execution with minimal errors. Time saved: ~2 hours (vs manual package refactoring + import updates).
+
+### Week 3
+
+#### A-Gradle: Gradle Enhancements
+
+- **What was attempted**: Enhance Gradle build configuration with Checkstyle, Javadoc, and custom test tasks beyond core requirements
+- **What worked**:
+  - Agent correctly identified core Gradle requirements already implemented (build, test, run, shadowJar)
+  - Added Checkstyle plugin v10.12.5 with proper configuration
+  - Added Javadoc task configuration with proper settings
+  - Created custom runTextUiTest task for automated text UI testing
+  - All enhancements integrated cleanly into existing build.gradle
+- **What didn't work**:
+  - Code review found major issues during implementation (2 major issues detected)
+  - AI attempted to rush through steps after first fix without adequate verification
+- **Fixes applied**: All issues identified by code review were addressed and fixed
+- **Observations**: Agent demonstrated good situational awareness (recognized existing Gradle support). However, review found major issues at times - proving a separate review layer is important. Notably, AI tried to rush subsequent steps after first fix, highlighting that human monitoring and review checkpoints remain critical in agentic workflows. 8 commits total. Time saved: ~3 hours.
