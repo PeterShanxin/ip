@@ -220,3 +220,18 @@ This separation of concerns improves code quality significantly.
   - Replaced generic Exception with DateTimeParseException in Storage
   - Removed redundant wrapper methods after second review
 - **Observations**: AI sometimes moves too fast - need careful prompt engineering and monitoring. Performance was acceptable overall. Multiple review cycles improved quality (2+6 issues → 0). Time saved: ~2 hours (vs manual LocalDateTime refactoring + multi-format parsing).
+
+#### A-MoreOOP: Use More OOP
+
+- **What was attempted**: Major OOP refactoring to extract UI, storage, and parsing logic into separate classes following Command pattern
+- **What worked**:
+  - Monday.java reduced from 669 lines to 109 lines (84% reduction)
+  - Created 13 new classes: Ui, Parser, TaskList, Command, CommandResult, CommandException, ParseException, and 8 Command subclasses
+  - Full Command pattern implementation with polymorphic execute() methods
+  - Storage refactored to instance-based (was static)
+  - All functionality preserved, grumpy personality intact
+  - Code review found only minor issues (2 tidy suggestions) - all fixed
+  - SE-EDU coding standards followed throughout
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt with only tidy-up fixes needed after review
+- **Fixes applied**: Minor tidy-ups after code review (extracted duplicate error method, constant ordering)
+- **Observations**: AI pushed beyond optional requirements with production-quality plan. Prompt engineering matters significantly - engaged another agent to craft the prompt. Frequent commits as instructed improved workflow vs previous increments (no explicit instruction = no commits before). Time saved: ~4 hours (vs manual OOP refactoring + testing).
