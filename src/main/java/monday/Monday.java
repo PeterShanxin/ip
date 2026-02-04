@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +12,6 @@ import java.util.List;
  * sarcastic personality but gets the job done.
  */
 public class Monday {
-    private static final int MAX_TASKS = 100;
     private static final DateTimeFormatter VIEW_INPUT_FORMATTER_1 =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter VIEW_INPUT_FORMATTER_2 =
@@ -21,33 +19,32 @@ public class Monday {
 
     private static Ui ui;
     private static Storage storage;
+    private static TaskList taskList;
 
     /**
      * Handles changing a task's completion status (mark/unmark).
      * Parses the task number from input and updates the task's status.
      *
-     * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the command.
      * @param command The command word used ("mark" or "unmark").
      * @param markAsDone The new completion status (true for mark, false for unmark).
-     * @param successMessage The message to display on success.
      */
-    private static void handleTaskStatusChange(List<Task> tasks, String userInput,
-            String command, boolean markAsDone, String successMessage) {
+    private static void handleTaskStatusChange(String userInput,
+            String command, boolean markAsDone) {
         try {
             String[] parts = userInput.trim().split("\\s+", 2);
             int taskNumber = Integer.parseInt(parts[1].trim());
-            if (isValidTaskNumber(tasks, taskNumber)) {
-                Task task = tasks.get(taskNumber - 1);
+            if (taskList.isValidTaskNumber(taskNumber)) {
+                Task task = taskList.getTask(taskNumber);
                 if (markAsDone) {
                     task.markAsDone();
                 } else {
                     task.markAsNotDone();
                 }
-                saveTasksIfPossible(tasks);
+                saveTasksIfPossible();
                 ui.showTaskMarked(task, markAsDone);
             } else {
-                ui.showInvalidTaskNumberError(tasks.size());
+                ui.showInvalidTaskNumberError(taskList.getTaskCount());
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             ui.showError("Ugh, that's not a valid number. Try '" + command + " 1' instead.");
@@ -58,46 +55,39 @@ public class Monday {
      * Marks a task as done based on user input.
      * Parses the task number from input and updates the task's completion status.
      *
-     * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the mark command.
      */
-    private static void handleMark(List<Task> tasks, String userInput) {
-        handleTaskStatusChange(tasks, userInput, "mark", true,
-                "Fine. I've marked this task as done:");
+    private static void handleMark(String userInput) {
+        handleTaskStatusChange(userInput, "mark", true);
     }
 
     /**
      * Marks a task as not done based on user input.
      * Parses the task number from input and updates the task's completion status.
      *
-     * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the unmark command.
      */
-    private static void handleUnmark(List<Task> tasks, String userInput) {
-        handleTaskStatusChange(tasks, userInput, "unmark", false,
-                "Ugh, I've marked this task as not done:");
+    private static void handleUnmark(String userInput) {
+        handleTaskStatusChange(userInput, "unmark", false);
     }
 
     /**
      * Handles task removal (delete operation).
      * Parses the task number from input and removes the task from the list.
      *
-     * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the command.
      * @param command The command word used ("delete").
-     * @param successMessage The message to display on successful deletion.
      */
-    private static void handleTaskRemoval(List<Task> tasks, String userInput,
-            String command, String successMessage) {
+    private static void handleTaskRemoval(String userInput, String command) {
         try {
             String[] parts = userInput.trim().split("\\s+", 2);
             int taskNumber = Integer.parseInt(parts[1].trim());
-            if (isValidTaskNumber(tasks, taskNumber)) {
-                Task deletedTask = tasks.remove(taskNumber - 1);
-                saveTasksIfPossible(tasks);
-                ui.showTaskDeleted(deletedTask, tasks.size());
+            if (taskList.isValidTaskNumber(taskNumber)) {
+                Task deletedTask = taskList.deleteTask(taskNumber);
+                saveTasksIfPossible();
+                ui.showTaskDeleted(deletedTask, taskList.getTaskCount());
             } else {
-                ui.showInvalidTaskNumberError(tasks.size());
+                ui.showInvalidTaskNumberError(taskList.getTaskCount());
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             ui.showError("Ugh, that's not a valid number. Try '" + command + " 1' instead.");
@@ -108,34 +98,19 @@ public class Monday {
      * Deletes a task from the list based on user input.
      * Parses the task number from input and removes the task.
      *
-     * @param tasks The list of tasks to modify.
      * @param userInput The user input containing the delete command.
      */
-    private static void handleDelete(List<Task> tasks, String userInput) {
-        handleTaskRemoval(tasks, userInput, "delete",
-                "Noted. I've removed this task:");
-    }
-
-    /**
-     * Checks if a task number is valid (within range and list is not empty).
-     *
-     * @param tasks The list of tasks.
-     * @param taskNumber The task number to validate (1-indexed).
-     * @return true if the task number is valid, false otherwise.
-     */
-    private static boolean isValidTaskNumber(List<Task> tasks, int taskNumber) {
-        return !tasks.isEmpty() && taskNumber >= 1 && taskNumber <= tasks.size();
+    private static void handleDelete(String userInput) {
+        handleTaskRemoval(userInput, "delete");
     }
 
     /**
      * Saves tasks to disk if possible.
      * Catches any storage exceptions and prints a warning to stderr.
-     *
-     * @param tasks The list of tasks to save.
      */
-    private static void saveTasksIfPossible(List<Task> tasks) {
+    private static void saveTasksIfPossible() {
         try {
-            storage.saveTasks(tasks);
+            storage.saveTasks(taskList.getTasks());
         } catch (MondayStorageException e) {
             System.err.println("Warning: " + e.getMessage());
         }
@@ -197,21 +172,20 @@ public class Monday {
      * Creates a ToDo task from user input.
      * Format: todo borrow book
      *
-     * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the todo command.
      */
-    private static void handleToDo(List<Task> tasks, String userInput) {
+    private static void handleToDo(String userInput) {
         String description = extractDescription(userInput, CommandType.TODO.getCommand()).trim();
 
         if (description.isEmpty()) {
             ui.showError("Ugh, a todo needs a description. Try 'todo borrow book'.");
-        } else if (tasks.size() >= MAX_TASKS) {
+        } else if (taskList.isAtMaxCapacity()) {
             ui.showError("Fine. I can't remember more than 100 things. Forget something first.");
         } else {
             ToDo todo = new ToDo(description);
-            tasks.add(todo);
-            saveTasksIfPossible(tasks);
-            ui.showTaskAdded(todo, tasks.size());
+            taskList.addTask(todo);
+            saveTasksIfPossible();
+            ui.showTaskAdded(todo, taskList.getTaskCount());
         }
     }
 
@@ -219,10 +193,9 @@ public class Monday {
      * Creates a Deadline task from user input.
      * Format: deadline return book /by 2019-12-02 1800
      *
-     * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the deadline command.
      */
-    private static void handleDeadline(List<Task> tasks, String userInput) {
+    private static void handleDeadline(String userInput) {
         try {
             String content = extractDescription(userInput, CommandType.DEADLINE.getCommand());
 
@@ -240,14 +213,14 @@ public class Monday {
                 ui.showError("Ugh, what's the deadline for? Try 'deadline return book /by 2019-12-02 1800'.");
             } else if (by.isEmpty()) {
                 ui.showError("Ugh, when is it due? Try 'deadline return book /by 2019-12-02 1800'.");
-            } else if (tasks.size() >= MAX_TASKS) {
+            } else if (taskList.isAtMaxCapacity()) {
                 ui.showError("Fine. I can't remember more than 100 things. Forget something first.");
             } else {
                 LocalDateTime byDateTime = DateTimeParser.parseDateTime(by);
                 Deadline deadline = new Deadline(description, byDateTime);
-                tasks.add(deadline);
-                saveTasksIfPossible(tasks);
-                ui.showTaskAdded(deadline, tasks.size());
+                taskList.addTask(deadline);
+                saveTasksIfPossible();
+                ui.showTaskAdded(deadline, taskList.getTaskCount());
             }
         } catch (DateTimeParseException e) {
             ui.showError("Ugh, I can't understand that date. "
@@ -262,10 +235,9 @@ public class Monday {
      * Creates an Event task from user input.
      * Format: event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800
      *
-     * @param tasks The list of tasks to add to.
      * @param userInput The user input containing the event command.
      */
-    private static void handleEvent(List<Task> tasks, String userInput) {
+    private static void handleEvent(String userInput) {
         try {
             String content = extractDescription(userInput, CommandType.EVENT.getCommand());
 
@@ -297,15 +269,15 @@ public class Monday {
             } else if (to.isEmpty()) {
                 ui.showError("Ugh, when does it end? "
                         + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
-            } else if (tasks.size() >= MAX_TASKS) {
+            } else if (taskList.isAtMaxCapacity()) {
                 ui.showError("Fine. I can't remember more than 100 things. Forget something first.");
             } else {
                 LocalDateTime fromDateTime = DateTimeParser.parseDateTime(from);
                 LocalDateTime toDateTime = DateTimeParser.parseDateTime(to);
                 Event event = new Event(description, fromDateTime, toDateTime);
-                tasks.add(event);
-                saveTasksIfPossible(tasks);
-                ui.showTaskAdded(event, tasks.size());
+                taskList.addTask(event);
+                saveTasksIfPossible();
+                ui.showTaskAdded(event, taskList.getTaskCount());
             }
         } catch (DateTimeParseException e) {
             ui.showError("Ugh, I can't understand that date. "
@@ -320,10 +292,9 @@ public class Monday {
      * Displays tasks scheduled for a specific date.
      * Parses the date from user input and filters tasks that occur on that date.
      *
-     * @param tasks The list of tasks to filter.
      * @param userInput The user input containing the view command.
      */
-    private static void handleView(List<Task> tasks, String userInput) {
+    private static void handleView(String userInput) {
         String dateString = extractDescription(userInput, CommandType.VIEW.getCommand()).trim();
 
         if (dateString.isEmpty()) {
@@ -333,22 +304,7 @@ public class Monday {
 
         try {
             LocalDateTime targetDate = parseViewDate(dateString);
-            List<Task> filteredTasks = new ArrayList<>();
-
-            for (Task task : tasks) {
-                if (task instanceof Deadline) {
-                    Deadline deadline = (Deadline) task;
-                    if (deadline.isOnDate(targetDate)) {
-                        filteredTasks.add(task);
-                    }
-                } else if (task instanceof Event) {
-                    Event event = (Event) task;
-                    if (event.isOnDate(targetDate)) {
-                        filteredTasks.add(task);
-                    }
-                }
-            }
-
+            List<Task> filteredTasks = taskList.filterTasksByDate(targetDate);
             ui.showFilteredTasks(filteredTasks, targetDate);
         } catch (DateTimeParseException e) {
             ui.showError("Ugh, I can't understand that date. "
@@ -402,18 +358,17 @@ public class Monday {
         ui.showGreeting();
 
         // Command loop
-        List<Task> tasks;
         boolean hasCorruption = false;
         try {
             LoadResult loadResult = storage.loadTasks();
-            tasks = loadResult.getTasks();
+            taskList = new TaskList(loadResult.getTasks());
             hasCorruption = loadResult.hasCorruption();
             if (hasCorruption) {
                 ui.showCorruptionMessage(loadResult.getCorruptedLineCount());
             }
         } catch (MondayStorageException e) {
             System.err.println("Warning: " + e.getMessage());
-            tasks = new ArrayList<>();
+            taskList = new TaskList();
         }
         boolean isExit = false;
 
@@ -440,27 +395,27 @@ public class Monday {
                 isExit = true;
                 break;
             case LIST:
-                ui.showTaskList(tasks);
+                ui.showTaskList(taskList.getTasks());
                 break;
             case MARK:
                 if (isCommandOnlyInput(userInput, CommandType.MARK)) {
                     ui.showError("Ugh, mark which task? Try 'mark 1'.");
                 } else {
-                    handleMark(tasks, userInput);
+                    handleMark(userInput);
                 }
                 break;
             case UNMARK:
                 if (isCommandOnlyInput(userInput, CommandType.UNMARK)) {
                     ui.showError("Ugh, unmark which task? Try 'unmark 1'.");
                 } else {
-                    handleUnmark(tasks, userInput);
+                    handleUnmark(userInput);
                 }
                 break;
             case TODO:
                 if (isCommandOnlyInput(userInput, CommandType.TODO)) {
                     ui.showError("Ugh, a todo needs a description. Try 'todo borrow book'.");
                 } else {
-                    handleToDo(tasks, userInput);
+                    handleToDo(userInput);
                 }
                 break;
             case DEADLINE:
@@ -468,7 +423,7 @@ public class Monday {
                     ui.showError("Ugh, deadlines need a '/by' time. "
                             + "Try 'deadline return book /by 2019-12-02 1800'.");
                 } else {
-                    handleDeadline(tasks, userInput);
+                    handleDeadline(userInput);
                 }
                 break;
             case EVENT:
@@ -476,21 +431,21 @@ public class Monday {
                     ui.showError("Ugh, events need '/from' and '/to' times. "
                                + "Try 'event project meeting /from Mon 2pm /to 4pm'.");
                 } else {
-                    handleEvent(tasks, userInput);
+                    handleEvent(userInput);
                 }
                 break;
             case DELETE:
                 if (isCommandOnlyInput(userInput, CommandType.DELETE)) {
                     ui.showError("Ugh, delete which task? Try 'delete 1'.");
                 } else {
-                    handleDelete(tasks, userInput);
+                    handleDelete(userInput);
                 }
                 break;
             case VIEW:
                 if (isCommandOnlyInput(userInput, CommandType.VIEW)) {
                     ui.showError("Ugh, what date do you want to view? Try 'view 2019-12-25'.");
                 } else {
-                    handleView(tasks, userInput);
+                    handleView(userInput);
                 }
                 break;
             case HELP:
@@ -506,7 +461,7 @@ public class Monday {
         // This ensures corrupted lines are removed from monday.txt
         // even if user didn't make any changes
         if (hasCorruption) {
-            saveTasksIfPossible(tasks);
+            saveTasksIfPossible();
         }
 
         ui.close();
