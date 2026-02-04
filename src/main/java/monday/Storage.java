@@ -16,12 +16,13 @@ import java.util.List;
  */
 public class Storage {
 
+    private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
+
     private final String dataDirName;
     private final String fileName;
     private final Path dataDir;
     private final Path filePath;
     private final Path corruptedFilePath;
-    private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
 
     /**
      * Creates a new Storage instance with the specified data directory and file name.
