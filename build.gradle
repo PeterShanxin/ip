@@ -51,7 +51,7 @@ javadoc {
 }
 
 task runTextUiTest(type: Exec) {
-    workingDir 'text-ui-test'
+    workingDir = file('text-ui-test')
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
         commandLine 'cmd', '/c', 'runtest.bat'
     } else {
