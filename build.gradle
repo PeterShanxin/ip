@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
@@ -11,6 +12,12 @@ repositories {
 dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
+}
+
+checkstyle {
+    toolVersion = '10.12.5'
+    ignoreFailures = true
+    configDirectory = layout.projectDirectory.dir('config/checkstyle')
 }
 
 test {
@@ -36,6 +43,20 @@ shadowJar {
     archiveClassifier = null
 }
 
-run{
+run {
     standardInput = System.in
+}
+
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+tasks.register('runTextUiTest', Exec) {
+    if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+        executable 'cmd'
+        args '/c', 'text-ui-test\\runtest.bat'
+    } else {
+        executable 'bash'
+        args 'text-ui-test/runtest.sh'
+    }
 }
