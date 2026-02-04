@@ -16,12 +16,27 @@ import java.util.List;
  */
 public class Storage {
 
-    private static final String DATA_DIR_NAME = "data";
-    private static final String FILE_NAME = "monday.txt";
-    private static final Path DATA_DIR = Paths.get(DATA_DIR_NAME);
-    private static final Path FILE_PATH = DATA_DIR.resolve(FILE_NAME);
-    private static final Path CORRUPTED_FILE_PATH = DATA_DIR.resolve(FILE_NAME + ".corrupted");
     private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
+
+    private final String dataDirName;
+    private final String fileName;
+    private final Path dataDir;
+    private final Path filePath;
+    private final Path corruptedFilePath;
+
+    /**
+     * Creates a new Storage instance with the specified data directory and file name.
+     *
+     * @param dataDirName The name of the data directory.
+     * @param fileName The name of the storage file.
+     */
+    public Storage(String dataDirName, String fileName) {
+        this.dataDirName = dataDirName;
+        this.fileName = fileName;
+        this.dataDir = Paths.get(dataDirName);
+        this.filePath = dataDir.resolve(fileName);
+        this.corruptedFilePath = dataDir.resolve(fileName + ".corrupted");
+    }
 
     /**
      * Loads tasks from the storage file.
@@ -30,19 +45,19 @@ public class Storage {
      * @return The load result containing tasks and corruption statistics.
      * @throws MondayStorageException If an I/O error occurs during loading.
      */
-    public static LoadResult loadTasks() throws MondayStorageException {
+    public LoadResult loadTasks() throws MondayStorageException {
         try {
             // Create directory and file if they don't exist
-            if (!Files.exists(DATA_DIR)) {
-                Files.createDirectories(DATA_DIR);
+            if (!Files.exists(dataDir)) {
+                Files.createDirectories(dataDir);
             }
-            if (!Files.exists(FILE_PATH)) {
-                Files.createFile(FILE_PATH);
+            if (!Files.exists(filePath)) {
+                Files.createFile(filePath);
                 return new LoadResult(new ArrayList<>(), 0);
             }
 
             List<Task> tasks = new ArrayList<>();
-            ArrayList<String> lines = new ArrayList<>(Files.readAllLines(FILE_PATH));
+            ArrayList<String> lines = new ArrayList<>(Files.readAllLines(filePath));
             int corruptedCount = 0;
 
             for (int i = 0; i < lines.size(); i++) {
@@ -83,7 +98,7 @@ public class Storage {
      * @param line The line to parse.
      * @return The parsed Task, or null if the line is invalid.
      */
-    private static Task parseTask(String line) {
+    private Task parseTask(String line) {
         // Split by pipe delimiter with optional spaces
         String[] parts = line.split("\\s*\\|\\s*");
 
@@ -162,7 +177,7 @@ public class Storage {
      * @param fieldPart The field part to extract from.
      * @return The extracted value.
      */
-    private static String extractFieldValue(String fieldPart) {
+    private String extractFieldValue(String fieldPart) {
         String[] parts = fieldPart.split(":", 2);
         if (parts.length < 2) {
             return "";
@@ -175,15 +190,15 @@ public class Storage {
      *
      * @param line The corrupted line to backup.
      */
-    private static void backupCorruptedLine(String line) {
+    private void backupCorruptedLine(String line) {
         try {
             // Ensure directory exists
-            if (!Files.exists(DATA_DIR)) {
-                Files.createDirectories(DATA_DIR);
+            if (!Files.exists(dataDir)) {
+                Files.createDirectories(dataDir);
             }
             // Append to corrupted file (create if doesn't exist)
             String lineWithNewline = line + System.lineSeparator();
-            Files.write(CORRUPTED_FILE_PATH, lineWithNewline.getBytes(),
+            Files.write(corruptedFilePath, lineWithNewline.getBytes(),
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
             // Backup failure should not prevent loading - just warn
@@ -197,18 +212,18 @@ public class Storage {
      * @param tasks The list of tasks to save.
      * @throws MondayStorageException If an I/O error occurs during saving.
      */
-    public static void saveTasks(List<Task> tasks) throws MondayStorageException {
+    public void saveTasks(List<Task> tasks) throws MondayStorageException {
         try {
             // Ensure directory exists
-            if (!Files.exists(DATA_DIR)) {
-                Files.createDirectories(DATA_DIR);
+            if (!Files.exists(dataDir)) {
+                Files.createDirectories(dataDir);
             }
 
             // Delete existing file if present
-            Files.deleteIfExists(FILE_PATH);
+            Files.deleteIfExists(filePath);
 
             // Create new file
-            Files.createFile(FILE_PATH);
+            Files.createFile(filePath);
 
             // Encode and write all tasks
             ArrayList<String> lines = new ArrayList<>();
@@ -216,7 +231,7 @@ public class Storage {
                 lines.add(encodeTask(task));
             }
 
-            Files.write(FILE_PATH, lines);
+            Files.write(filePath, lines);
         } catch (IOException e) {
             throw new MondayStorageException("Ugh. I couldn't save your tasks. " + e.getMessage());
         }
@@ -228,7 +243,7 @@ public class Storage {
      * @param task The task to encode.
      * @return The encoded string representation.
      */
-    private static String encodeTask(Task task) {
+    private String encodeTask(Task task) {
         String type = task.getTypeIcon().replaceAll("[\\[\\]]", "");
         String done = task.isDone() ? "1" : "0";
         String desc = task.getDescription();
