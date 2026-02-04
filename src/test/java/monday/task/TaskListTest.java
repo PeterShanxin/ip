@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -120,7 +121,8 @@ public class TaskListTest {
     public void testGetTasks_returnsCopy() {
         List<Task> tasks1 = taskList.getTasks();
         List<Task> tasks2 = taskList.getTasks();
-        // Should be different objects but same content
+        // Should be different objects but same content (defensive copying)
+        assertNotSame(tasks1, tasks2);
         assertEquals(tasks1, tasks2);
     }
 
