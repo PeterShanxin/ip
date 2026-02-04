@@ -52,10 +52,11 @@ javadoc {
 }
 
 tasks.register('runTextUiTest', Exec) {
-    workingDir = file('text-ui-test')
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
-        commandLine 'cmd', '/c', 'runtest.bat'
+        executable 'cmd'
+        args '/c', 'text-ui-test\\runtest.bat'
     } else {
-        commandLine 'bash', 'runtest.sh'
+        executable 'bash'
+        args 'text-ui-test/runtest.sh'
     }
 }

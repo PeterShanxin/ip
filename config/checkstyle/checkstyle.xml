@@ -28,10 +28,11 @@
         <module name="AvoidStarImport"/>
         <module name="UnusedImports"/>
         <module name="ImportOrder">
-            <property name="groups" value="java,javax,org,com"/>
+            <property name="groups" value="/^monday\./,java,javax,org,com"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="bottom"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
         </module>
 
         <!-- Whitespace -->
