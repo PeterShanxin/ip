@@ -50,7 +50,7 @@ javadoc {
     options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
-task runTextUiTest(type: Exec) {
+tasks.register('runTextUiTest', Exec) {
     workingDir = file('text-ui-test')
     if (System.getProperty('os.name').toLowerCase().contains('windows')) {
         commandLine 'cmd', '/c', 'runtest.bat'
