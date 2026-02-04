@@ -37,7 +37,7 @@ This separation of concerns improves code quality significantly.
 
 *[Weekly updates to include: for which increment, observations on what worked/didn't work, time saved]*
 
-### Week 2
+### Week 3
 
 #### Level-0: Rename, Greet, Exit
 
@@ -169,6 +169,8 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: AI demonstrated strong understanding of Java enum capabilities. Factory methods in CommandType (fromString(), isCommand(), isValid()) eliminate magic strings throughout codebase. Type safety reduces bugs and improves maintainability. One-shot success saved significant debugging time. Time saved: ~3 hours (vs manual refactoring + testing).
 
+### Week 4
+
 #### Level-7: File Persistence
 
 - **What was attempted**: Add automatic save/load functionality for tasks to enable data persistence between sessions
@@ -251,8 +253,6 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Observations**: Agent demonstrated strong understanding of package organization principles and Java project structure. Correctly assessed that Requirement 1 was already satisfied before proceeding to stretch goal. Clean one-shot execution with minimal errors. Time saved: ~2 hours (vs manual package refactoring + import updates).
 
-### Week 3
-
 #### A-Gradle: Gradle Enhancements
 
 - **What was attempted**: Enhance Gradle build configuration with Checkstyle, Javadoc, and custom test tasks beyond core requirements
@@ -267,3 +267,17 @@ This separation of concerns improves code quality significantly.
   - AI attempted to rush through steps after first fix without adequate verification
 - **Fixes applied**: All issues identified by code review were addressed and fixed
 - **Observations**: Agent demonstrated good situational awareness (recognized existing Gradle support). However, review found major issues at times - proving a separate review layer is important. Notably, AI tried to rush subsequent steps after first fix, highlighting that human monitoring and review checkpoints remain critical in agentic workflows. 8 commits total. Time saved: ~3 hours.
+
+#### A-JUnit: JUnit Tests
+
+- **What was attempted**: Add comprehensive JUnit tests covering all major classes in the codebase
+- **What worked**:
+  - Created 10 test classes with 162 tests total covering command, parser, storage, task, and util packages
+  - All tests passing on first attempt after auto-fix for one test failure
+  - Test coverage includes: command execution, parsing logic, storage operations, task methods, date parsing
+  - Edge cases covered: empty inputs, invalid formats, null values, boundary conditions
+  - Copilot review found only 1 minor suggestion (assertNotSame for defensive copying)
+  - One-shot success with predefined test specifications in prompt
+- **What didn't work**: One test failure initially (auto-fixed by AI during implementation)
+- **Fixes applied**: Applied Copilot suggestion for assertNotSame to verify defensive copying in TaskList.getTasks()
+- **Observations**: AI completed with high accuracy in oneshot, inclusive of auto fix against test failure, review found very limited minor lints - predefined tests in prompt helps. Time saved: ~4 hours (vs manual test writing + debugging).
