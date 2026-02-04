@@ -1,4 +1,4 @@
-package monday;
+package monday.ui;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+
+import monday.task.Task;
 
 /**
  * Handles all user interface interactions for MONDAY.

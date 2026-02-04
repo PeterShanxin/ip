@@ -1,4 +1,4 @@
-package monday;
+package monday.task;
 
 /**
  * Represents a task in Monday's task list.
@@ -42,7 +42,7 @@ public class Task {
      * @return true if task is done, false otherwise.
      */
     public boolean isDone() {
-        return this.isDone;
+        return isDone;
     }
 
     /**

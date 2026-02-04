@@ -1,4 +1,6 @@
-package monday;
+package monday.command;
+
+import monday.task.TaskPrefix;
 
 /**
  * Represents a command that can be issued to Monday.

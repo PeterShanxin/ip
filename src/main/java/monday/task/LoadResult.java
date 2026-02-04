@@ -1,4 +1,4 @@
-package monday;
+package monday.task;
 
 import java.util.List;
 

@@ -1,4 +1,8 @@
-package monday;
+package monday.command;
+
+import monday.task.TaskList;
+import monday.ui.Ui;
+import monday.storage.Storage;
 
 /**
  * Command to list all tasks.

@@ -1,4 +1,4 @@
-package monday;
+package monday.exception;
 
 /**
  * Represents an exception that occurs during storage operations.

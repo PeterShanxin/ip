@@ -1,4 +1,9 @@
-package monday;
+package monday.command;
+
+import monday.task.Task;
+import monday.task.TaskList;
+import monday.ui.Ui;
+import monday.storage.Storage;
 
 /**
  * Command to delete a task from the task list.

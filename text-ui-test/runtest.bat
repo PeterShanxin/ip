@@ -54,7 +54,8 @@ if exist ACTUAL.TXT (
 
 echo.
 echo [3/5] Compiling source files...
-javac -cp ..\src\main\java -Xlint:none -d ..\bin ..\src\main\java\monday\*.java
+REM Use Gradle to build the project
+call "%~dp0..\gradlew.bat" -p "%~dp0.." shadowJar --quiet
 IF ERRORLEVEL 1 (
     echo.
     echo =============== ERROR ===============
@@ -85,7 +86,7 @@ for %%f in (%TEST_FILES%) do (
         rmdir /s /q ..\data
     )
 
-    java -classpath ..\bin monday.Monday < %%f > ACTUAL.TXT
+    type %%f | java -jar ..\build\libs\monday.jar > ACTUAL.TXT
 
     FC ACTUAL.TXT %%~nf-expected.txt > nul
     if ERRORLEVEL 1 (

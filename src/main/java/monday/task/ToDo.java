@@ -1,4 +1,4 @@
-package monday;
+package monday.task;
 
 /**
  * Represents a todo task without any date/time attached to it.
