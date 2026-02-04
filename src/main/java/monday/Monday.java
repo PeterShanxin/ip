@@ -20,6 +20,7 @@ public class Monday {
             DateTimeFormatter.ofPattern("d/M/yyyy");
 
     private static Ui ui;
+    private static Storage storage;
 
     /**
      * Handles changing a task's completion status (mark/unmark).
@@ -134,7 +135,7 @@ public class Monday {
      */
     private static void saveTasksIfPossible(List<Task> tasks) {
         try {
-            Storage.saveTasks(tasks);
+            storage.saveTasks(tasks);
         } catch (MondayStorageException e) {
             System.err.println("Warning: " + e.getMessage());
         }
@@ -395,6 +396,7 @@ public class Monday {
      */
     public static void main(String[] args) {
         ui = new Ui();
+        storage = new Storage("data", "monday.txt");
 
         // Grumpy greeting
         ui.showGreeting();
@@ -403,7 +405,7 @@ public class Monday {
         List<Task> tasks;
         boolean hasCorruption = false;
         try {
-            LoadResult loadResult = Storage.loadTasks();
+            LoadResult loadResult = storage.loadTasks();
             tasks = loadResult.getTasks();
             hasCorruption = loadResult.hasCorruption();
             if (hasCorruption) {
