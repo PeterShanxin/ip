@@ -146,4 +146,17 @@ public class TaskList {
     public boolean isValidTaskNumber(int taskNumber) {
         return !tasks.isEmpty() && taskNumber >= 1 && taskNumber <= tasks.size();
     }
+
+    /**
+     * Returns an error message for invalid task numbers.
+     *
+     * @return The error message string.
+     */
+    public String getInvalidTaskNumberMessage() {
+        if (tasks.isEmpty()) {
+            return "Skeptical. You haven't told me to do anything yet.";
+        } else {
+            return "Ugh, that task doesn't exist. Pick between 1 and " + tasks.size() + ".";
+        }
+    }
 }

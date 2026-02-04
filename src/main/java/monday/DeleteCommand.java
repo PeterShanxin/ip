@@ -30,7 +30,7 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) throws CommandException {
         if (!taskList.isValidTaskNumber(taskNumber)) {
-            throw new CommandException(getInvalidTaskErrorMessage(taskList));
+            throw new CommandException(taskList.getInvalidTaskNumberMessage());
         }
 
         Task deletedTask = taskList.deleteTask(taskNumber);
@@ -46,19 +46,5 @@ public class DeleteCommand extends Command {
     @Override
     public boolean isExit() {
         return false;
-    }
-
-    /**
-     * Returns an error message for invalid task numbers.
-     *
-     * @param taskList The task list to check for size.
-     * @return The error message.
-     */
-    private String getInvalidTaskErrorMessage(TaskList taskList) {
-        if (taskList.isEmpty()) {
-            return "Skeptical. You haven't told me to do anything yet.";
-        } else {
-            return "Ugh, that task doesn't exist. Pick between 1 and " + taskList.getTaskCount() + ".";
-        }
     }
 }
