@@ -1,4 +1,4 @@
-package monday;
+package monday.command;
 
 /**
  * Represents an exception that occurs during command execution.

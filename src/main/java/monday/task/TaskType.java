@@ -1,4 +1,4 @@
-package monday;
+package monday.task;
 
 /**
  * Represents the type of a task.

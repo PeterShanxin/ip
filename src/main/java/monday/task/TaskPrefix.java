@@ -1,4 +1,4 @@
-package monday;
+package monday.task;
 
 /**
  * Represents the parameter prefix for task date/time information.

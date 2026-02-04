@@ -1,6 +1,9 @@
-package monday;
+package monday.command;
 
 import java.time.LocalDateTime;
+
+import monday.task.Event;
+import monday.task.Task;
 
 /**
  * Command to add an Event task to the task list.

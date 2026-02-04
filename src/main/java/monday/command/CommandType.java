@@ -1,4 +1,4 @@
-package monday;
+package monday.command;
 
 /**
  * Represents a command that can be issued to Monday.

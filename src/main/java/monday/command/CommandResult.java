@@ -1,4 +1,4 @@
-package monday;
+package monday.command;
 
 /**
  * Represents the result of executing a command.
