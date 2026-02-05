@@ -32,6 +32,9 @@ public enum CommandType {
     /** View command - displays tasks for a specific date */
     VIEW("view"),
 
+    /** Find command - searches tasks by keyword */
+    FIND("find"),
+
     /** Help command - displays usage information */
     HELP("help");
 
