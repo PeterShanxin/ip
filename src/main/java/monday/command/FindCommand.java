@@ -1,6 +1,7 @@
 package monday.command;
 
 import monday.task.TaskList;
+import monday.task.Task;
 import monday.ui.Ui;
 import monday.storage.Storage;
 
@@ -34,7 +35,7 @@ public class FindCommand extends Command {
      */
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) {
-        List<monday.task.Task> matchingTasks = taskList.getFilteredTasks(keyword);
+        List<Task> matchingTasks = taskList.getFilteredTasks(keyword);
         ui.showMatchingTasks(matchingTasks, keyword);
         return new CommandResult(false, false);
     }

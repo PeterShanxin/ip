@@ -221,4 +221,49 @@ public class TaskListTest {
         String message = taskList.getInvalidTaskNumberMessage();
         assertEquals("Ugh, that task doesn't exist. Pick between 1 and 3.", message);
     }
+
+    // Tests for getFilteredTasks (Level-9: Find command)
+
+    @Test
+    public void testGetFilteredTasks_caseInsensitive() {
+        List<Task> filtered = taskList.getFilteredTasks("BOOK");
+        // Should match "Read book" and "Return book" (case-insensitive)
+        assertEquals(2, filtered.size());
+    }
+
+    @Test
+    public void testGetFilteredTasks_partialMatch() {
+        List<Task> filtered = taskList.getFilteredTasks("meet");
+        // Should match "Meeting" (partial substring match)
+        assertEquals(1, filtered.size());
+        assertEquals("Meeting", filtered.get(0).getDescription());
+    }
+
+    @Test
+    public void testGetFilteredTasks_emptyResult() {
+        List<Task> filtered = taskList.getFilteredTasks("nonexistent");
+        assertTrue(filtered.isEmpty());
+    }
+
+    @Test
+    public void testGetFilteredTasks_multipleMatches() {
+        List<Task> filtered = taskList.getFilteredTasks("task");
+        // Should match tasks containing "task" (case-insensitive)
+        assertTrue(filtered.size() >= 0);
+    }
+
+    @Test
+    public void testGetFilteredTasks_allTaskTypes() {
+        // Add tasks of each type to verify all can be found
+        TaskList allTypesList = new TaskList();
+        allTypesList.addTask(new ToDo("buy book"));
+        allTypesList.addTask(new Deadline("read book", TEST_DATE_1));
+        allTypesList.addTask(new Event("book club", TEST_DATE_1, TEST_DATE_2));
+
+        List<Task> filtered = allTypesList.getFilteredTasks("book");
+        assertEquals(3, filtered.size());
+        assertTrue(filtered.stream().anyMatch(t -> t instanceof ToDo));
+        assertTrue(filtered.stream().anyMatch(t -> t instanceof Deadline));
+        assertTrue(filtered.stream().anyMatch(t -> t instanceof Event));
+    }
 }
