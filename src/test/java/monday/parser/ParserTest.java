@@ -6,6 +6,7 @@ import monday.command.AddToDoCommand;
 import monday.command.Command;
 import monday.command.DeleteCommand;
 import monday.command.ExitCommand;
+import monday.command.FindCommand;
 import monday.command.HelpCommand;
 import monday.command.ListCommand;
 import monday.command.MarkCommand;
@@ -331,5 +332,39 @@ public class ParserTest {
     public void testParseCommand_extraWhitespace() throws ParseException {
         Command command = parser.parseCommand("  todo   read book  ");
         assertTrue(command instanceof AddToDoCommand);
+    }
+
+    // Tests for parseFindCommand (Level-9: Find command)
+
+    @Test
+    public void testParseCommand_find_validKeyword() throws ParseException {
+        Command command = parser.parseCommand("find book");
+        assertTrue(command instanceof FindCommand);
+    }
+
+    @Test
+    public void testParseCommand_find_emptyKeyword() {
+        ParseException exception = assertThrows(ParseException.class, () -> {
+            parser.parseCommand("find");
+        });
+        assertTrue(exception.getMessage().contains("find what"));
+    }
+
+    @Test
+    public void testParseCommand_find_whitespaceOnly() {
+        ParseException exception = assertThrows(ParseException.class, () -> {
+            parser.parseCommand("find   ");
+        });
+        assertTrue(exception.getMessage().contains("find what"));
+    }
+
+    @Test
+    public void testParseCommand_find_caseInsensitivity() throws ParseException {
+        Command command1 = parser.parseCommand("find BOOK");
+        Command command2 = parser.parseCommand("FIND book");
+        Command command3 = parser.parseCommand("Find book");
+        assertTrue(command1 instanceof FindCommand);
+        assertTrue(command2 instanceof FindCommand);
+        assertTrue(command3 instanceof FindCommand);
     }
 }

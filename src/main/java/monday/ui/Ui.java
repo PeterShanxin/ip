@@ -1,5 +1,7 @@
 package monday.ui;
 
+import monday.task.Task;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,14 +10,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import monday.task.Task;
-
 /**
  * Handles all user interface interactions for MONDAY.
  * Manages display output, user input, and message formatting.
  */
 public class Ui {
-    private static final String LINE = "____________________________________________________________";
+    private static final String LINE = "____________________________________________________________"
+            + "______";
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
     private static final DateTimeFormatter VIEW_OUTPUT_FORMATTER =
@@ -94,6 +95,28 @@ public class Ui {
             sb.append("Ugh. Here's what you have on ")
               .append(date.format(VIEW_OUTPUT_FORMATTER))
               .append(":\n");
+            for (int i = 0; i < tasks.size(); i++) {
+                if (i > 0) {
+                    sb.append("\n");
+                }
+                sb.append((i + 1)).append(". ").append(tasks.get(i));
+            }
+            showResponse(sb.toString());
+        }
+    }
+
+    /**
+     * Displays tasks that match a keyword search.
+     *
+     * @param tasks The list of matching tasks to display.
+     * @param keyword The keyword that was searched for.
+     */
+    public void showMatchingTasks(List<Task> tasks, String keyword) {
+        if (tasks.isEmpty()) {
+            showResponse("Fine. No tasks match \"" + keyword + "\". Shocking, I know.");
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Here are the matching tasks in your list:\n");
             for (int i = 0; i < tasks.size(); i++) {
                 if (i > 0) {
                     sb.append("\n");
@@ -203,6 +226,7 @@ public class Ui {
                 + "  deadline <desc> /by <time>   - Add a deadline task\n"
                 + "  event <desc> /from <start> /to <end> - Add an event\n"
                 + "  list                         - Show all tasks\n"
+                + "  find <keyword>               - Find tasks by keyword\n"
                 + "  view <date>                  - Show tasks for a specific date (yyyy-MM-dd)\n"
                 + "  mark <number>                - Mark task as done\n"
                 + "  unmark <number>              - Mark task as not done\n"

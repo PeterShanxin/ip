@@ -1,25 +1,26 @@
 package monday.parser;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-
-import monday.command.AddToDoCommand;
 import monday.command.AddDeadlineCommand;
 import monday.command.AddEventCommand;
 import monday.command.CheerCommand;
+import monday.command.AddToDoCommand;
+import monday.command.Command;
+import monday.command.CommandType;
 import monday.command.DeleteCommand;
 import monday.command.ExitCommand;
+import monday.command.FindCommand;
 import monday.command.HelpCommand;
 import monday.command.ListCommand;
 import monday.command.MarkCommand;
 import monday.command.ViewCommand;
-import monday.command.Command;
-import monday.command.CommandType;
+import monday.exception.ParseException;
 import monday.task.TaskPrefix;
 import monday.util.DateTimeParser;
-import monday.exception.ParseException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Parses user input into Command objects.
@@ -72,8 +73,6 @@ public class Parser {
             return parseEventCommand(userInput);
         case VIEW:
             return parseViewCommand(userInput);
-        case CHEER:
-            return new CheerCommand();
         default:
             throw new ParseException(getUnknownCommandErrorMessage(commandWord));
         }
@@ -251,6 +250,23 @@ public class Parser {
             throw new ParseException("Ugh, I can't understand that date. "
                     + "Try 'yyyy-MM-dd' or 'd/M/yyyy' format.");
         }
+    }
+
+    /**
+     * Parses a find command.
+     *
+     * @param userInput The user input.
+     * @return A FindCommand.
+     * @throws ParseException If parsing fails.
+     */
+    private Command parseFindCommand(String userInput) throws ParseException {
+        String keyword = extractDescription(userInput, CommandType.FIND.getCommand()).trim();
+
+        if (keyword.isEmpty()) {
+            throw new ParseException("Ugh, find what? Try 'find book'.");
+        }
+
+        return new FindCommand(keyword);
     }
 
     /**

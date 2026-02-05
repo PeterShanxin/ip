@@ -111,6 +111,24 @@ public class TaskList {
     }
 
     /**
+     * Filters tasks by a keyword in their description.
+     * Performs case-insensitive substring matching on task descriptions.
+     *
+     * @param keyword The keyword to search for.
+     * @return A list of tasks whose descriptions contain the keyword.
+     */
+    public List<Task> getFilteredTasks(String keyword) {
+        List<Task> filteredTasks = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
+                filteredTasks.add(task);
+            }
+        }
+        return filteredTasks;
+    }
+
+    /**
      * Gets the number of tasks in the list.
      *
      * @return The task count.

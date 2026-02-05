@@ -1,9 +1,9 @@
 package monday.command;
 
+import monday.storage.Storage;
 import monday.task.Task;
 import monday.task.TaskList;
 import monday.ui.Ui;
-import monday.storage.Storage;
 
 /**
  * Command to mark or unmark a task as done.
