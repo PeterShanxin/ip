@@ -2,6 +2,7 @@ package monday.parser;
 
 import monday.command.AddDeadlineCommand;
 import monday.command.AddEventCommand;
+import monday.command.CheerCommand;
 import monday.command.AddToDoCommand;
 import monday.command.Command;
 import monday.command.CommandType;
@@ -72,8 +73,6 @@ public class Parser {
             return parseEventCommand(userInput);
         case VIEW:
             return parseViewCommand(userInput);
-        case FIND:
-            return parseFindCommand(userInput);
         default:
             throw new ParseException(getUnknownCommandErrorMessage(commandWord));
         }

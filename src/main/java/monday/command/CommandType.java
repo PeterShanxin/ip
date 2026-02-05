@@ -36,7 +36,10 @@ public enum CommandType {
     FIND("find"),
 
     /** Help command - displays usage information */
-    HELP("help");
+    HELP("help"),
+
+    /** Cheer command - displays a grumpy motivational quote */
+    CHEER("cheer");
 
     private final String primaryCommand;
     private final String[] aliases;

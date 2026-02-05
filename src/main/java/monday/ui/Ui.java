@@ -231,9 +231,24 @@ public class Ui {
                 + "  mark <number>                - Mark task as done\n"
                 + "  unmark <number>              - Mark task as not done\n"
                 + "  delete <number>              - Delete a task (no going back)\n"
+                + "  cheer                        - Get \"motivated\" (you'll need it)\n"
                 + "  help                         - Show this help (you're welcome)\n"
                 + "  bye / exit                   - Get rid of me";
         showResponse(response);
+    }
+
+    /**
+     * Displays a grumpy motivational quote.
+     * The quote is expected to be wrapped in ANSI color codes.
+     *
+     * @param quote The motivational quote to display (may contain ANSI color codes).
+     */
+    public void showCheerMessage(String quote) {
+        System.out.println(LINE);
+        System.out.println();  // blank line after opening LINE
+        System.out.println(" " + quote);
+        System.out.println(LINE);
+        System.out.println();  // blank line after closing LINE
     }
 
     /**
