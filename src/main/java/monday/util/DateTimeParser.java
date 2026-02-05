@@ -43,7 +43,8 @@ public class DateTimeParser {
             } catch (DateTimeParseException e2) {
                 throw new DateTimeParseException(
                         "Ugh, I can't understand that date. Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm'.",
-                        dateTimeString, 0);
+                        dateTimeString,
+                        0);
             }
         }
     }
