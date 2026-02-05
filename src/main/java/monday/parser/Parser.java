@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import monday.command.AddToDoCommand;
 import monday.command.AddDeadlineCommand;
 import monday.command.AddEventCommand;
+import monday.command.CheerCommand;
 import monday.command.DeleteCommand;
 import monday.command.ExitCommand;
 import monday.command.HelpCommand;
@@ -71,6 +72,8 @@ public class Parser {
             return parseEventCommand(userInput);
         case VIEW:
             return parseViewCommand(userInput);
+        case CHEER:
+            return new CheerCommand();
         default:
             throw new ParseException(getUnknownCommandErrorMessage(commandWord));
         }
