@@ -40,3 +40,9 @@ iP_weeklyDocs/
 
 # Saved AI interactions
 .claude/saved-interactions/
+
+# Git worktrees
+.worktrees/
+
+# Design docs (for AI use, not for grading)
+docs/plans/
