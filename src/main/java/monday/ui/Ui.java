@@ -1,5 +1,7 @@
 package monday.ui;
 
+import monday.task.Task;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -8,14 +10,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import monday.task.Task;
-
 /**
  * Handles all user interface interactions for MONDAY.
  * Manages display output, user input, and message formatting.
  */
 public class Ui {
-    private static final String LINE = "____________________________________________________________";
+    private static final String LINE = "____________________________________________________________"
+            + "______";
     private static final DateTimeFormatter DATE_FORMATTER =
             DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
     private static final DateTimeFormatter VIEW_OUTPUT_FORMATTER =

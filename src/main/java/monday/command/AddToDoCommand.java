@@ -1,7 +1,7 @@
 package monday.command;
 
-import monday.task.ToDo;
 import monday.task.Task;
+import monday.task.ToDo;
 
 /**
  * Command to add a ToDo task to the task list.

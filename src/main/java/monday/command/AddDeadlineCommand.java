@@ -1,9 +1,9 @@
 package monday.command;
 
-import java.time.LocalDateTime;
-
 import monday.task.Deadline;
 import monday.task.Task;
+
+import java.time.LocalDateTime;
 
 /**
  * Command to add a Deadline task to the task list.
