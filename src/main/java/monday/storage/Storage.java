@@ -31,6 +31,7 @@ public class Storage {
     private final Path dataDir;
     private final Path filePath;
     private final Path corruptedFilePath;
+    private LoadResult lastLoadResult;
 
     /**
      * Creates a new Storage instance with the specified data directory and file name.
@@ -94,10 +95,21 @@ public class Storage {
                 }
             }
 
-            return new LoadResult(tasks, corruptedCount);
+            LoadResult result = new LoadResult(tasks, corruptedCount);
+            lastLoadResult = result;
+            return result;
         } catch (IOException e) {
             throw new MondayStorageException("Ugh. I can't access your data file. " + e.getMessage());
         }
+    }
+
+    /**
+     * Gets the result of the last load operation.
+     *
+     * @return The last LoadResult.
+     */
+    public LoadResult getLoadResult() {
+        return lastLoadResult;
     }
 
     /**
