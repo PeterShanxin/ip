@@ -64,6 +64,8 @@ public class Parser {
             return parseUnmarkCommand(userInput);
         case DELETE:
             return parseDeleteCommand(userInput);
+        case FIND:
+            return parseFindCommand(userInput);
         case TODO:
             return parseToDoCommand(userInput);
         case DEADLINE:
