@@ -2,8 +2,8 @@ package monday.parser;
 
 import monday.command.AddDeadlineCommand;
 import monday.command.AddEventCommand;
-import monday.command.CheerCommand;
 import monday.command.AddToDoCommand;
+import monday.command.CheerCommand;
 import monday.command.Command;
 import monday.command.CommandType;
 import monday.command.DeleteCommand;
@@ -65,6 +65,10 @@ public class Parser {
             return parseUnmarkCommand(userInput);
         case DELETE:
             return parseDeleteCommand(userInput);
+        case FIND:
+            return parseFindCommand(userInput);
+        case CHEER:
+            return new CheerCommand();
         case TODO:
             return parseToDoCommand(userInput);
         case DEADLINE:
@@ -267,6 +271,22 @@ public class Parser {
         }
 
         return new FindCommand(keyword);
+    }
+
+    /**
+     * Parses a cheer command.
+     * Cheer command takes no arguments.
+     *
+     * @param userInput The user input.
+     * @return A CheerCommand.
+     * @throws ParseException If parsing fails.
+     */
+    private Command parseCheerCommand(String userInput) throws ParseException {
+        if (isCommandOnlyInput(userInput, CommandType.CHEER)) {
+            throw new ParseException("Ugh, cheer command takes no arguments. Just type 'cheer'.");
+        }
+
+        return new CheerCommand();
     }
 
     /**
