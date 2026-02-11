@@ -6,7 +6,7 @@ package monday.command;
  */
 public enum CommandType {
     /** Exit command - terminates the application */
-    BYE("bye", new String[]{"exit"}),
+    BYE("bye", "exit"),
 
     /** List command - displays all tasks */
     LIST("list"),
@@ -60,7 +60,7 @@ public enum CommandType {
      * @param primaryCommand The primary command word.
      * @param aliases Alternative command words that are accepted.
      */
-    CommandType(String primaryCommand, String[] aliases) {
+    CommandType(String primaryCommand, String... aliases) {
         this.primaryCommand = primaryCommand;
         this.aliases = aliases;
     }
