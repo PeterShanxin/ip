@@ -350,3 +350,14 @@ This separation of concerns improves code quality significantly.
   - Switched to Codex (frontier model) which suggested x64 JDK workaround
   - Set JAVA_HOME_X64 environment variable for GUI emulation
 - **Observations**: Sometimes a better model provides a better response. GLM just kept retrying without proposing alternative plan, while Codex suggested x64 JDK download and setup for emulation. Codex runs very fast in general. Multi-model approach valuable when stuck - knowing when to escalate matters. Time saved: ~2 hours (with Codex assistance vs manual JavaFX setup).
+
+#### A-Varargs: Use Java Varargs Feature
+
+- **What was attempted**: Refactor CommandType enum to use varargs for aliases parameter
+- **What worked**:
+  - Changed constructor parameter from `String[] aliases` to `String... aliases` (varargs)
+  - Updated enum constant `BYE("bye", new String[]{"exit"})` to `BYE("bye", "exit")`
+  - Cleaner, more idiomatic Java code
+- **What didn't work**: Nothing - implementation was spec-compliant on first attempt
+- **Fixes applied**: None needed
+- **Observations**: This increment is a very simple task; GLM4.7 handled it very fast. Varargs syntax improvement makes code more readable and follows modern Java conventions. Time saved: ~0.25 hours (15 minutes vs manual refactoring).
