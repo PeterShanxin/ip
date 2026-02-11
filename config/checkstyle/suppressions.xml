@@ -15,5 +15,5 @@
         SE-EDU recommends: featureUnderTest_testScenario_expectedBehavior()
         which uses underscores, unlike standard Java camelCase.
     -->
-    <suppress checks="MethodNameCheck" files=".*Test\.java"/>
+    <suppress checks="MethodName" files=".*Test\.java"/>
 </suppressions>
