@@ -23,6 +23,7 @@ public class Ui {
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
     private final Scanner scanner;
+    private String lastResponse;
 
     /**
      * Creates a new Ui instance and initializes the input scanner.
@@ -33,15 +34,35 @@ public class Ui {
 
     /**
      * Displays a response wrapped with line separators and blank lines.
+     * Also stores the response for GUI retrieval.
      *
      * @param message The response message to display (can contain newlines).
      */
     public void showResponse(String message) {
+        lastResponse = message;
         System.out.println(LINE);
         System.out.println();  // blank line after opening LINE
         System.out.println(message);
         System.out.println(LINE);
         System.out.println();  // blank line after closing LINE
+    }
+
+    /**
+     * Gets the last response message for GUI display.
+     *
+     * @return The last response message.
+     */
+    public String getLastResponse() {
+        return lastResponse;
+    }
+
+    /**
+     * Gets the greeting message for GUI (without printing).
+     *
+     * @return The formatted greeting message.
+     */
+    public String getGreetingForGui() {
+        return getGrumpyGreeting() + "\n" + "What do you want?";
     }
 
     /**
