@@ -316,3 +316,20 @@ This separation of concerns improves code quality significantly.
   - Fixed Javadoc missing for new find/cheer commands
   - Corrected file path for cheer.txt resource loading
 - **Observations**: AI helps and guides, AI understands the tasks, external reviews like Codex and GitHub Copilot helps; though learnt resolving conflicts but taken the lesson that don't do parallel branches if not necessary - very troublesome. The experience showed that while AI can handle parallel workflows and conflict resolution, the overhead of merging outweighs the benefits for small increments. Time spent on conflict resolution negated any theoretical parallelism gains. External AI review tools (Codex, Copilot) were valuable for catching issues that human review might miss.
+
+#### A-CheckStyle: Checkstyle Integration
+
+- **What was attempted**: Integrate Checkstyle into Gradle build with SE-EDU coding standards configuration
+- **What worked**:
+  - Checkstyle plugin configured with custom rules (config/checkstyle/checkstyle.xml)
+  - Project import groups properly defined (monday.* and org.junit grouping)
+  - Suppressions for JUnit test naming conventions (MethodName check)
+  - Build task integrated with checkstyle validation
+  - Fixed pre-existing Level-9 parser bugs (find and cheer command routing)
+  - Fixed import order violations across codebase (12 files)
+- **What didn't work**:
+  - Model selection issues after claude code update (possibly GLM 4.5 instead of 4.7)
+  - Session less efficient than before, possibly due to long context
+  - Required significant debugging/undo/redo interactions
+- **Fixes applied**: Model toggling improved performance after correction to GLM 4.7
+- **Observations**: AI session inefficiency this time - model confusion and debugging overhead reduced time savings. Manual coding would take similar time considering bypass/debugging effort. Highlights importance of correct model selection and context management. Time saved: ~0 hours (minimal gains due to debugging overhead).
