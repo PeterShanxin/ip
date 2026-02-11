@@ -12,11 +12,9 @@ import monday.command.ListCommand;
 import monday.command.MarkCommand;
 import monday.command.ViewCommand;
 import monday.exception.ParseException;
+
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

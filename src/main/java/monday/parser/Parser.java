@@ -2,7 +2,6 @@ package monday.parser;
 
 import monday.command.AddDeadlineCommand;
 import monday.command.AddEventCommand;
-import monday.command.CheerCommand;
 import monday.command.AddToDoCommand;
 import monday.command.Command;
 import monday.command.CommandType;

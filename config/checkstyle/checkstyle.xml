@@ -6,6 +6,11 @@
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
 
+    <!-- Suppressions for test method naming (SE-EDU convention) -->
+    <module name="SuppressionFilter">
+        <property name="file" value="${config_loc}/suppressions.xml"/>
+    </module>
+
     <module name="TreeWalker">
         <!-- Naming Conventions -->
         <module name="MemberName">
