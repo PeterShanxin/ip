@@ -9,19 +9,25 @@ import monday.parser.Parser;
 import monday.storage.Storage;
 import monday.task.LoadResult;
 import monday.task.TaskList;
+import monday.ui.MainWindow;
 import monday.ui.Ui;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 /**
  * Monday is a grumpy chatbot that reluctantly helps users manage tasks.
- * Named after everyone's least favorite day of the week, Monday has a
- * sarcastic personality but gets the job done.
+ * Now with a GUI because apparently CLI was too "inconvenient."
  */
-public class Monday {
+public class Monday extends Application {
 
     private Ui ui;
     private Storage storage;
     private TaskList taskList;
     private Parser parser;
+    private MainWindow mainWindow;
+
+    private boolean hasCorruption;
 
     /**
      * Creates a new Monday instance with the required components.
@@ -30,6 +36,63 @@ public class Monday {
         ui = new Ui();
         storage = new Storage("data", "monday.txt");
         parser = new Parser();
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        // Load tasks first
+        hasCorruption = loadTasks();
+
+        // Setup GUI
+        mainWindow = new MainWindow();
+        mainWindow.setMonday(this);
+        mainWindow.start(primaryStage);
+
+        // Show greeting
+        String greeting = ui.getGreetingForGui();
+        mainWindow.showMessage(greeting);
+
+        if (hasCorruption) {
+            LoadResult loadResult = storage.getLoadResult();
+            mainWindow.showMessage("Ugh. I skipped " + loadResult.getCorruptedLineCount()
+                + " corrupted lines.\nCheck monday.txt.corrupted for recovery.");
+        }
+    }
+
+    /**
+     * Gets a response for the given user input.
+     * Called by GUI when user submits a command.
+     *
+     * @param userInput The user's input string.
+     * @return The response to display.
+     */
+    public String getResponse(String userInput) {
+        try {
+            if (userInput.isEmpty()) {
+                return "Ugh, you didn't actually say anything. Try again.";
+            }
+
+            Command command = parser.parseCommand(userInput);
+            CommandResult result = command.execute(taskList, ui, storage);
+
+            if (result.shouldSave()) {
+                saveTasksIfPossible();
+            }
+
+            if (result.shouldExit()) {
+                // Save on exit if corruption was detected
+                if (hasCorruption) {
+                    saveTasksIfPossible();
+                }
+                // Schedule exit after current event processing
+                javafx.application.Platform.exit();
+            }
+
+            return ui.getLastResponse();
+
+        } catch (ParseException | CommandException e) {
+            return "Warning: " + e.getMessage();
+        }
     }
 
     /**
@@ -66,55 +129,11 @@ public class Monday {
     }
 
     /**
-     * Runs the main application loop.
-     * Greets the user, processes commands, and exits when requested.
-     */
-    public void run() {
-        // Grumpy greeting
-        ui.showGreeting();
-
-        // Load tasks from storage and track corruption
-        boolean hasCorruption = loadTasks();
-
-        boolean isExit = false;
-        while (!isExit) {
-            try {
-                String userInput = ui.readCommand();
-
-                if (userInput.isEmpty()) {
-                    ui.showEmptyInputError();
-                    continue;
-                }
-
-                Command command = parser.parseCommand(userInput);
-                CommandResult result = command.execute(taskList, ui, storage);
-
-                if (result.shouldSave()) {
-                    saveTasksIfPossible();
-                }
-
-                isExit = result.shouldExit();
-            } catch (ParseException | CommandException e) {
-                ui.showError(e.getMessage());
-            }
-        }
-
-        // Save on exit if corruption was detected during load
-        // This ensures corrupted lines are removed from monday.txt
-        // even if user didn't make any changes
-        if (hasCorruption) {
-            saveTasksIfPossible();
-        }
-
-        ui.close();
-    }
-
-    /**
      * Entry point for the Monday chatbot application.
      *
      * @param args Command line arguments (not used).
      */
     public static void main(String[] args) {
-        new Monday().run();
+        launch(args);
     }
 }

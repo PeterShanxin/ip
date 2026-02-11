@@ -5,11 +5,29 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 repositories {
     mavenCentral()
 }
 
+ext {
+    javafxVersion = '21.0.1'
+    javafxPlatform = org.gradle.internal.os.OperatingSystem.current().isWindows() ? 'win'
+            : (org.gradle.internal.os.OperatingSystem.current().isLinux() ? 'linux' : 'mac')
+}
+
 dependencies {
+    // Use platform-classified JavaFX artifacts: unclassified jars are metadata-only.
+    implementation "org.openjfx:javafx-base:$javafxVersion:$javafxPlatform"
+    implementation "org.openjfx:javafx-graphics:$javafxVersion:$javafxPlatform"
+    implementation "org.openjfx:javafx-controls:$javafxVersion:$javafxPlatform"
+    implementation "org.openjfx:javafx-fxml:$javafxVersion:$javafxPlatform"
+
+    // Test dependencies
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
 }
@@ -35,16 +53,34 @@ test {
 }
 
 application {
-    mainClass.set("monday.Monday")
+    mainClass.set('Launcher')
+    applicationDefaultJvmArgs = [
+        '--module-path', sourceSets.main.runtimeClasspath.asPath,
+        '--add-modules', 'javafx.base,javafx.graphics,javafx.controls,javafx.fxml'
+    ]
 }
 
 shadowJar {
     archiveBaseName = "monday"
     archiveClassifier = null
+
+    manifest {
+        attributes 'Main-Class': 'Launcher'
+    }
 }
 
 run {
     standardInput = System.in
+    enableAssertions = true
+    jvmArgs = [
+        '--module-path', sourceSets.main.runtimeClasspath.asPath,
+        '--add-modules', 'javafx.base,javafx.graphics,javafx.controls,javafx.fxml'
+    ]
+}
+
+// Force JavaFX modules to be available during compilation
+tasks.named('compileJava').configure {
+    options.encoding = 'UTF-8'
 }
 
 javadoc {
