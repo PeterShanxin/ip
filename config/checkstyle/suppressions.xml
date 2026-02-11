@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<!--
+    Checkstyle suppressions configuration for MONDAY project.
+
+    This file suppresses specific checks in specific files to align with
+    SE-EDU coding standards while maintaining project conventions.
+-->
+<suppressions>
+    <!--
+        Suppress test method naming checks for test files.
+        SE-EDU recommends: featureUnderTest_testScenario_expectedBehavior()
+        which uses underscores, unlike standard Java camelCase.
+    -->
+    <suppress checks="MethodNameCheck" files=".*Test\.java"/>
+</suppressions>
