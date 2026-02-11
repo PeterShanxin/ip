@@ -333,3 +333,20 @@ This separation of concerns improves code quality significantly.
   - Required significant debugging/undo/redo interactions
 - **Fixes applied**: Model toggling improved performance after correction to GLM 4.7
 - **Observations**: AI session inefficiency this time - model confusion and debugging overhead reduced time savings. Manual coding would take similar time considering bypass/debugging effort. Highlights importance of correct model selection and context management. Time saved: ~0 hours (minimal gains due to debugging overhead).
+
+#### Level-10: JavaFX GUI
+
+- **What was attempted**: Add JavaFX graphical user interface to replace text UI with a modern windowed application
+- **What worked**:
+  - Created Launcher.java main class for JavaFX application startup
+  - Added JavaFX dependencies to build.gradle
+  - Implemented MainWindow.fxml with dialog layout and UI styling
+  - Created DialogBox.java for chat message display
+  - Integrated with existing Monday logic via Ui class modifications
+- **What didn't work**:
+  - GLM 4.7 could not handle initial request due to ARM64 JDK incompatibility with Gradle/JavaFX
+  - GLM kept retrying without proposing alternative solutions
+- **Fixes applied**:
+  - Switched to Codex (frontier model) which suggested x64 JDK workaround
+  - Set JAVA_HOME_X64 environment variable for GUI emulation
+- **Observations**: Sometimes a better model provides a better response. GLM just kept retrying without proposing alternative plan, while Codex suggested x64 JDK download and setup for emulation. Codex runs very fast in general. Multi-model approach valuable when stuck - knowing when to escalate matters. Time saved: ~2 hours (with Codex assistance vs manual JavaFX setup).
