@@ -361,3 +361,20 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Nothing - implementation was spec-compliant on first attempt
 - **Fixes applied**: None needed
 - **Observations**: This increment is a very simple task; GLM4.7 handled it very fast. Varargs syntax improvement makes code more readable and follows modern Java conventions. Time saved: ~0.25 hours (15 minutes vs manual refactoring).
+
+#### A-UnitTesting: Unit Tests with Mockito
+
+- **What was attempted**: Add meaningful unit tests using Mockito for command classes
+- **What worked**:
+  - Created CommandResultTest.java with 5 tests for boolean flag combinations (save/exit behavior)
+  - Created MarkCommandTest.java with 5 tests using Mockito for mark/unmark operations
+  - Added Mockito 5.7.0 dependencies to build.gradle
+  - All 181 tests passing (171 existing + 10 new)
+  - Used @ExtendWith(MockitoExtension.class) for clean mock injection
+  - Both positive (happy path) and negative (error handling) test cases included
+- **What didn't work**: Code review found issues requiring fixes (exception message assertions, negative value)
+- **Fixes applied**:
+  - Fixed exception message assertions to use substring matching
+  - Corrected negative value from 0 to -1 in MarkCommandTest
+  - Fixed import ordering per SE-EDU standards
+- **Observations**: AI demonstrated good understanding of Mockito testing patterns. Code review workflow essential - caught test assertion issues and import violations. Feature branch workflow (branch-A-UnitTesting) worked smoothly. Time saved: ~1.5 hours (vs manual mock setup + test writing).
