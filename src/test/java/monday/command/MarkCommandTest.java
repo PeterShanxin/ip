@@ -10,8 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,8 +80,12 @@ public class MarkCommandTest {
         when(taskList.getInvalidTaskNumberMessage())
                 .thenReturn("Skeptical. You haven't told me to do anything yet.");
 
-        assertThrows(CommandException.class, () -> command.execute(taskList, ui, storage),
+        CommandException thrown = assertThrows(CommandException.class,
+                () -> command.execute(taskList, ui, storage),
                 "Should throw CommandException for invalid task number on empty list");
+
+        assertEquals("Skeptical. You haven't told me to do anything yet.",
+                thrown.getMessage(), "Exception message should match TaskList error");
     }
 
     @Test
@@ -93,21 +98,29 @@ public class MarkCommandTest {
         when(taskList.getInvalidTaskNumberMessage())
                 .thenReturn("Ugh, that task doesn't exist. Pick between 1 and 3.");
 
-        assertThrows(CommandException.class, () -> command.execute(taskList, ui, storage),
+        CommandException thrown = assertThrows(CommandException.class,
+                () -> command.execute(taskList, ui, storage),
                 "Should throw CommandException for out of range task number");
+
+        assertEquals("Ugh, that task doesn't exist. Pick between 1 and 3.",
+                thrown.getMessage(), "Exception message should match TaskList error");
     }
 
     @Test
     public void execute_negativeTaskNumber() throws CommandException {
-        // Negative: Task number = 0 throws CommandException
-        int taskNumber = 0;
+        // Negative: Negative task number throws CommandException
+        int taskNumber = -1;
         MarkCommand command = new MarkCommand(taskNumber, false);
 
         when(taskList.isValidTaskNumber(taskNumber)).thenReturn(false);
         when(taskList.getInvalidTaskNumberMessage())
                 .thenReturn("Ugh, that task doesn't exist. Pick between 1 and 3.");
 
-        assertThrows(CommandException.class, () -> command.execute(taskList, ui, storage),
+        CommandException thrown = assertThrows(CommandException.class,
+                () -> command.execute(taskList, ui, storage),
                 "Should throw CommandException for negative task number");
+
+        assertEquals("Ugh, that task doesn't exist. Pick between 1 and 3.",
+                thrown.getMessage(), "Exception message should match TaskList error");
     }
 }
