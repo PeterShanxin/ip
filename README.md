@@ -49,3 +49,30 @@ The project comes with a set of test scripts for different operating systems:
   ```
 
 These scripts will compile the source files, run the tests, and compare the output against the expected output.
+
+## Running the App via Gradle (Windows)
+
+Run MONDAY with:
+
+```powershell
+.\gradlew.bat run
+```
+
+Note: Do not use `.\gradlew.bat - run` (the extra `-` is treated as a task name and fails).
+
+### Windows ARM64 + JavaFX Note
+
+On Windows ARM64, JavaFX GUI runtime requires an x64 JDK in the current shell.
+
+```powershell
+$env:JAVA_HOME_X64 = [Environment]::GetEnvironmentVariable('JAVA_HOME_X64','Machine')
+if (-not $env:JAVA_HOME_X64) {
+    $env:JAVA_HOME_X64 = [Environment]::GetEnvironmentVariable('JAVA_HOME_X64','User')
+}
+$env:JAVA_HOME = $env:JAVA_HOME_X64
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -XshowSettings:properties -version 2>&1 | Select-String "java.home|os.arch"
+.\gradlew.bat run
+```
+
+Sanity check: `os.arch` should be `amd64`.

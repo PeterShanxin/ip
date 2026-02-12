@@ -2,6 +2,33 @@
 
 MONDAY is a grumpy but efficient task manager for power users who prefer keyboard commands over mouse clicks. Named after everyone's least favorite day of the week, MONDAY has a sarcastic personality but gets the job done.
 
+## Running from source (Windows)
+
+Use:
+
+```powershell
+.\gradlew.bat run
+```
+
+Do not run `.\gradlew.bat - run` (the extra `-` causes a Gradle task lookup error).
+
+### Windows ARM64 + JavaFX runtime
+
+If you're on Windows ARM64, switch this shell to x64 JDK before running GUI:
+
+```powershell
+$env:JAVA_HOME_X64 = [Environment]::GetEnvironmentVariable('JAVA_HOME_X64','Machine')
+if (-not $env:JAVA_HOME_X64) {
+    $env:JAVA_HOME_X64 = [Environment]::GetEnvironmentVariable('JAVA_HOME_X64','User')
+}
+$env:JAVA_HOME = $env:JAVA_HOME_X64
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -XshowSettings:properties -version 2>&1 | Select-String "java.home|os.arch"
+.\gradlew.bat run
+```
+
+Sanity check: `os.arch` should be `amd64`.
+
 ## Adding tasks
 
 Add a task by typing any text that isn't a command. MONDAY will reluctantly remember it for you.
