@@ -45,6 +45,7 @@ public class TaskList {
      * @return The deleted task.
      */
     public Task deleteTask(int taskNumber) {
+        // Precondition: taskNumber should be >= 1 and <= tasks.size()
         return tasks.remove(taskNumber - 1);
     }
 
@@ -54,6 +55,7 @@ public class TaskList {
      * @param taskNumber The 1-indexed task number.
      */
     public void markTaskAsDone(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         tasks.get(taskNumber - 1).markAsDone();
     }
 
@@ -63,6 +65,7 @@ public class TaskList {
      * @param taskNumber The 1-indexed task number.
      */
     public void markTaskAsNotDone(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         tasks.get(taskNumber - 1).markAsNotDone();
     }
 
@@ -73,6 +76,7 @@ public class TaskList {
      * @return The task at the specified number.
      */
     public Task getTask(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         return tasks.get(taskNumber - 1);
     }
 
@@ -82,7 +86,8 @@ public class TaskList {
      * @return A list of all tasks.
      */
     public List<Task> getTasks() {
-        return new ArrayList<>(tasks);
+        List<Task> taskList = new ArrayList<>(tasks);
+        return taskList;
     }
 
     /**

@@ -27,6 +27,7 @@ public class Task {
      */
     public void markAsDone() {
         this.isDone = true;
+        assert this.isDone : "Task should be marked as done after markAsDone()";
     }
 
     /**
@@ -34,6 +35,7 @@ public class Task {
      */
     public void markAsNotDone() {
         this.isDone = false;
+        assert !this.isDone : "Task should be marked as not done after markAsNotDone()";
     }
 
     /**
