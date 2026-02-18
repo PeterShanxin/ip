@@ -32,13 +32,19 @@ text-ui-test/EXPECTED-UNIX.TXT
 # Data files (user's persisted tasks)
 data/
 
-# Claude/IDE
+# Kilo Code
+.kilocode/
+
+# AI documentation (not shown to instructors)
+AGENTS.md
+
+# Claude/IDE (legacy - migration to Kilo Code)
 .claude/
 CLAUDE.md
 .lsp.json
 iP_weeklyDocs/
 
-# Saved AI interactions
+# Saved AI interactions (legacy - migration to Kilo Code)
 .claude/saved-interactions/
 
 # Git worktrees
