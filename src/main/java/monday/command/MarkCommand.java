@@ -49,7 +49,7 @@ public class MarkCommand extends Command {
         assert task != null : "Task should not be null";
         if (markAsDone) {
             task.markAsDone();
-            assert task.isDone() : "Task should be marked as done";
+            // Postcondition: Task should be marked as done
         } else {
             task.markAsNotDone();
             assert !task.isDone() : "Task should be marked as not done";

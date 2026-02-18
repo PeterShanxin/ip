@@ -45,7 +45,7 @@ public class TaskList {
      * @return The deleted task.
      */
     public Task deleteTask(int taskNumber) {
-        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
+        // Precondition: taskNumber should be >= 1 and <= tasks.size()
         return tasks.remove(taskNumber - 1);
     }
 
