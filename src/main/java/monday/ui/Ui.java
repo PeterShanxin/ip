@@ -64,7 +64,6 @@ public class Ui {
      */
     public String getGreetingForGui() {
         String greeting = getGrumpyGreeting() + "\n" + "What do you want?";
-        assert greeting != null : "Greeting should not be null";
         return greeting;
     }
 

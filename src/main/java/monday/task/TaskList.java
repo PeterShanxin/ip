@@ -20,7 +20,6 @@ public class TaskList {
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
-        assert this.tasks != null : "Tasks list should not be null";
     }
 
     /**
@@ -88,7 +87,6 @@ public class TaskList {
      */
     public List<Task> getTasks() {
         List<Task> taskList = new ArrayList<>(tasks);
-        assert taskList != null : "Returned task list should not be null";
         return taskList;
     }
 
@@ -114,7 +112,6 @@ public class TaskList {
                 }
             }
         }
-        assert filteredTasks != null : "Filtered tasks list should not be null";
         return filteredTasks;
     }
 
@@ -133,7 +130,6 @@ public class TaskList {
                 filteredTasks.add(task);
             }
         }
-        assert filteredTasks != null : "Filtered tasks list should not be null";
         return filteredTasks;
     }
 
