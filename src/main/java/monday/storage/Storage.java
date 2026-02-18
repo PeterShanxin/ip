@@ -186,6 +186,7 @@ public class Storage {
         // Set the done status
         if (isDone) {
             task.markAsDone();
+            assert task.isDone() : "Task should be marked as done after parsing";
         }
 
         return task;

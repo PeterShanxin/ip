@@ -40,6 +40,7 @@ public class Ui {
      */
     public void showResponse(String message) {
         lastResponse = message;
+        assert lastResponse != null : "Last response should not be null after showResponse()";
         System.out.println(LINE);
         System.out.println();  // blank line after opening LINE
         System.out.println(message);
@@ -62,7 +63,9 @@ public class Ui {
      * @return The formatted greeting message.
      */
     public String getGreetingForGui() {
-        return getGrumpyGreeting() + "\n" + "What do you want?";
+        String greeting = getGrumpyGreeting() + "\n" + "What do you want?";
+        assert greeting != null : "Greeting should not be null";
+        return greeting;
     }
 
     /**

@@ -20,6 +20,7 @@ public class TaskList {
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
+        assert this.tasks != null : "Tasks list should not be null";
     }
 
     /**
@@ -45,6 +46,7 @@ public class TaskList {
      * @return The deleted task.
      */
     public Task deleteTask(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         return tasks.remove(taskNumber - 1);
     }
 
@@ -54,6 +56,7 @@ public class TaskList {
      * @param taskNumber The 1-indexed task number.
      */
     public void markTaskAsDone(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         tasks.get(taskNumber - 1).markAsDone();
     }
 
@@ -63,6 +66,7 @@ public class TaskList {
      * @param taskNumber The 1-indexed task number.
      */
     public void markTaskAsNotDone(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         tasks.get(taskNumber - 1).markAsNotDone();
     }
 
@@ -73,6 +77,7 @@ public class TaskList {
      * @return The task at the specified number.
      */
     public Task getTask(int taskNumber) {
+        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
         return tasks.get(taskNumber - 1);
     }
 
@@ -82,7 +87,9 @@ public class TaskList {
      * @return A list of all tasks.
      */
     public List<Task> getTasks() {
-        return new ArrayList<>(tasks);
+        List<Task> taskList = new ArrayList<>(tasks);
+        assert taskList != null : "Returned task list should not be null";
+        return taskList;
     }
 
     /**
@@ -107,6 +114,7 @@ public class TaskList {
                 }
             }
         }
+        assert filteredTasks != null : "Filtered tasks list should not be null";
         return filteredTasks;
     }
 
@@ -125,6 +133,7 @@ public class TaskList {
                 filteredTasks.add(task);
             }
         }
+        assert filteredTasks != null : "Filtered tasks list should not be null";
         return filteredTasks;
     }
 

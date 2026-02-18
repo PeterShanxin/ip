@@ -52,34 +52,50 @@ public class Parser {
             throw new ParseException(getUnknownCommandErrorMessage(commandWord));
         }
 
+        Command command;
         switch (commandType) {
         case BYE:
-            return new ExitCommand();
+            command = new ExitCommand();
+            break;
         case LIST:
-            return new ListCommand();
+            command = new ListCommand();
+            break;
         case HELP:
-            return new HelpCommand();
+            command = new HelpCommand();
+            break;
         case MARK:
-            return parseMarkCommand(userInput);
+            command = parseMarkCommand(userInput);
+            break;
         case UNMARK:
-            return parseUnmarkCommand(userInput);
+            command = parseUnmarkCommand(userInput);
+            break;
         case DELETE:
-            return parseDeleteCommand(userInput);
+            command = parseDeleteCommand(userInput);
+            break;
         case FIND:
-            return parseFindCommand(userInput);
+            command = parseFindCommand(userInput);
+            break;
         case CHEER:
-            return new CheerCommand();
+            command = new CheerCommand();
+            break;
         case TODO:
-            return parseToDoCommand(userInput);
+            command = parseToDoCommand(userInput);
+            break;
         case DEADLINE:
-            return parseDeadlineCommand(userInput);
+            command = parseDeadlineCommand(userInput);
+            break;
         case EVENT:
-            return parseEventCommand(userInput);
+            command = parseEventCommand(userInput);
+            break;
         case VIEW:
-            return parseViewCommand(userInput);
+            command = parseViewCommand(userInput);
+            break;
         default:
             throw new ParseException(getUnknownCommandErrorMessage(commandWord));
         }
+        
+        assert command != null : "Parsed command should not be null";
+        return command;
     }
 
     /**

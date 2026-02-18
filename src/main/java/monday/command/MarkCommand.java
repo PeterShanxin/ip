@@ -37,15 +37,22 @@ public class MarkCommand extends Command {
      */
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) throws CommandException {
+        assert taskList != null : "TaskList should not be null";
+        assert ui != null : "Ui should not be null";
+        assert storage != null : "Storage should not be null";
+        
         if (!taskList.isValidTaskNumber(taskNumber)) {
             throw new CommandException(taskList.getInvalidTaskNumberMessage());
         }
 
         Task task = taskList.getTask(taskNumber);
+        assert task != null : "Task should not be null";
         if (markAsDone) {
             task.markAsDone();
+            assert task.isDone() : "Task should be marked as done";
         } else {
             task.markAsNotDone();
+            assert !task.isDone() : "Task should be marked as not done";
         }
 
         ui.showTaskMarked(task, markAsDone);
