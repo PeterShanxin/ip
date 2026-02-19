@@ -41,7 +41,10 @@ public enum CommandType {
     HELP("help"),
 
     /** Cheer command - displays a grumpy motivational quote */
-    CHEER("cheer");
+    CHEER("cheer"),
+
+    /** Remind command - shows task summary and upcoming tasks */
+    REMIND("remind", "reminders");
 
     private final String primaryCommand;
     private final String[] aliases;

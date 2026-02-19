@@ -1,6 +1,7 @@
 package monday.ui;
 
 import monday.task.Task;
+import monday.task.TaskCounts;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -106,6 +107,16 @@ public class Ui {
      */
     public void showMatchingTasks(List<Task> tasks, String keyword) {
         taskListFormatter.showMatchingTasks(tasks, keyword);
+    }
+
+    /**
+     * Displays task summary and upcoming tasks.
+     *
+     * @param counts The task counts.
+     * @param earliestTask The earliest upcoming task (may be null).
+     */
+    public void showReminders(TaskCounts counts, Task earliestTask) {
+        taskListFormatter.showReminders(counts, earliestTask);
     }
 
     /**

@@ -2,7 +2,11 @@ package monday.ui;
 
 import monday.constants.MessageConstants;
 import monday.constants.ValidationConstants;
+import monday.task.Deadline;
+import monday.task.Event;
 import monday.task.Task;
+import monday.task.TaskCounts;
+import monday.task.UrgencyLevel;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,6 +79,127 @@ public class TaskListFormatter {
             sb.append(MessageConstants.INFO_MATCHING_TASKS);
             sb.append(formatTaskList(tasks));
             messageFormatter.showResponse(sb.toString());
+        }
+    }
+
+    /**
+     * Displays task summary and upcoming tasks.
+     *
+     * @param counts The task counts.
+     * @param earliestTask The earliest upcoming task (may be null).
+     */
+    public void showReminders(TaskCounts counts, Task earliestTask) {
+        StringBuilder sb = new StringBuilder();
+
+        // Header
+        sb.append(MessageConstants.REMIND_HEADER);
+
+        // Handle empty task list
+        if (counts.getTotal() == 0) {
+            sb.append(MessageConstants.REMIND_NO_TASKS);
+            messageFormatter.showResponse(sb.toString());
+            return;
+        }
+
+        // Task counts
+        sb.append(MessageConstants.REMIND_COUNTS_PREFIX);
+        sb.append(counts.getTotal());
+        sb.append(counts.getTotal() == 1
+            ? MessageConstants.REMIND_COUNTS_SINGULAR
+            : MessageConstants.REMIND_COUNTS_PLURAL);
+
+        // Status counts
+        sb.append(MessageConstants.REMIND_COMPLETED_COUNT);
+        sb.append(counts.getCompleted());
+        sb.append(". ");
+        sb.append(MessageConstants.REMIND_PENDING_COUNT);
+        sb.append(counts.getPending());
+        sb.append(".\n");
+
+        // Type counts
+        sb.append(MessageConstants.REMIND_TODO_COUNT);
+        sb.append(counts.getTodos());
+        sb.append(". ");
+        sb.append(MessageConstants.REMIND_DEADLINE_COUNT);
+        sb.append(counts.getDeadlines());
+        sb.append(". ");
+        sb.append(MessageConstants.REMIND_EVENT_COUNT);
+        sb.append(counts.getEvents());
+        sb.append(".\n");
+
+        // Handle all tasks completed
+        if (counts.getPending() == 0) {
+            sb.append(MessageConstants.REMIND_ALL_DONE);
+            messageFormatter.showResponse(sb.toString());
+            return;
+        }
+
+        // Handle no upcoming tasks
+        if (earliestTask == null) {
+            sb.append(MessageConstants.REMIND_NO_UPCOMING);
+            messageFormatter.showResponse(sb.toString());
+            return;
+        }
+
+        // Display upcoming task with urgency indicator
+        LocalDateTime taskTime = getTaskTime(earliestTask);
+        UrgencyLevel urgency = getUrgencyLevel(earliestTask, taskTime);
+
+        switch (urgency) {
+            case OVERDUE:
+                sb.append(MessageConstants.REMIND_OVERDUE_PREFIX);
+                break;
+            default:
+                sb.append(MessageConstants.REMIND_UPCOMING_PREFIX);
+                break;
+        }
+
+        sb.append(earliestTask.toString());
+
+        // Add urgency suffix for today/soon
+        if (urgency == UrgencyLevel.TODAY) {
+            sb.append(MessageConstants.REMIND_DUE_TODAY);
+        } else if (urgency == UrgencyLevel.SOON) {
+            sb.append(MessageConstants.REMIND_DUE_SOON);
+        }
+
+        messageFormatter.showResponse(sb.toString());
+    }
+
+    /**
+     * Gets the upcoming time for a task.
+     * For Deadline tasks, uses the by date/time.
+     * For Event tasks, uses the from date/time.
+     *
+     * @param task The task to get the time for.
+     * @return The upcoming time for the task.
+     */
+    private LocalDateTime getTaskTime(Task task) {
+        if (task instanceof Deadline) {
+            return ((Deadline) task).getByDateTime();
+        } else if (task instanceof Event) {
+            return ((Event) task).getFromDateTime();
+        }
+        return LocalDateTime.MAX;
+    }
+
+    /**
+     * Gets the urgency level for a task based on its time.
+     *
+     * @param task The task to classify.
+     * @param taskTime The task's upcoming time.
+     * @return The urgency level of the task.
+     */
+    private UrgencyLevel getUrgencyLevel(Task task, LocalDateTime taskTime) {
+        LocalDateTime now = LocalDateTime.now();
+        if (taskTime.isBefore(now)) {
+            return UrgencyLevel.OVERDUE;
+        } else if (taskTime.toLocalDate().equals(now.toLocalDate())) {
+            return UrgencyLevel.TODAY;
+        } else if (taskTime.isBefore(now.plusHours(24))) {
+            return UrgencyLevel.SOON;
+        } else {
+            return UrgencyLevel.UPCOMING;
         }
     }
 

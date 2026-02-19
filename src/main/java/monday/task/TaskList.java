@@ -129,6 +129,56 @@ public class TaskList {
     }
 
     /**
+     * Gets task counts by type and status.
+     *
+     * @return A TaskCounts object containing counts by type and status.
+     */
+    public TaskCounts getTaskCounts() {
+        int total = tasks.size();
+        int completed = (int) tasks.stream().filter(Task::isDone).count();
+        int pending = total - completed;
+        int todos = (int) tasks.stream().filter(t -> t instanceof ToDo).count();
+        int deadlines = (int) tasks.stream().filter(t -> t instanceof Deadline).count();
+        int events = (int) tasks.stream().filter(t -> t instanceof Event).count();
+        return new TaskCounts(total, completed, pending, todos, deadlines, events);
+    }
+
+    /**
+     * Gets the earliest upcoming uncompleted task (Deadline or Event).
+     * Returns null if no upcoming tasks exist.
+     *
+     * @return The earliest upcoming task, or null if none.
+     */
+    public Task getEarliestUpcomingTask() {
+        return tasks.stream()
+                .filter(task -> !task.isDone())
+                .filter(task -> task instanceof Deadline || task instanceof Event)
+                .min((t1, t2) -> {
+                    LocalDateTime time1 = getUpcomingTime(t1);
+                    LocalDateTime time2 = getUpcomingTime(t2);
+                    return time1.compareTo(time2);
+                })
+                .orElse(null);
+    }
+
+    /**
+     * Gets the upcoming time for a task.
+     * For Deadline tasks, uses the by date/time.
+     * For Event tasks, uses the from date/time.
+     *
+     * @param task The task to get the time for.
+     * @return The upcoming time for the task.
+     */
+    private LocalDateTime getUpcomingTime(Task task) {
+        if (task instanceof Deadline) {
+            return ((Deadline) task).getByDateTime();
+        } else if (task instanceof Event) {
+            return ((Event) task).getFromDateTime();
+        }
+        return LocalDateTime.MAX;
+    }
+
+    /**
      * Gets the number of tasks in the list.
      *
      * @return The task count.

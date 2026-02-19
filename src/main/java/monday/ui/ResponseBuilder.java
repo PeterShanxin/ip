@@ -83,6 +83,7 @@ public class ResponseBuilder {
                 + MessageConstants.HELP_UNMARK
                 + MessageConstants.HELP_DELETE
                 + MessageConstants.HELP_CHEER
+                + MessageConstants.HELP_REMIND
                 + MessageConstants.HELP_HELP
                 + MessageConstants.HELP_EXIT;
         messageFormatter.showResponse(response);

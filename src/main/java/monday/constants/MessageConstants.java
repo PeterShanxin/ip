@@ -239,6 +239,59 @@ public final class MessageConstants {
     /** Help message for bye/exit command */
     public static final String HELP_EXIT = "  bye / exit                   - Get rid of me";
 
+    /** Help message for remind command */
+    public static final String HELP_REMIND = "  remind / reminders            - Show task summary and upcoming tasks\n";
+
+    // ========== Reminder Messages ==========
+
+    /** Reminder header message */
+    public static final String REMIND_HEADER = "Ugh. Fine. Here's your reality check:\n";
+
+    /** Reminder message when no tasks exist */
+    public static final String REMIND_NO_TASKS = "Skeptical. You have absolutely nothing to do. Impressive.";
+
+    /** Reminder message when all tasks are completed */
+    public static final String REMIND_ALL_DONE = "Ugh. Everything is done. Don't get used to it.";
+
+    /** Reminder message prefix for task counts */
+    public static final String REMIND_COUNTS_PREFIX = "You have ";
+
+    /** Reminder message suffix for task counts (singular) */
+    public static final String REMIND_COUNTS_SINGULAR = " task total. ";
+
+    /** Reminder message suffix for task counts (plural) */
+    public static final String REMIND_COUNTS_PLURAL = " tasks total. ";
+
+    /** Reminder message for completed count */
+    public static final String REMIND_COMPLETED_COUNT = "Done: ";
+
+    /** Reminder message for pending count */
+    public static final String REMIND_PENDING_COUNT = "Pending: ";
+
+    /** Reminder message for ToDo count */
+    public static final String REMIND_TODO_COUNT = "ToDos: ";
+
+    /** Reminder message for Deadline count */
+    public static final String REMIND_DEADLINE_COUNT = "Deadlines: ";
+
+    /** Reminder message for Event count */
+    public static final String REMIND_EVENT_COUNT = "Events: ";
+
+    /** Reminder message for no upcoming tasks */
+    public static final String REMIND_NO_UPCOMING = "Nothing coming up. Enjoy the void.";
+
+    /** Reminder message for earliest upcoming task prefix */
+    public static final String REMIND_UPCOMING_PREFIX = "Earliest upcoming: ";
+
+    /** Reminder message for overdue task prefix */
+    public static final String REMIND_OVERDUE_PREFIX = "OVERDUE: ";
+
+    /** Reminder message for task due soon (within 24 hours) */
+    public static final String REMIND_DUE_SOON = " (due soon)";
+
+    /** Reminder message for task due today */
+    public static final String REMIND_DUE_TODAY = " (today)";
+
     // ========== Corruption Messages ==========
 
     /** Corrupted line message prefix */

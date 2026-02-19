@@ -12,6 +12,7 @@ import monday.command.FindCommand;
 import monday.command.HelpCommand;
 import monday.command.ListCommand;
 import monday.command.MarkCommand;
+import monday.command.RemindCommand;
 import monday.command.ViewCommand;
 import monday.constants.MessageConstants;
 import monday.exception.ParseException;
@@ -69,6 +70,8 @@ public class CommandParser {
             return taskArgumentParser.parseFindCommand(userInput);
         case CHEER:
             return new CheerCommand();
+        case REMIND:
+            return new RemindCommand();
         case TODO:
             return taskArgumentParser.parseToDoCommand(userInput);
         case DEADLINE:
