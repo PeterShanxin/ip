@@ -7,6 +7,7 @@ import monday.constants.ValidationConstants;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the list of tasks for MONDAY.
@@ -105,16 +106,12 @@ public class TaskList {
      * @return A list of tasks occurring on the specified date.
      */
     public List<Task> filterTasksByDate(LocalDateTime date) {
-        List<Task> filteredTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task instanceof DateFilterable) {
-                DateFilterable dateFilterable = (DateFilterable) task;
-                if (dateFilterable.isOnDate(date)) {
-                    filteredTasks.add(task);
-                }
-            }
-        }
-        return filteredTasks;
+        return tasks.stream()
+                .filter(task -> task instanceof DateFilterable)
+                .map(task -> (DateFilterable) task)
+                .filter(dateFilterable -> dateFilterable.isOnDate(date))
+                .map(dateFilterable -> (Task) dateFilterable)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -125,14 +122,10 @@ public class TaskList {
      * @return A list of tasks whose descriptions contain the keyword.
      */
     public List<Task> getFilteredTasks(String keyword) {
-        List<Task> filteredTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
-                filteredTasks.add(task);
-            }
-        }
-        return filteredTasks;
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
     }
 
     /**

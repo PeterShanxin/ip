@@ -6,6 +6,8 @@ import monday.task.Task;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Formats task lists for display.
@@ -83,14 +85,9 @@ public class TaskListFormatter {
      * @return The formatted string representation.
      */
     private String formatTaskList(List<Task> tasks) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tasks.size(); i++) {
-            if (i > 0) {
-                sb.append("\n");
-            }
-            sb.append(formatTaskEntry(i + 1, tasks.get(i)));
-        }
-        return sb.toString();
+        return IntStream.range(0, tasks.size())
+                .mapToObj(i -> formatTaskEntry(i + 1, tasks.get(i)))
+                .collect(Collectors.joining("\n"));
     }
 
     /**

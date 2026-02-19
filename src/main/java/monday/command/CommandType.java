@@ -1,5 +1,7 @@
 package monday.command;
 
+import java.util.Arrays;
+
 /**
  * Represents a command that can be issued to Monday.
  * Commands are case-insensitive and may have aliases.
@@ -81,15 +83,8 @@ public enum CommandType {
      * @return true if the input matches this command, false otherwise.
      */
     public boolean matches(String input) {
-        if (primaryCommand.equalsIgnoreCase(input)) {
-            return true;
-        }
-        for (String alias : aliases) {
-            if (alias.equalsIgnoreCase(input)) {
-                return true;
-            }
-        }
-        return false;
+        return primaryCommand.equalsIgnoreCase(input)
+                || Arrays.stream(aliases).anyMatch(alias -> alias.equalsIgnoreCase(input));
     }
 
     /**
@@ -99,11 +94,9 @@ public enum CommandType {
      * @return The matching CommandType, or null if no match is found.
      */
     public static CommandType fromString(String commandWord) {
-        for (CommandType type : values()) {
-            if (type.matches(commandWord)) {
-                return type;
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(type -> type.matches(commandWord))
+                .findFirst()
+                .orElse(null);
     }
 }

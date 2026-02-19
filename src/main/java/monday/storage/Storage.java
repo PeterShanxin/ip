@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Handles file storage operations for MONDAY's task list.
@@ -107,11 +108,10 @@ public class Storage {
      */
     public void saveTasks(List<Task> tasks) throws MondayStorageException {
         try {
-            // Encode all tasks
-            ArrayList<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(taskSerializer.encodeTask(task));
-            }
+            // Encode all tasks using Streams API
+            List<String> lines = tasks.stream()
+                    .map(taskSerializer::encodeTask)
+                    .collect(Collectors.toList());
 
             // Save lines to file
             fileStorage.saveLines(lines);
