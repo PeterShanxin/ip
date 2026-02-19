@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Handles file storage operations for MONDAY's task list.
@@ -246,10 +247,9 @@ public class Storage {
             Files.createFile(filePath);
 
             // Encode and write all tasks
-            ArrayList<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(encodeTask(task));
-            }
+            List<String> lines = tasks.stream()
+                    .map(this::encodeTask)
+                    .collect(Collectors.toList());
 
             Files.write(filePath, lines);
         } catch (IOException e) {

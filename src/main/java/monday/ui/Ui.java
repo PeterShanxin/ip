@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Handles all user interface interactions for MONDAY.
@@ -90,14 +92,10 @@ public class Ui {
         if (tasks.isEmpty()) {
             showResponse("Skeptical. You haven't told me to do anything yet.");
         } else {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < tasks.size(); i++) {
-                if (i > 0) {
-                    sb.append("\n");
-                }
-                sb.append((i + 1)).append(". ").append(tasks.get(i));
-            }
-            showResponse(sb.toString());
+            String taskList = IntStream.range(0, tasks.size())
+                    .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                    .collect(Collectors.joining("\n"));
+            showResponse(taskList);
         }
     }
 
@@ -112,17 +110,12 @@ public class Ui {
             showResponse("Skeptical. Nothing scheduled for "
                     + date.format(VIEW_OUTPUT_FORMATTER) + ".");
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Ugh. Here's what you have on ")
-              .append(date.format(VIEW_OUTPUT_FORMATTER))
-              .append(":\n");
-            for (int i = 0; i < tasks.size(); i++) {
-                if (i > 0) {
-                    sb.append("\n");
-                }
-                sb.append((i + 1)).append(". ").append(tasks.get(i));
-            }
-            showResponse(sb.toString());
+            String header = "Ugh. Here's what you have on "
+                    + date.format(VIEW_OUTPUT_FORMATTER) + ":\n";
+            String taskList = IntStream.range(0, tasks.size())
+                    .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                    .collect(Collectors.joining("\n"));
+            showResponse(header + taskList);
         }
     }
 
@@ -136,15 +129,11 @@ public class Ui {
         if (tasks.isEmpty()) {
             showResponse("Fine. No tasks match \"" + keyword + "\". Shocking, I know.");
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Here are the matching tasks in your list:\n");
-            for (int i = 0; i < tasks.size(); i++) {
-                if (i > 0) {
-                    sb.append("\n");
-                }
-                sb.append((i + 1)).append(". ").append(tasks.get(i));
-            }
-            showResponse(sb.toString());
+            String header = "Here are the matching tasks in your list:\n";
+            String taskList = IntStream.range(0, tasks.size())
+                    .mapToObj(i -> (i + 1) + ". " + tasks.get(i))
+                    .collect(Collectors.joining("\n"));
+            showResponse(header + taskList);
         }
     }
 

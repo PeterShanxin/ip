@@ -3,6 +3,7 @@ package monday.task;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the list of tasks for MONDAY.
@@ -93,21 +94,16 @@ public class TaskList {
      * @return A list of tasks occurring on the specified date.
      */
     public List<Task> filterTasksByDate(LocalDateTime date) {
-        List<Task> filteredTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task instanceof Deadline) {
-                Deadline deadline = (Deadline) task;
-                if (deadline.isOnDate(date)) {
-                    filteredTasks.add(task);
-                }
-            } else if (task instanceof Event) {
-                Event event = (Event) task;
-                if (event.isOnDate(date)) {
-                    filteredTasks.add(task);
-                }
-            }
-        }
-        return filteredTasks;
+        return tasks.stream()
+                .filter(task -> {
+                    if (task instanceof Deadline) {
+                        return ((Deadline) task).isOnDate(date);
+                    } else if (task instanceof Event) {
+                        return ((Event) task).isOnDate(date);
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
     }
 
     /**
@@ -118,14 +114,10 @@ public class TaskList {
      * @return A list of tasks whose descriptions contain the keyword.
      */
     public List<Task> getFilteredTasks(String keyword) {
-        List<Task> filteredTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
-                filteredTasks.add(task);
-            }
-        }
-        return filteredTasks;
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowerKeyword))
+                .collect(Collectors.toList());
     }
 
     /**
