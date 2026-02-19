@@ -20,17 +20,43 @@ public class ResponseBuilder {
     }
 
     /**
+     * Builds a confirmation message after adding a task.
+     *
+     * @param task The task that was added.
+     * @param totalTasks The total number of tasks after adding.
+     * @return The confirmation message.
+     */
+    public String buildTaskAdded(Task task, int totalTasks) {
+        return MessageConstants.SUCCESS_TASK_ADDED_PREFIX + "  " + task + "\n"
+                + (totalTasks == 1 ? MessageConstants.SUCCESS_TASK_COUNT_SINGULAR
+                        : MessageConstants.SUCCESS_TASK_COUNT_PREFIX + totalTasks
+                                + MessageConstants.SUCCESS_TASK_COUNT_PLURAL);
+    }
+
+    /**
      * Displays a confirmation message after adding a task.
      *
      * @param task The task that was added.
      * @param totalTasks The total number of tasks after adding.
+     * @deprecated Use buildTaskAdded() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showTaskAdded(Task task, int totalTasks) {
-        String message = MessageConstants.SUCCESS_TASK_ADDED_PREFIX + "  " + task + "\n"
+        messageFormatter.showResponse(buildTaskAdded(task, totalTasks));
+    }
+
+    /**
+     * Builds a confirmation message after deleting a task.
+     *
+     * @param task The task that was deleted.
+     * @param totalTasks The total number of tasks after deletion.
+     * @return The confirmation message.
+     */
+    public String buildTaskDeleted(Task task, int totalTasks) {
+        return MessageConstants.SUCCESS_TASK_DELETED_PREFIX + "  " + task + "\n"
                 + (totalTasks == 1 ? MessageConstants.SUCCESS_TASK_COUNT_SINGULAR
                         : MessageConstants.SUCCESS_TASK_COUNT_PREFIX + totalTasks
                                 + MessageConstants.SUCCESS_TASK_COUNT_PLURAL);
-        messageFormatter.showResponse(message);
     }
 
     /**
@@ -38,13 +64,24 @@ public class ResponseBuilder {
      *
      * @param task The task that was deleted.
      * @param totalTasks The total number of tasks after deletion.
+     * @deprecated Use buildTaskDeleted() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showTaskDeleted(Task task, int totalTasks) {
-        String message = MessageConstants.SUCCESS_TASK_DELETED_PREFIX + "  " + task + "\n"
-                + (totalTasks == 1 ? MessageConstants.SUCCESS_TASK_COUNT_SINGULAR
-                        : MessageConstants.SUCCESS_TASK_COUNT_PREFIX + totalTasks
-                                + MessageConstants.SUCCESS_TASK_COUNT_PLURAL);
-        messageFormatter.showResponse(message);
+        messageFormatter.showResponse(buildTaskDeleted(task, totalTasks));
+    }
+
+    /**
+     * Builds a confirmation message after marking/unmarking a task.
+     *
+     * @param task The task whose status was changed.
+     * @param isDone true if task was marked as done, false if unmarked.
+     * @return The confirmation message.
+     */
+    public String buildTaskMarked(Task task, boolean isDone) {
+        return (isDone ? MessageConstants.SUCCESS_TASK_MARKED_DONE
+                                : MessageConstants.SUCCESS_TASK_UNMARKED)
+                + "\n" + "  " + task;
     }
 
     /**
@@ -52,27 +89,39 @@ public class ResponseBuilder {
      *
      * @param task The task whose status was changed.
      * @param isDone true if task was marked as done, false if unmarked.
+     * @deprecated Use buildTaskMarked() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showTaskMarked(Task task, boolean isDone) {
-        String message = (isDone ? MessageConstants.SUCCESS_TASK_MARKED_DONE
-                                : MessageConstants.SUCCESS_TASK_UNMARKED)
-                + "\n" + "  " + task;
-        messageFormatter.showResponse(message);
+        messageFormatter.showResponse(buildTaskMarked(task, isDone));
+    }
+
+    /**
+     * Builds a farewell message when user exits.
+     *
+     * @return The farewell message.
+     */
+    public String buildFarewell() {
+        return MessageConstants.FAREWELL_MESSAGE;
     }
 
     /**
      * Displays a farewell message when user exits.
+     * @deprecated Use buildFarewell() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showFarewell() {
-        messageFormatter.showResponse(MessageConstants.FAREWELL_MESSAGE);
+        messageFormatter.showResponse(buildFarewell());
     }
 
     /**
-     * Displays help information for all available commands.
+     * Builds help information for all available commands.
      * Maintains Monday's grumpy personality while being reluctantly helpful.
+     *
+     * @return The help message.
      */
-    public void showHelp() {
-        String response = MessageConstants.HELP_HEADER
+    public String buildHelp() {
+        return MessageConstants.HELP_HEADER
                 + MessageConstants.HELP_TODO
                 + MessageConstants.HELP_DEADLINE
                 + MessageConstants.HELP_EVENT
@@ -86,6 +135,15 @@ public class ResponseBuilder {
                 + MessageConstants.HELP_REMIND
                 + MessageConstants.HELP_HELP
                 + MessageConstants.HELP_EXIT;
-        messageFormatter.showResponse(response);
+    }
+
+    /**
+     * Displays help information for all available commands.
+     * Maintains Monday's grumpy personality while being reluctantly helpful.
+     * @deprecated Use buildHelp() and Ui.showResponse() instead.
+     */
+    @Deprecated
+    public void showHelp() {
+        messageFormatter.showResponse(buildHelp());
     }
 }

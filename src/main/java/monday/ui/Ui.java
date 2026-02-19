@@ -77,7 +77,7 @@ public class Ui {
      * Displays a farewell message when user exits.
      */
     public void showFarewell() {
-        responseBuilder.showFarewell();
+        showResponse(responseBuilder.buildFarewell());
     }
 
     /**
@@ -86,7 +86,7 @@ public class Ui {
      * @param tasks The list of tasks to display.
      */
     public void showTaskList(List<Task> tasks) {
-        taskListFormatter.showTaskList(tasks);
+        showResponse(taskListFormatter.buildTaskList(tasks));
     }
 
     /**
@@ -96,7 +96,7 @@ public class Ui {
      * @param date The date for which tasks are being displayed.
      */
     public void showFilteredTasks(List<Task> tasks, LocalDateTime date) {
-        taskListFormatter.showFilteredTasks(tasks, date);
+        showResponse(taskListFormatter.buildFilteredTasks(tasks, date));
     }
 
     /**
@@ -106,7 +106,7 @@ public class Ui {
      * @param keyword The keyword that was searched for.
      */
     public void showMatchingTasks(List<Task> tasks, String keyword) {
-        taskListFormatter.showMatchingTasks(tasks, keyword);
+        showResponse(taskListFormatter.buildMatchingTasks(tasks, keyword));
     }
 
     /**
@@ -116,7 +116,7 @@ public class Ui {
      * @param earliestTask The earliest upcoming task (may be null).
      */
     public void showReminders(TaskCounts counts, Task earliestTask) {
-        taskListFormatter.showReminders(counts, earliestTask);
+        showResponse(taskListFormatter.buildReminders(counts, earliestTask));
     }
 
     /**
@@ -126,7 +126,7 @@ public class Ui {
      * @param totalTasks The total number of tasks after adding.
      */
     public void showTaskAdded(Task task, int totalTasks) {
-        responseBuilder.showTaskAdded(task, totalTasks);
+        showResponse(responseBuilder.buildTaskAdded(task, totalTasks));
     }
 
     /**
@@ -136,7 +136,7 @@ public class Ui {
      * @param totalTasks The total number of tasks after deletion.
      */
     public void showTaskDeleted(Task task, int totalTasks) {
-        responseBuilder.showTaskDeleted(task, totalTasks);
+        showResponse(responseBuilder.buildTaskDeleted(task, totalTasks));
     }
 
     /**
@@ -146,7 +146,7 @@ public class Ui {
      * @param isDone true if task was marked as done, false if unmarked.
      */
     public void showTaskMarked(Task task, boolean isDone) {
-        responseBuilder.showTaskMarked(task, isDone);
+        showResponse(responseBuilder.buildTaskMarked(task, isDone));
     }
 
     /**
@@ -197,7 +197,7 @@ public class Ui {
      * Displays help information for all available commands.
      */
     public void showHelp() {
-        responseBuilder.showHelp();
+        showResponse(responseBuilder.buildHelp());
     }
 
     /**

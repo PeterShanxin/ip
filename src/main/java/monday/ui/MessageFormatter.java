@@ -33,6 +33,17 @@ public class MessageFormatter {
     }
 
     /**
+     * Wraps a message with line separators and blank lines.
+     * Returns the wrapped message as a string without printing.
+     *
+     * @param message The message to wrap.
+     * @return The wrapped message as a string.
+     */
+    public String wrapMessage(String message) {
+        return wrapWithLine(message);
+    }
+
+    /**
      * Displays an error message.
      *
      * @param message The error message to display.

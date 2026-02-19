@@ -30,16 +30,49 @@ public class TaskListFormatter {
     }
 
     /**
+     * Builds a list of all tasks.
+     *
+     * @param tasks The list of tasks to display.
+     * @return The formatted task list.
+     */
+    public String buildTaskList(List<Task> tasks) {
+        if (tasks.isEmpty()) {
+            return MessageConstants.INFO_EMPTY_TASK_LIST;
+        } else {
+            return formatTaskList(tasks);
+        }
+    }
+
+    /**
      * Displays list of all tasks.
      *
      * @param tasks The list of tasks to display.
+     * @deprecated Use buildTaskList() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showTaskList(List<Task> tasks) {
+        messageFormatter.showResponse(buildTaskList(tasks));
+    }
+
+    /**
+     * Builds tasks filtered by a specific date.
+     *
+     * @param tasks The list of filtered tasks to display.
+     * @param date The date for which tasks are being displayed.
+     * @return The formatted filtered tasks.
+     */
+    public String buildFilteredTasks(List<Task> tasks, LocalDateTime date) {
         if (tasks.isEmpty()) {
-            messageFormatter.showResponse(MessageConstants.INFO_EMPTY_TASK_LIST);
+            return MessageConstants.INFO_NO_FILTERED_TASKS_PREFIX
+                    + date.format(ValidationConstants.VIEW_OUTPUT_FORMATTER)
+                    + MessageConstants.INFO_NO_FILTERED_TASKS_SUFFIX;
         } else {
-            String formattedList = formatTaskList(tasks);
-            messageFormatter.showResponse(formattedList);
+            StringBuilder sb = new StringBuilder();
+            sb.append(MessageConstants.INFO_FILTERED_TASKS_PREFIX)
+              .append(date.format(ValidationConstants.VIEW_OUTPUT_FORMATTER))
+              .append(MessageConstants.INFO_FILTERED_TASKS_SUFFIX);
+            sb.append(formatTaskList(tasks));
+            return sb.toString();
         }
     }
 
@@ -48,19 +81,29 @@ public class TaskListFormatter {
      *
      * @param tasks The list of filtered tasks to display.
      * @param date The date for which tasks are being displayed.
+     * @deprecated Use buildFilteredTasks() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showFilteredTasks(List<Task> tasks, LocalDateTime date) {
+        messageFormatter.showResponse(buildFilteredTasks(tasks, date));
+    }
+
+    /**
+     * Builds tasks that match a keyword search.
+     *
+     * @param tasks The list of matching tasks to display.
+     * @param keyword The keyword that was searched for.
+     * @return The formatted matching tasks.
+     */
+    public String buildMatchingTasks(List<Task> tasks, String keyword) {
         if (tasks.isEmpty()) {
-            messageFormatter.showResponse(MessageConstants.INFO_NO_FILTERED_TASKS_PREFIX
-                    + date.format(ValidationConstants.VIEW_OUTPUT_FORMATTER)
-                    + MessageConstants.INFO_NO_FILTERED_TASKS_SUFFIX);
+            return MessageConstants.INFO_NO_MATCHING_TASKS_PREFIX + keyword
+                    + MessageConstants.INFO_NO_MATCHING_TASKS_SUFFIX;
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append(MessageConstants.INFO_FILTERED_TASKS_PREFIX)
-              .append(date.format(ValidationConstants.VIEW_OUTPUT_FORMATTER))
-              .append(MessageConstants.INFO_FILTERED_TASKS_SUFFIX);
+            sb.append(MessageConstants.INFO_MATCHING_TASKS);
             sb.append(formatTaskList(tasks));
-            messageFormatter.showResponse(sb.toString());
+            return sb.toString();
         }
     }
 
@@ -69,26 +112,21 @@ public class TaskListFormatter {
      *
      * @param tasks The list of matching tasks to display.
      * @param keyword The keyword that was searched for.
+     * @deprecated Use buildMatchingTasks() and Ui.showResponse() instead.
      */
+    @Deprecated
     public void showMatchingTasks(List<Task> tasks, String keyword) {
-        if (tasks.isEmpty()) {
-            messageFormatter.showResponse(MessageConstants.INFO_NO_MATCHING_TASKS_PREFIX + keyword
-                    + MessageConstants.INFO_NO_MATCHING_TASKS_SUFFIX);
-        } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(MessageConstants.INFO_MATCHING_TASKS);
-            sb.append(formatTaskList(tasks));
-            messageFormatter.showResponse(sb.toString());
-        }
+        messageFormatter.showResponse(buildMatchingTasks(tasks, keyword));
     }
 
     /**
-     * Displays task summary and upcoming tasks.
+     * Builds task summary and upcoming tasks.
      *
      * @param counts The task counts.
      * @param earliestTask The earliest upcoming task (may be null).
+     * @return The formatted reminder message.
      */
-    public void showReminders(TaskCounts counts, Task earliestTask) {
+    public String buildReminders(TaskCounts counts, Task earliestTask) {
         StringBuilder sb = new StringBuilder();
 
         // Header
@@ -97,8 +135,7 @@ public class TaskListFormatter {
         // Handle empty task list
         if (counts.getTotal() == 0) {
             sb.append(MessageConstants.REMIND_NO_TASKS);
-            messageFormatter.showResponse(sb.toString());
-            return;
+            return sb.toString();
         }
 
         // Task counts
@@ -130,15 +167,13 @@ public class TaskListFormatter {
         // Handle all tasks completed
         if (counts.getPending() == 0) {
             sb.append(MessageConstants.REMIND_ALL_DONE);
-            messageFormatter.showResponse(sb.toString());
-            return;
+            return sb.toString();
         }
 
         // Handle no upcoming tasks
         if (earliestTask == null) {
             sb.append(MessageConstants.REMIND_NO_UPCOMING);
-            messageFormatter.showResponse(sb.toString());
-            return;
+            return sb.toString();
         }
 
         // Display upcoming task with urgency indicator
@@ -163,7 +198,19 @@ public class TaskListFormatter {
             sb.append(MessageConstants.REMIND_DUE_SOON);
         }
 
-        messageFormatter.showResponse(sb.toString());
+        return sb.toString();
+    }
+
+    /**
+     * Displays task summary and upcoming tasks.
+     *
+     * @param counts The task counts.
+     * @param earliestTask The earliest upcoming task (may be null).
+     * @deprecated Use buildReminders() and Ui.showResponse() instead.
+     */
+    @Deprecated
+    public void showReminders(TaskCounts counts, Task earliestTask) {
+        messageFormatter.showResponse(buildReminders(counts, earliestTask));
     }
 
     /**
