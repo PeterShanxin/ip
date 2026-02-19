@@ -1,5 +1,7 @@
 package monday.util;
 
+import monday.constants.ValidationConstants;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -11,20 +13,16 @@ import java.time.format.DateTimeParseException;
 public class DateTimeParser {
 
     /** Input format: year-month-day hour-minute (e.g., 2019-12-02 1800) */
-    public static final DateTimeFormatter INPUT_FORMATTER_1 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    public static final DateTimeFormatter INPUT_FORMATTER_1 = ValidationConstants.INPUT_FORMATTER_1;
 
     /** Input format: day/month/year hour-minute (e.g., 2/12/2019 1800) */
-    public static final DateTimeFormatter INPUT_FORMATTER_2 =
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    public static final DateTimeFormatter INPUT_FORMATTER_2 = ValidationConstants.INPUT_FORMATTER_2;
 
     /** Output format: month day year hour-minute (e.g., Dec 02 2019 1800) */
-    public static final DateTimeFormatter OUTPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("MMM dd yyyy HHmm");
+    public static final DateTimeFormatter OUTPUT_FORMATTER = ValidationConstants.OUTPUT_FORMATTER;
 
     /** Storage format: year-month-day hour:minute (e.g., 2019-12-02 18:00) */
-    public static final DateTimeFormatter STORAGE_FORMATTER =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter STORAGE_FORMATTER = ValidationConstants.STORAGE_FORMATTER;
 
     /**
      * Parses a date/time string into a LocalDateTime.

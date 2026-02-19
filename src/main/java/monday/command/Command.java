@@ -24,8 +24,12 @@ public abstract class Command {
 
     /**
      * Checks if this command should exit the application.
+     * Default implementation returns false.
+     * Subclasses should override only if they are exit commands.
      *
-     * @return true if this command signals exit.
+     * @return true if this command signals exit, false otherwise.
      */
-    public abstract boolean isExit();
+    public boolean isExit() {
+        return false;
+    }
 }

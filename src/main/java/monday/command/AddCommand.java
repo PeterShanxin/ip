@@ -34,24 +34,19 @@ public abstract class AddCommand extends Command {
      */
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) throws CommandException {
+        assert taskList != null : "TaskList should not be null";
+        assert ui != null : "Ui should not be null";
+        assert storage != null : "Storage should not be null";
+        
         if (taskList.isAtMaxCapacity()) {
             throw new CommandException("Fine. I can't remember more than 100 things. Forget something first.");
         }
 
         Task task = createTask();
+        assert task != null : "Created task should not be null";
         taskList.addTask(task);
         ui.showTaskAdded(task, taskList.getTaskCount());
         return new CommandResult(true, false);
-    }
-
-    /**
-     * Checks if this command should exit the application.
-     *
-     * @return false, as this is not an exit command.
-     */
-    @Override
-    public boolean isExit() {
-        return false;
     }
 
     /**

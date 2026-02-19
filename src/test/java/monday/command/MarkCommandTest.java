@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,13 +44,15 @@ public class MarkCommandTest {
         int taskNumber = 1;
         MarkCommand command = new MarkCommand(taskNumber, true);
 
-        when(taskList.isValidTaskNumber(taskNumber)).thenReturn(true);
+        doNothing().when(taskList).validateTaskNumber(taskNumber);
         when(taskList.getTask(taskNumber)).thenReturn(mockTask);
 
         CommandResult result = command.execute(taskList, ui, storage);
 
         assertTrue(result.shouldSave(), "Marking task should require save");
         assertFalse(result.shouldExit(), "Mark command should not exit");
+        verify(taskList).validateTaskNumber(taskNumber);
+        verify(taskList).getTask(taskNumber);
         verify(mockTask).markAsDone();
         verify(ui).showTaskMarked(mockTask, true);
     }
@@ -59,13 +63,15 @@ public class MarkCommandTest {
         int taskNumber = 2;
         MarkCommand command = new MarkCommand(taskNumber, false);
 
-        when(taskList.isValidTaskNumber(taskNumber)).thenReturn(true);
+        doNothing().when(taskList).validateTaskNumber(taskNumber);
         when(taskList.getTask(taskNumber)).thenReturn(mockTask);
 
         CommandResult result = command.execute(taskList, ui, storage);
 
         assertTrue(result.shouldSave(), "Unmarking task should require save");
         assertFalse(result.shouldExit(), "Unmark command should not exit");
+        verify(taskList).validateTaskNumber(taskNumber);
+        verify(taskList).getTask(taskNumber);
         verify(mockTask).markAsNotDone();
         verify(ui).showTaskMarked(mockTask, false);
     }
@@ -76,16 +82,15 @@ public class MarkCommandTest {
         int taskNumber = 1;
         MarkCommand command = new MarkCommand(taskNumber, true);
 
-        when(taskList.isValidTaskNumber(taskNumber)).thenReturn(false);
-        when(taskList.getInvalidTaskNumberMessage())
-                .thenReturn("Skeptical. You haven't told me to do anything yet.");
+        String errorMessage = "Skeptical. You haven't told me to do anything yet.";
+        doThrow(new CommandException(errorMessage)).when(taskList).validateTaskNumber(taskNumber);
 
         CommandException thrown = assertThrows(CommandException.class,
                 () -> command.execute(taskList, ui, storage),
                 "Should throw CommandException for invalid task number on empty list");
 
-        assertEquals("Skeptical. You haven't told me to do anything yet.",
-                thrown.getMessage(), "Exception message should match TaskList error");
+        assertEquals(errorMessage, thrown.getMessage(),
+                "Exception message should match TaskList error");
     }
 
     @Test
@@ -94,16 +99,15 @@ public class MarkCommandTest {
         int taskNumber = 99;
         MarkCommand command = new MarkCommand(taskNumber, true);
 
-        when(taskList.isValidTaskNumber(taskNumber)).thenReturn(false);
-        when(taskList.getInvalidTaskNumberMessage())
-                .thenReturn("Ugh, that task doesn't exist. Pick between 1 and 3.");
+        String errorMessage = "Ugh, that task doesn't exist. Pick between 1 and 3.";
+        doThrow(new CommandException(errorMessage)).when(taskList).validateTaskNumber(taskNumber);
 
         CommandException thrown = assertThrows(CommandException.class,
                 () -> command.execute(taskList, ui, storage),
                 "Should throw CommandException for out of range task number");
 
-        assertEquals("Ugh, that task doesn't exist. Pick between 1 and 3.",
-                thrown.getMessage(), "Exception message should match TaskList error");
+        assertEquals(errorMessage, thrown.getMessage(),
+                "Exception message should match TaskList error");
     }
 
     @Test
@@ -112,15 +116,14 @@ public class MarkCommandTest {
         int taskNumber = -1;
         MarkCommand command = new MarkCommand(taskNumber, false);
 
-        when(taskList.isValidTaskNumber(taskNumber)).thenReturn(false);
-        when(taskList.getInvalidTaskNumberMessage())
-                .thenReturn("Ugh, that task doesn't exist. Pick between 1 and 3.");
+        String errorMessage = "Ugh, that task doesn't exist. Pick between 1 and 3.";
+        doThrow(new CommandException(errorMessage)).when(taskList).validateTaskNumber(taskNumber);
 
         CommandException thrown = assertThrows(CommandException.class,
                 () -> command.execute(taskList, ui, storage),
                 "Should throw CommandException for negative task number");
 
-        assertEquals("Ugh, that task doesn't exist. Pick between 1 and 3.",
-                thrown.getMessage(), "Exception message should match TaskList error");
+        assertEquals(errorMessage, thrown.getMessage(),
+                "Exception message should match TaskList error");
     }
 }
