@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * Represents a task that starts at a specific date/time and ends at a specific date/time.
  * Event tasks have both start and end date/time attached to them.
  */
-public class Event extends Task {
+public class Event extends Task implements DateFilterable {
 
     private final LocalDateTime from;
     private final LocalDateTime to;

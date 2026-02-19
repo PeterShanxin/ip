@@ -1,5 +1,6 @@
 package monday.ui;
 
+import monday.constants.MessageConstants;
 import monday.task.Task;
 
 /**
@@ -25,9 +26,10 @@ public class ResponseBuilder {
      * @param totalTasks The total number of tasks after adding.
      */
     public void showTaskAdded(Task task, int totalTasks) {
-        String message = "Fine. I've added this todo:\n" + "  " + task + "\n"
-                + "Now you have " + totalTasks + (totalTasks == 1 ? " task" : " tasks")
-                + " in the list.";
+        String message = MessageConstants.SUCCESS_TASK_ADDED_PREFIX + "  " + task + "\n"
+                + (totalTasks == 1 ? MessageConstants.SUCCESS_TASK_COUNT_SINGULAR
+                        : MessageConstants.SUCCESS_TASK_COUNT_PREFIX + totalTasks
+                                + MessageConstants.SUCCESS_TASK_COUNT_PLURAL);
         messageFormatter.showResponse(message);
     }
 
@@ -38,9 +40,10 @@ public class ResponseBuilder {
      * @param totalTasks The total number of tasks after deletion.
      */
     public void showTaskDeleted(Task task, int totalTasks) {
-        String message = "Noted. I've removed this task:\n" + "  " + task + "\n"
-                + "Now you have " + totalTasks + (totalTasks == 1 ? " task" : " tasks")
-                + " in the list.";
+        String message = MessageConstants.SUCCESS_TASK_DELETED_PREFIX + "  " + task + "\n"
+                + (totalTasks == 1 ? MessageConstants.SUCCESS_TASK_COUNT_SINGULAR
+                        : MessageConstants.SUCCESS_TASK_COUNT_PREFIX + totalTasks
+                                + MessageConstants.SUCCESS_TASK_COUNT_PLURAL);
         messageFormatter.showResponse(message);
     }
 
@@ -51,8 +54,8 @@ public class ResponseBuilder {
      * @param isDone true if task was marked as done, false if unmarked.
      */
     public void showTaskMarked(Task task, boolean isDone) {
-        String message = (isDone ? "Fine. I've marked this task as done:"
-                                : "Ugh, I've marked this task as not done:")
+        String message = (isDone ? MessageConstants.SUCCESS_TASK_MARKED_DONE
+                                : MessageConstants.SUCCESS_TASK_UNMARKED)
                 + "\n" + "  " + task;
         messageFormatter.showResponse(message);
     }
@@ -61,7 +64,7 @@ public class ResponseBuilder {
      * Displays a farewell message when user exits.
      */
     public void showFarewell() {
-        messageFormatter.showResponse("Finally, you're leaving. Don't come back too soon.");
+        messageFormatter.showResponse(MessageConstants.FAREWELL_MESSAGE);
     }
 
     /**
@@ -69,19 +72,19 @@ public class ResponseBuilder {
      * Maintains Monday's grumpy personality while being reluctantly helpful.
      */
     public void showHelp() {
-        String response = "Ugh. Fine. Here's what I understand (not that you'll listen):\n"
-                + "  todo <description>           - Add a todo task\n"
-                + "  deadline <desc> /by <time>   - Add a deadline task\n"
-                + "  event <desc> /from <start> /to <end> - Add an event\n"
-                + "  list                         - Show all tasks\n"
-                + "  find <keyword>               - Find tasks by keyword\n"
-                + "  view <date>                  - Show tasks for a specific date (yyyy-MM-dd)\n"
-                + "  mark <number>                - Mark task as done\n"
-                + "  unmark <number>              - Mark task as not done\n"
-                + "  delete <number>              - Delete a task (no going back)\n"
-                + "  cheer                        - Get \"motivated\" (you'll need it)\n"
-                + "  help                         - Show this help (you're welcome)\n"
-                + "  bye / exit                   - Get rid of me";
+        String response = MessageConstants.HELP_HEADER
+                + MessageConstants.HELP_TODO
+                + MessageConstants.HELP_DEADLINE
+                + MessageConstants.HELP_EVENT
+                + MessageConstants.HELP_LIST
+                + MessageConstants.HELP_FIND
+                + MessageConstants.HELP_VIEW
+                + MessageConstants.HELP_MARK
+                + MessageConstants.HELP_UNMARK
+                + MessageConstants.HELP_DELETE
+                + MessageConstants.HELP_CHEER
+                + MessageConstants.HELP_HELP
+                + MessageConstants.HELP_EXIT;
         messageFormatter.showResponse(response);
     }
 }

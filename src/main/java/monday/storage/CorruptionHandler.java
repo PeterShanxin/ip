@@ -1,5 +1,7 @@
 package monday.storage;
 
+import monday.constants.MessageConstants;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,8 +11,6 @@ import java.nio.file.StandardOpenOption;
  * Handles corrupted lines in storage.
  */
 public class CorruptionHandler {
-
-    private static final String CORRUPTED_LINE_MESSAGE = "Ugh. Skipping corrupted line ";
 
     private final Path dataDir;
     private final Path corruptedFilePath;
@@ -43,7 +43,7 @@ public class CorruptionHandler {
                     StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         } catch (IOException e) {
             // Backup failure should not prevent loading - just warn
-            System.err.println("Warning: Couldn't backup corrupted line.");
+            System.err.println(MessageConstants.BACKUP_WARNING);
         }
     }
 
@@ -53,6 +53,6 @@ public class CorruptionHandler {
      * @param lineNumber The line number.
      */
     public void printCorruptedLineMessage(int lineNumber) {
-        System.err.println(CORRUPTED_LINE_MESSAGE + lineNumber);
+        System.err.println(MessageConstants.CORRUPTED_LINE_MESSAGE_PREFIX + lineNumber);
     }
 }

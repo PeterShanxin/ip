@@ -3,13 +3,14 @@ package monday.parser;
 import monday.command.AddDeadlineCommand;
 import monday.command.AddEventCommand;
 import monday.command.AddToDoCommand;
-import monday.command.CheerCommand;
 import monday.command.Command;
 import monday.command.CommandType;
 import monday.command.DeleteCommand;
 import monday.command.FindCommand;
 import monday.command.MarkCommand;
 import monday.command.ViewCommand;
+import monday.constants.MessageConstants;
+import monday.constants.ValidationConstants;
 import monday.exception.ParseException;
 import monday.task.TaskPrefix;
 import monday.util.DateTimeParser;
@@ -108,7 +109,7 @@ public class TaskArgumentParser {
     public Command parseToDoCommand(String userInput) throws ParseException {
         String description = commandParser.extractDescription(userInput, CommandType.TODO.getCommand()).trim();
         if (description.isEmpty()) {
-            throw new ParseException("Ugh, a todo needs a description. Try 'todo borrow book'.");
+            throw new ParseException(MessageConstants.ERROR_TODO_NO_DESCRIPTION);
         }
         return new AddToDoCommand(description);
     }
@@ -123,18 +124,17 @@ public class TaskArgumentParser {
     public Command parseDeadlineCommand(String userInput) throws ParseException {
         String content = commandParser.extractDescription(userInput, CommandType.DEADLINE.getCommand());
 
-        validateContainsPrefix(content, TaskPrefix.BY,
-                "Ugh, deadlines need a '/by' time. Try 'deadline return book /by 2019-12-02 1800'.");
+        validateContainsPrefix(content, TaskPrefix.BY, MessageConstants.ERROR_DEADLINE_NO_BY_PREFIX);
 
         String[] parts = parsePrefixField(content, TaskPrefix.BY);
         String description = parts[0].trim();
         String by = parts[1].trim();
 
         if (description.isEmpty()) {
-            throw new ParseException("Ugh, what's the deadline for? Try 'deadline return book /by 2019-12-02 1800'.");
+            throw new ParseException(MessageConstants.ERROR_DEADLINE_NO_DESCRIPTION);
         }
         if (by.isEmpty()) {
-            throw new ParseException("Ugh, when is it due? Try 'deadline return book /by 2019-12-02 1800'.");
+            throw new ParseException(MessageConstants.ERROR_DEADLINE_NO_TIME);
         }
 
         LocalDateTime byDateTime = parseDateTimeField(by);
@@ -151,12 +151,8 @@ public class TaskArgumentParser {
     public Command parseEventCommand(String userInput) throws ParseException {
         String content = commandParser.extractDescription(userInput, CommandType.EVENT.getCommand());
 
-        validateContainsPrefix(content, TaskPrefix.FROM,
-                "Ugh, events need '/from' and '/to' times. "
-                + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
-        validateContainsPrefix(content, TaskPrefix.TO,
-                "Ugh, events need '/from' and '/to' times. "
-                + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
+        validateContainsPrefix(content, TaskPrefix.FROM, MessageConstants.ERROR_EVENT_NO_PREFIXES);
+        validateContainsPrefix(content, TaskPrefix.TO, MessageConstants.ERROR_EVENT_NO_PREFIXES);
 
         String[] fromParts = parsePrefixField(content, TaskPrefix.FROM);
         String description = fromParts[0].trim();
@@ -165,16 +161,13 @@ public class TaskArgumentParser {
         String to = toParts.length > 1 ? toParts[1].trim() : "";
 
         if (description.isEmpty()) {
-            throw new ParseException("Ugh, what's the event? "
-                    + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
+            throw new ParseException(MessageConstants.ERROR_EVENT_NO_DESCRIPTION);
         }
         if (from.isEmpty()) {
-            throw new ParseException("Ugh, when does it start? "
-                    + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
+            throw new ParseException(MessageConstants.ERROR_EVENT_NO_FROM);
         }
         if (to.isEmpty()) {
-            throw new ParseException("Ugh, when does it end? "
-                    + "Try 'event project meeting /from 2019-12-25 1400 /to 2019-12-25 1800'.");
+            throw new ParseException(MessageConstants.ERROR_EVENT_NO_TO);
         }
 
         LocalDateTime fromDateTime = parseDateTimeField(from);
@@ -195,15 +188,14 @@ public class TaskArgumentParser {
         String dateString = commandParser.extractDescription(userInput, CommandType.VIEW.getCommand()).trim();
 
         if (dateString.isEmpty()) {
-            throw new ParseException("Ugh, what date do you want to view? Try 'view 2019-12-25'.");
+            throw new ParseException(MessageConstants.ERROR_VIEW_NO_DATE);
         }
 
         try {
             LocalDateTime targetDate = dateParser.parseViewDate(dateString);
             return new ViewCommand(targetDate);
         } catch (DateTimeParseException e) {
-            throw new ParseException("Ugh, I can't understand that date. "
-                    + "Try 'yyyy-MM-dd' or 'd/M/yyyy' format.");
+            throw new ParseException(MessageConstants.ERROR_INVALID_DATE_FORMAT);
         }
     }
 
@@ -218,26 +210,10 @@ public class TaskArgumentParser {
         String keyword = commandParser.extractDescription(userInput, CommandType.FIND.getCommand()).trim();
 
         if (keyword.isEmpty()) {
-            throw new ParseException("Ugh, find what? Try 'find book'.");
+            throw new ParseException(MessageConstants.ERROR_FIND_NO_KEYWORD);
         }
 
         return new FindCommand(keyword);
-    }
-
-    /**
-     * Parses a cheer command.
-     * Cheer command takes no arguments.
-     *
-     * @param userInput The user input.
-     * @return A CheerCommand.
-     * @throws ParseException If parsing fails.
-     */
-    public Command parseCheerCommand(String userInput) throws ParseException {
-        if (commandParser.isCommandOnlyInput(userInput, CommandType.CHEER)) {
-            throw new ParseException("Ugh, cheer command takes no arguments. Just type 'cheer'.");
-        }
-
-        return new CheerCommand();
     }
 
     // ========== Common Validation Methods ==========
@@ -303,8 +279,7 @@ public class TaskArgumentParser {
         try {
             return DateTimeParser.parseDateTime(dateTimeString);
         } catch (DateTimeParseException e) {
-            throw new ParseException("Ugh, I can't understand that date. "
-                    + "Try 'yyyy-MM-dd HHmm' or 'd/M/yyyy HHmm' format.");
+            throw new ParseException(MessageConstants.ERROR_INVALID_DATETIME_FORMAT);
         }
     }
 

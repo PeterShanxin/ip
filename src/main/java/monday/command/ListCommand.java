@@ -24,14 +24,4 @@ public class ListCommand extends Command {
         ui.showTaskList(taskList.getTasks());
         return new CommandResult(false, false);
     }
-
-    /**
-     * Checks if this command should exit the application.
-     *
-     * @return false, as this is not an exit command.
-     */
-    @Override
-    public boolean isExit() {
-        return false;
-    }
 }

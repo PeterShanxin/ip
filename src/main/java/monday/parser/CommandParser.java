@@ -13,6 +13,7 @@ import monday.command.HelpCommand;
 import monday.command.ListCommand;
 import monday.command.MarkCommand;
 import monday.command.ViewCommand;
+import monday.constants.MessageConstants;
 import monday.exception.ParseException;
 
 /**
@@ -41,7 +42,7 @@ public class CommandParser {
      */
     public Command parseCommand(String userInput) throws ParseException {
         if (userInput == null || userInput.trim().isEmpty()) {
-            throw new ParseException("Ugh, you didn't actually say anything. Try again.");
+            throw new ParseException(MessageConstants.ERROR_EMPTY_INPUT);
         }
 
         String commandWord = extractCommandWord(userInput);
@@ -129,7 +130,7 @@ public class CommandParser {
      * @return The error message.
      */
     public String getUnknownCommandErrorMessage(String commandWord) {
-        return "Ugh, I don't understand '" + commandWord + "'. "
-             + "Type 'help' if you're confused. It's probably hopeless though.";
+        return MessageConstants.ERROR_UNKNOWN_COMMAND_PREFIX + commandWord
+                + MessageConstants.ERROR_UNKNOWN_COMMAND_SUFFIX;
     }
 }

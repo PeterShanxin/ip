@@ -1,18 +1,16 @@
 package monday.ui;
 
+import monday.constants.MessageConstants;
+import monday.constants.ValidationConstants;
 import monday.task.Task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
  * Formats task lists for display.
  */
 public class TaskListFormatter {
-
-    private static final DateTimeFormatter VIEW_OUTPUT_FORMATTER =
-            DateTimeFormatter.ofPattern("MMM dd yyyy");
 
     private final MessageFormatter messageFormatter;
 
@@ -32,7 +30,7 @@ public class TaskListFormatter {
      */
     public void showTaskList(List<Task> tasks) {
         if (tasks.isEmpty()) {
-            messageFormatter.showResponse("Skeptical. You haven't told me to do anything yet.");
+            messageFormatter.showResponse(MessageConstants.INFO_EMPTY_TASK_LIST);
         } else {
             String formattedList = formatTaskList(tasks);
             messageFormatter.showResponse(formattedList);
@@ -47,13 +45,14 @@ public class TaskListFormatter {
      */
     public void showFilteredTasks(List<Task> tasks, LocalDateTime date) {
         if (tasks.isEmpty()) {
-            messageFormatter.showResponse("Skeptical. Nothing scheduled for "
-                    + date.format(VIEW_OUTPUT_FORMATTER) + ".");
+            messageFormatter.showResponse(MessageConstants.INFO_NO_FILTERED_TASKS_PREFIX
+                    + date.format(ValidationConstants.VIEW_OUTPUT_FORMATTER)
+                    + MessageConstants.INFO_NO_FILTERED_TASKS_SUFFIX);
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append("Ugh. Here's what you have on ")
-              .append(date.format(VIEW_OUTPUT_FORMATTER))
-              .append(":\n");
+            sb.append(MessageConstants.INFO_FILTERED_TASKS_PREFIX)
+              .append(date.format(ValidationConstants.VIEW_OUTPUT_FORMATTER))
+              .append(MessageConstants.INFO_FILTERED_TASKS_SUFFIX);
             sb.append(formatTaskList(tasks));
             messageFormatter.showResponse(sb.toString());
         }
@@ -67,10 +66,11 @@ public class TaskListFormatter {
      */
     public void showMatchingTasks(List<Task> tasks, String keyword) {
         if (tasks.isEmpty()) {
-            messageFormatter.showResponse("Fine. No tasks match \"" + keyword + "\". Shocking, I know.");
+            messageFormatter.showResponse(MessageConstants.INFO_NO_MATCHING_TASKS_PREFIX + keyword
+                    + MessageConstants.INFO_NO_MATCHING_TASKS_SUFFIX);
         } else {
             StringBuilder sb = new StringBuilder();
-            sb.append("Here are matching tasks in your list:\n");
+            sb.append(MessageConstants.INFO_MATCHING_TASKS);
             sb.append(formatTaskList(tasks));
             messageFormatter.showResponse(sb.toString());
         }

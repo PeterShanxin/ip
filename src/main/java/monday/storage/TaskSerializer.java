@@ -1,5 +1,7 @@
 package monday.storage;
 
+import monday.constants.ApplicationConstants;
+import monday.constants.ValidationConstants;
 import monday.task.Deadline;
 import monday.task.Event;
 import monday.task.Task;
@@ -16,8 +18,8 @@ public class TaskSerializer {
      * @return The encoded string representation.
      */
     public String encodeTask(Task task) {
-        String type = task.getTypeIcon().replaceAll("[\\[\\]]", "");
-        String done = task.isDone() ? "1" : "0";
+        String type = task.getTypeIcon().replaceAll(ValidationConstants.TASK_ICON_BRACKET_REGEX, "");
+        String done = task.isDone() ? ApplicationConstants.TASK_STATUS_DONE : ApplicationConstants.TASK_STATUS_NOT_DONE;
         String desc = task.getDescription();
 
         if (task instanceof Deadline) {

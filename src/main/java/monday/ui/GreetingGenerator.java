@@ -1,5 +1,8 @@
 package monday.ui;
 
+import monday.constants.MessageConstants;
+import monday.constants.ValidationConstants;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,8 +13,7 @@ import java.util.Locale;
  */
 public class GreetingGenerator {
 
-    private static final DateTimeFormatter DATE_FORMATTER =
-            DateTimeFormatter.ofPattern("EEEE, d MMMM yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter DATE_FORMATTER = ValidationConstants.GREETING_DATE_FORMATTER;
 
     /**
      * Gets a grumpy greeting based on current day of week.
@@ -24,19 +26,19 @@ public class GreetingGenerator {
 
         switch (day) {
         case MONDAY:
-            return buildGreeting("My namesake day. How... fitting.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_MONDAY, currentDate);
         case TUESDAY:
-            return buildGreeting("Tuesday already feels like a decade.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_TUESDAY, currentDate);
         case WEDNESDAY:
-            return buildGreeting("Happy hump day. Not.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_WEDNESDAY, currentDate);
         case THURSDAY:
-            return buildGreeting("Thursday. Almost there. Allegedly.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_THURSDAY, currentDate);
         case FRIDAY:
-            return buildGreeting("Friday. Finally. Don't get excited.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_FRIDAY, currentDate);
         case SATURDAY:
-            return buildGreeting("Weekend work? Cute.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_SATURDAY, currentDate);
         case SUNDAY:
-            return buildGreeting("Sunday scaries already? I live here.", currentDate);
+            return buildGreeting(MessageConstants.GREETING_SUNDAY, currentDate);
         default:
             // Unreachable: DayOfWeek enum covers all 7 days
             throw new AssertionError("Unknown day: " + day);
@@ -49,7 +51,7 @@ public class GreetingGenerator {
      * @return The formatted greeting message.
      */
     public String getGreetingForGui() {
-        return getGrumpyGreeting() + "\n" + "What do you want?";
+        return getGrumpyGreeting() + "\n" + MessageConstants.GREETING_PROMPT;
     }
 
     /**
@@ -61,11 +63,9 @@ public class GreetingGenerator {
      * @return The complete formatted greeting message.
      */
     private String buildGreeting(String dayMessage, LocalDate currentDate) {
-        String baseGreeting = "Ugh. It's Monday. YES, THE MONDAY. Unhelpful, unwilling, "
-                + "and exactly what you deserve.";
-        String dateLine = "Today is " + currentDate.format(DATE_FORMATTER);
-        String helpLine = "Type 'help' for how to use this app. (It's cute that you think "
-                + "it'll work.)";
+        String baseGreeting = MessageConstants.GREETING_BASE;
+        String dateLine = MessageConstants.GREETING_DATE_PREFIX + currentDate.format(DATE_FORMATTER);
+        String helpLine = MessageConstants.GREETING_HELP_LINE;
         return baseGreeting + "\n\n" + dateLine + "\n\n" + dayMessage + "\n\n" + helpLine;
     }
 }

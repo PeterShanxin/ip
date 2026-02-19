@@ -1,5 +1,6 @@
 package monday.storage;
 
+import monday.constants.ValidationConstants;
 import monday.task.Deadline;
 import monday.task.Event;
 import monday.task.Task;
@@ -22,15 +23,15 @@ public class TaskDeserializer {
      */
     public Task parseTask(String line) {
         // Split by pipe delimiter with optional spaces
-        String[] parts = line.split("\\s*\\|\\s*");
+        String[] parts = line.split(ValidationConstants.PIPE_DELIMITER_REGEX);
 
         // Minimum: type, status, description
-        if (parts.length < 3) {
+        if (parts.length < ValidationConstants.MIN_STORAGE_PARTS) {
             return null;
         }
 
         String type = parts[0].trim();
-        boolean isDone = parts[1].trim().equals("1");
+        boolean isDone = parts[1].trim().equals(ValidationConstants.TASK_STATUS_DONE);
         String description = parts[2].trim();
 
         // Validate description is not empty
@@ -41,16 +42,16 @@ public class TaskDeserializer {
         Task task;
 
         switch (type) {
-        case "T":
+        case ValidationConstants.TASK_CODE_TODO:
             task = new ToDo(description);
             break;
-        case "D":
+        case ValidationConstants.TASK_CODE_DEADLINE:
             task = parseDeadline(parts);
             if (task == null) {
                 return null;
             }
             break;
-        case "E":
+        case ValidationConstants.TASK_CODE_EVENT:
             task = parseEvent(parts);
             if (task == null) {
                 return null;
@@ -76,7 +77,7 @@ public class TaskDeserializer {
      * @return The Deadline task, or null if invalid.
      */
     private Task parseDeadline(String[] parts) {
-        if (parts.length < 4) {
+        if (parts.length < ValidationConstants.DEADLINE_STORAGE_PARTS) {
             return null;
         }
         // Format: D | 0 | description | by: deadline
@@ -100,7 +101,7 @@ public class TaskDeserializer {
      * @return The Event task, or null if invalid.
      */
     private Task parseEvent(String[] parts) {
-        if (parts.length < 5) {
+        if (parts.length < ValidationConstants.EVENT_STORAGE_PARTS) {
             return null;
         }
         // Format: E | 0 | description | from: start | to: end
@@ -126,8 +127,8 @@ public class TaskDeserializer {
      * @return The extracted value.
      */
     private String extractFieldValue(String fieldPart) {
-        String[] parts = fieldPart.split(":", 2);
-        if (parts.length < 2) {
+        String[] parts = fieldPart.split(ValidationConstants.COLON_SPLIT_REGEX, ValidationConstants.MAX_PREFIX_SPLIT_PARTS);
+        if (parts.length < ValidationConstants.MIN_FIELD_SPLIT_PARTS) {
             return "";
         }
         return parts[1].trim();

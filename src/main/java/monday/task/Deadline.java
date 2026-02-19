@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * Represents a task that needs to be done before a specific date/time.
  * Deadline tasks have a due date/time attached to them.
  */
-public class Deadline extends Task {
+public class Deadline extends Task implements DateFilterable {
 
     private final LocalDateTime by;
 

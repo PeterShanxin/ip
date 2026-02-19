@@ -65,7 +65,8 @@ public class Ui {
      * Each day has a unique sarcastic message reflecting Monday's personality.
      */
     public void showGreeting() {
-        String greeting = greetingGenerator.getGrumpyGreeting() + "\n" + "What do you want?";
+        String greeting = greetingGenerator.getGrumpyGreeting() + "\n"
+                + monday.constants.MessageConstants.GREETING_PROMPT;
         showResponse(greeting);
     }
 

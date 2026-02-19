@@ -1,5 +1,7 @@
 package monday.parser;
 
+import monday.constants.ValidationConstants;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,10 +12,8 @@ import java.time.format.DateTimeParseException;
  */
 public class DateParser {
 
-    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_1 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_2 =
-            DateTimeFormatter.ofPattern("d/M/yyyy");
+    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_1 = ValidationConstants.VIEW_INPUT_FORMATTER_1;
+    private static final DateTimeFormatter VIEW_INPUT_FORMATTER_2 = ValidationConstants.VIEW_INPUT_FORMATTER_2;
 
     /**
      * Parses a date string for the view command.

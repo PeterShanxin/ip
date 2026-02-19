@@ -1,5 +1,7 @@
 package monday.parser;
 
+import monday.constants.MessageConstants;
+import monday.constants.ValidationConstants;
 import monday.exception.ParseException;
 
 /**
@@ -17,10 +19,11 @@ public class TaskNumberParser {
      */
     public int parseTaskNumber(String userInput, String commandName) throws ParseException {
         try {
-            String[] parts = userInput.trim().split("\\s+", 2);
+            String[] parts = userInput.trim().split(ValidationConstants.WHITESPACE_REGEX, 2);
             return Integer.parseInt(parts[1].trim());
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            throw new ParseException("Ugh, that's not a valid number. Try '" + commandName + " 1' instead.");
+            throw new ParseException(MessageConstants.ERROR_INVALID_NUMBER_PREFIX + commandName
+                    + MessageConstants.ERROR_INVALID_NUMBER_SUFFIX);
         }
     }
 }

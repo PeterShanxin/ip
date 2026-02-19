@@ -1,12 +1,11 @@
 package monday.ui;
 
+import monday.constants.MessageConstants;
+
 /**
  * Formats messages for display.
  */
 public class MessageFormatter {
-
-    private static final String LINE = "____________________________________________________________"
-            + "______";
 
     /**
      * Wraps a message with line separators and blank lines.
@@ -16,10 +15,10 @@ public class MessageFormatter {
      */
     private String wrapWithLine(String message) {
         StringBuilder sb = new StringBuilder();
-        sb.append(LINE).append("\n");
+        sb.append(MessageConstants.LINE_SEPARATOR).append("\n");
         sb.append("\n");  // blank line after opening LINE
         sb.append(message).append("\n");
-        sb.append(LINE).append("\n");
+        sb.append(MessageConstants.LINE_SEPARATOR).append("\n");
         sb.append("\n");  // blank line after closing LINE
         return sb.toString();
     }
@@ -46,7 +45,7 @@ public class MessageFormatter {
      * Displays an error message for empty input.
      */
     public void showEmptyInputError() {
-        showResponse("Ugh, you didn't actually say anything. Try again.");
+        showResponse(MessageConstants.ERROR_EMPTY_INPUT);
     }
 
     /**
@@ -56,7 +55,9 @@ public class MessageFormatter {
      * @param example The example of correct usage.
      */
     public void showCommandOnlyError(String command, String example) {
-        showResponse("Ugh, " + command + " needs more info. Try '" + example + "'.");
+        showResponse(MessageConstants.ERROR_COMMAND_WITHOUT_ARGS_PREFIX + command
+                + MessageConstants.ERROR_COMMAND_WITHOUT_ARGS_SUFFIX + example
+                + MessageConstants.ERROR_COMMAND_WITHOUT_ARGS_END);
     }
 
     /**
@@ -66,9 +67,10 @@ public class MessageFormatter {
      */
     public void showInvalidTaskNumberError(int taskCount) {
         if (taskCount == 0) {
-            showResponse("Skeptical. You haven't told me to do anything yet.");
+            showResponse(MessageConstants.ERROR_INVALID_TASK_NUMBER_EMPTY);
         } else {
-            showResponse("Ugh, that task doesn't exist. Pick between 1 and " + taskCount + ".");
+            showResponse(MessageConstants.ERROR_INVALID_TASK_NUMBER_PREFIX + taskCount
+                    + MessageConstants.ERROR_INVALID_TASK_NUMBER_SUFFIX);
         }
     }
 
@@ -78,8 +80,10 @@ public class MessageFormatter {
      * @param count The number of corrupted lines.
      */
     public void showCorruptionMessage(int count) {
-        String unit = count == 1 ? " corrupted line." : " corrupted lines.";
-        String message = "Ugh. I skipped " + count + unit + "\nCheck monday.txt.corrupted for recovery.";
+        String unit = count == 1 ? MessageConstants.INFO_CORRUPTION_SUFFIX_SINGULAR
+                : MessageConstants.INFO_CORRUPTION_SUFFIX_PLURAL;
+        String message = MessageConstants.INFO_CORRUPTION_PREFIX + count + unit + "\n"
+                + MessageConstants.INFO_CORRUPTION_RECOVERY;
         showResponse(message);
     }
 

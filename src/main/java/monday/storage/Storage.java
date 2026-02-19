@@ -1,5 +1,7 @@
 package monday.storage;
 
+import monday.constants.MessageConstants;
+import monday.exception.ErrorHandler;
 import monday.exception.MondayStorageException;
 import monday.task.LoadResult;
 import monday.task.Task;
@@ -82,7 +84,9 @@ public class Storage {
             lastLoadResult = result;
             return result;
         } catch (java.io.IOException e) {
-            throw new MondayStorageException("Ugh. I can't access your data file. " + e.getMessage());
+            throw new MondayStorageException(
+                ErrorHandler.createStorageErrorMessage(MessageConstants.STORAGE_ERROR_DATA_FILE_ACCESS, e)
+            );
         }
     }
 
@@ -112,7 +116,9 @@ public class Storage {
             // Save lines to file
             fileStorage.saveLines(lines);
         } catch (java.io.IOException e) {
-            throw new MondayStorageException("Ugh. I couldn't save your tasks. " + e.getMessage());
+            throw new MondayStorageException(
+                ErrorHandler.createStorageErrorMessage(MessageConstants.STORAGE_ERROR_SAVE_TASKS, e)
+            );
         }
     }
 }
