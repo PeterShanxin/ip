@@ -40,10 +40,13 @@ public class MarkCommand extends Command {
         taskList.validateTaskNumber(taskNumber);
 
         Task task = taskList.getTask(taskNumber);
+        assert task != null : "Task should not be null";
         if (markAsDone) {
             task.markAsDone();
+            // Postcondition: Task should be marked as done
         } else {
             task.markAsNotDone();
+            assert !task.isDone() : "Task should be marked as not done";
         }
 
         ui.showTaskMarked(task, markAsDone);

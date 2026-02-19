@@ -35,7 +35,12 @@ public class FindCommand extends Command {
      */
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) {
+        assert taskList != null : "TaskList should not be null";
+        assert ui != null : "Ui should not be null";
+        assert storage != null : "Storage should not be null";
+        
         List<Task> matchingTasks = taskList.getFilteredTasks(keyword);
+        assert matchingTasks != null : "Matching tasks list should not be null";
         ui.showMatchingTasks(matchingTasks, keyword);
         return new CommandResult(false, false);
     }

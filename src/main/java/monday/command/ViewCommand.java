@@ -36,7 +36,13 @@ public class ViewCommand extends Command {
      */
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) {
+        assert taskList != null : "TaskList should not be null";
+        assert ui != null : "Ui should not be null";
+        assert storage != null : "Storage should not be null";
+        assert date != null : "Date should not be null";
+        
         List<Task> filteredTasks = taskList.filterTasksByDate(date);
+        assert filteredTasks != null : "Filtered tasks list should not be null";
         ui.showFilteredTasks(filteredTasks, date);
         return new CommandResult(false, false);
     }

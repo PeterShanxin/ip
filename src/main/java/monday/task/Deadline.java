@@ -21,6 +21,7 @@ public class Deadline extends Task implements DateFilterable {
     public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
+        assert this.by != null : "Deadline by date/time should not be null";
     }
 
     /**

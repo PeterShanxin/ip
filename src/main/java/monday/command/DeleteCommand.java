@@ -37,6 +37,7 @@ public class DeleteCommand extends Command {
         taskList.validateTaskNumber(taskNumber);
 
         Task deletedTask = taskList.deleteTask(taskNumber);
+        assert deletedTask != null : "Deleted task should not be null";
         ui.showTaskDeleted(deletedTask, taskList.getTaskCount());
         return new CommandResult(true, false);
     }
