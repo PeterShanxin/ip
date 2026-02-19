@@ -7,19 +7,41 @@ package monday.task;
 public class Task {
     private static final String DONE_ICON = "[X]";
     private static final String TODO_ICON = "[ ]";
+    private static final int MAX_DESCRIPTION_LENGTH = 500;
 
     private final String description;
     private boolean isDone;
 
     /**
-     * Creates a new task with the given description.
+     * Creates a new task with given description.
      * Tasks are initially not completed.
      *
      * @param description The task description.
+     * @throws IllegalArgumentException If description is null, empty, or too long.
      */
     public Task(String description) {
+        validateDescription(description);
         this.description = description;
         this.isDone = false;
+    }
+
+    /**
+     * Validates the task description.
+     *
+     * @param description The description to validate.
+     * @throws IllegalArgumentException If description is null, empty, or too long.
+     */
+    private void validateDescription(String description) {
+        if (description == null) {
+            throw new IllegalArgumentException("Ugh, task description cannot be null.");
+        }
+        if (description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Ugh, task description cannot be empty.");
+        }
+        if (description.length() > MAX_DESCRIPTION_LENGTH) {
+            throw new IllegalArgumentException("Ugh, task description is too long. "
+                    + "Maximum is " + MAX_DESCRIPTION_LENGTH + " characters.");
+        }
     }
 
     /**
@@ -39,7 +61,7 @@ public class Task {
     }
 
     /**
-     * Returns the completion status of this task.
+     * Returns completion status of this task.
      *
      * @return true if task is done, false otherwise.
      */
@@ -48,7 +70,7 @@ public class Task {
     }
 
     /**
-     * Returns the status icon for this task.
+     * Returns status icon for this task.
      *
      * @return "[X]" if done, "[ ]" if not done.
      */
@@ -57,7 +79,7 @@ public class Task {
     }
 
     /**
-     * Returns the description of this task.
+     * Returns description of this task.
      *
      * @return The task description.
      */
@@ -66,7 +88,7 @@ public class Task {
     }
 
     /**
-     * Returns the type-specific icon for this task.
+     * Returns type-specific icon for this task.
      * Default implementation returns generic icon for backward compatibility.
      * Subclasses override to provide their type identifier.
      *
@@ -77,8 +99,8 @@ public class Task {
     }
 
     /**
-     * Returns the full description including type-specific details.
-     * Base implementation returns just the description.
+     * Returns full description including type-specific details.
+     * Base implementation returns just description.
      * Subclasses override to add date/time information.
      *
      * @return The full description.
@@ -88,7 +110,7 @@ public class Task {
     }
 
     /**
-     * Returns the string representation of this task.
+     * Returns string representation of this task.
      *
      * @return "typeIcon statusIcon fullDescription" format.
      */

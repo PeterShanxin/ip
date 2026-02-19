@@ -1,5 +1,7 @@
 package monday.command;
 
+import monday.constants.ApplicationConstants;
+import monday.constants.MessageConstants;
 import monday.storage.Storage;
 import monday.task.TaskList;
 import monday.ui.Ui;
@@ -16,12 +18,6 @@ import java.util.List;
  * Reads quotes from a file and displays one at random with colored output.
  */
 public class CheerCommand extends Command {
-
-    private static final String CHEER_FILE_PATH = "data/cheer.txt";
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String DEFAULT_QUOTE =
-            "Congratulations on doing the bare minimum. That's still more than most people manage.";
 
     /**
      * Executes the cheer command.
@@ -41,16 +37,6 @@ public class CheerCommand extends Command {
     }
 
     /**
-     * Checks if this command should exit the application.
-     *
-     * @return false, as this is not an exit command.
-     */
-    @Override
-    public boolean isExit() {
-        return false;
-    }
-
-    /**
      * Loads quotes from the cheer file.
      * Returns a default quote if the file cannot be read.
      *
@@ -58,7 +44,7 @@ public class CheerCommand extends Command {
      */
     private List<String> loadQuotes() {
         List<String> quotes = new ArrayList<>();
-        Path path = Paths.get(CHEER_FILE_PATH);
+        Path path = Paths.get(ApplicationConstants.CHEER_FILE_PATH);
 
         if (Files.exists(path)) {
             try {
@@ -71,7 +57,7 @@ public class CheerCommand extends Command {
         }
 
         if (quotes.isEmpty()) {
-            quotes.add(DEFAULT_QUOTE);
+            quotes.add(MessageConstants.DEFAULT_CHEER_QUOTE);
         }
 
         return quotes;
@@ -85,6 +71,6 @@ public class CheerCommand extends Command {
      */
     private String selectRandomQuote(List<String> quotes) {
         int index = (int) (Math.random() * quotes.size());
-        return ANSI_YELLOW + quotes.get(index) + ANSI_RESET;
+        return ApplicationConstants.ANSI_YELLOW + quotes.get(index) + ApplicationConstants.ANSI_RESET;
     }
 }

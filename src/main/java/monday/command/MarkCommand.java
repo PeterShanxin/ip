@@ -37,13 +37,7 @@ public class MarkCommand extends Command {
      */
     @Override
     public CommandResult execute(TaskList taskList, Ui ui, Storage storage) throws CommandException {
-        assert taskList != null : "TaskList should not be null";
-        assert ui != null : "Ui should not be null";
-        assert storage != null : "Storage should not be null";
-        
-        if (!taskList.isValidTaskNumber(taskNumber)) {
-            throw new CommandException(taskList.getInvalidTaskNumberMessage());
-        }
+        taskList.validateTaskNumber(taskNumber);
 
         Task task = taskList.getTask(taskNumber);
         assert task != null : "Task should not be null";
@@ -57,15 +51,5 @@ public class MarkCommand extends Command {
 
         ui.showTaskMarked(task, markAsDone);
         return new CommandResult(true, false);
-    }
-
-    /**
-     * Checks if this command should exit the application.
-     *
-     * @return false, as this is not an exit command.
-     */
-    @Override
-    public boolean isExit() {
-        return false;
     }
 }

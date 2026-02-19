@@ -1,5 +1,9 @@
 package monday.task;
 
+import monday.command.CommandException;
+import monday.constants.MessageConstants;
+import monday.constants.ValidationConstants;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +14,6 @@ import java.util.List;
  */
 public class TaskList {
 
-    private static final int MAX_TASKS = 100;
     private final ArrayList<Task> tasks;
 
     /**
@@ -43,30 +46,33 @@ public class TaskList {
      *
      * @param taskNumber The 1-indexed task number.
      * @return The deleted task.
+     * @throws CommandException If the task number is invalid.
      */
-    public Task deleteTask(int taskNumber) {
-        // Precondition: taskNumber should be >= 1 and <= tasks.size()
-        return tasks.remove(taskNumber - 1);
+    public Task deleteTask(int taskNumber) throws CommandException {
+        validateTaskNumber(taskNumber);
+        return tasks.remove(convertToZeroIndexed(taskNumber));
     }
 
     /**
      * Marks a task as done by its number (1-indexed).
      *
      * @param taskNumber The 1-indexed task number.
+     * @throws CommandException If the task number is invalid.
      */
-    public void markTaskAsDone(int taskNumber) {
-        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
-        tasks.get(taskNumber - 1).markAsDone();
+    public void markTaskAsDone(int taskNumber) throws CommandException {
+        validateTaskNumber(taskNumber);
+        tasks.get(convertToZeroIndexed(taskNumber)).markAsDone();
     }
 
     /**
      * Marks a task as not done by its number (1-indexed).
      *
      * @param taskNumber The 1-indexed task number.
+     * @throws CommandException If the task number is invalid.
      */
-    public void markTaskAsNotDone(int taskNumber) {
-        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
-        tasks.get(taskNumber - 1).markAsNotDone();
+    public void markTaskAsNotDone(int taskNumber) throws CommandException {
+        validateTaskNumber(taskNumber);
+        tasks.get(convertToZeroIndexed(taskNumber)).markAsNotDone();
     }
 
     /**
@@ -74,10 +80,11 @@ public class TaskList {
      *
      * @param taskNumber The 1-indexed task number.
      * @return The task at the specified number.
+     * @throws CommandException If the task number is invalid.
      */
-    public Task getTask(int taskNumber) {
-        assert taskNumber >= 1 && taskNumber <= tasks.size() : "Task number out of bounds";
-        return tasks.get(taskNumber - 1);
+    public Task getTask(int taskNumber) throws CommandException {
+        validateTaskNumber(taskNumber);
+        return tasks.get(convertToZeroIndexed(taskNumber));
     }
 
     /**
@@ -92,7 +99,7 @@ public class TaskList {
 
     /**
      * Filters tasks by a specific date.
-     * Returns Deadline and Event tasks that occur on the given date.
+     * Returns tasks that implement DateFilterable and occur on the given date.
      *
      * @param date The date to filter by.
      * @return A list of tasks occurring on the specified date.
@@ -100,14 +107,9 @@ public class TaskList {
     public List<Task> filterTasksByDate(LocalDateTime date) {
         List<Task> filteredTasks = new ArrayList<>();
         for (Task task : tasks) {
-            if (task instanceof Deadline) {
-                Deadline deadline = (Deadline) task;
-                if (deadline.isOnDate(date)) {
-                    filteredTasks.add(task);
-                }
-            } else if (task instanceof Event) {
-                Event event = (Event) task;
-                if (event.isOnDate(date)) {
+            if (task instanceof DateFilterable) {
+                DateFilterable dateFilterable = (DateFilterable) task;
+                if (dateFilterable.isOnDate(date)) {
                     filteredTasks.add(task);
                 }
             }
@@ -157,7 +159,7 @@ public class TaskList {
      * @return true if at max capacity, false otherwise.
      */
     public boolean isAtMaxCapacity() {
-        return tasks.size() >= MAX_TASKS;
+        return tasks.size() >= ValidationConstants.MAX_TASKS;
     }
 
     /**
@@ -167,7 +169,30 @@ public class TaskList {
      * @return true if the task number is valid, false otherwise.
      */
     public boolean isValidTaskNumber(int taskNumber) {
-        return !tasks.isEmpty() && taskNumber >= 1 && taskNumber <= tasks.size();
+        return !tasks.isEmpty() && taskNumber >= ValidationConstants.MIN_TASK_NUMBER && taskNumber <= tasks.size();
+    }
+
+    /**
+     * Converts a 1-indexed task number to a 0-indexed array index.
+     *
+     * @param taskNumber The 1-indexed task number.
+     * @return The 0-indexed array index.
+     */
+    private int convertToZeroIndexed(int taskNumber) {
+        return taskNumber - ValidationConstants.INDEX_OFFSET;
+    }
+
+    /**
+     * Validates a task number and throws an exception if invalid.
+     * This method centralizes task number validation logic.
+     *
+     * @param taskNumber The 1-indexed task number to validate.
+     * @throws CommandException If the task number is invalid.
+     */
+    public void validateTaskNumber(int taskNumber) throws CommandException {
+        if (!isValidTaskNumber(taskNumber)) {
+            throw new CommandException(getInvalidTaskNumberMessage());
+        }
     }
 
     /**
@@ -177,9 +202,10 @@ public class TaskList {
      */
     public String getInvalidTaskNumberMessage() {
         if (tasks.isEmpty()) {
-            return "Skeptical. You haven't told me to do anything yet.";
+            return MessageConstants.ERROR_INVALID_TASK_NUMBER_EMPTY;
         } else {
-            return "Ugh, that task doesn't exist. Pick between 1 and " + tasks.size() + ".";
+            return MessageConstants.ERROR_INVALID_TASK_NUMBER_PREFIX + tasks.size()
+                    + MessageConstants.ERROR_INVALID_TASK_NUMBER_SUFFIX;
         }
     }
 }

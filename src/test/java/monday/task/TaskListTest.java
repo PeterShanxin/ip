@@ -1,5 +1,7 @@
 package monday.task;
 
+import monday.command.CommandException;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -55,7 +57,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testAddTask() {
+    public void testAddTask() throws CommandException {
         TaskList list = new TaskList();
         Task task = new ToDo("New task");
         list.addTask(task);
@@ -64,7 +66,7 @@ public class TaskListTest {
     }
 
     @Test
-    public void testDeleteTask_validIndex() {
+    public void testDeleteTask_validIndex() throws CommandException {
         Task deleted = taskList.deleteTask(1);
         assertEquals("Read book", deleted.getDescription());
         assertEquals(2, taskList.getTaskCount());
@@ -72,40 +74,40 @@ public class TaskListTest {
 
     @Test
     public void testDeleteTask_invalidIndex_emptyList() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
+        assertThrows(CommandException.class, () -> {
             emptyTaskList.deleteTask(1);
         });
     }
 
     @Test
     public void testDeleteTask_invalidIndex_tooSmall() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
+        assertThrows(CommandException.class, () -> {
             taskList.deleteTask(0);
         });
     }
 
     @Test
     public void testDeleteTask_invalidIndex_tooLarge() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
+        assertThrows(CommandException.class, () -> {
             taskList.deleteTask(4);
         });
     }
 
     @Test
-    public void testMarkTaskAsDone() {
+    public void testMarkTaskAsDone() throws CommandException {
         taskList.markTaskAsDone(1);
         assertTrue(taskList.getTask(1).isDone());
     }
 
     @Test
-    public void testMarkTaskAsNotDone() {
+    public void testMarkTaskAsNotDone() throws CommandException {
         taskList.markTaskAsDone(1);
         taskList.markTaskAsNotDone(1);
         assertFalse(taskList.getTask(1).isDone());
     }
 
     @Test
-    public void testGetTask() {
+    public void testGetTask() throws CommandException {
         Task task = taskList.getTask(1);
         assertEquals("Read book", task.getDescription());
     }
