@@ -36,6 +36,7 @@ public class GuiBuilder {
     public ScrollPane buildScrollPane(VBox dialogContainer) {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(dialogContainer);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setFitToWidth(true);
         scrollPane.setVvalue(1.0);
         scrollPane.getStyleClass().add("scroll-pane");

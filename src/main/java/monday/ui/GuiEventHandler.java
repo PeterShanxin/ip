@@ -2,10 +2,13 @@ package monday.ui;
 
 import monday.Monday;
 
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
 import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /**
  * Handles GUI event interactions for the MainWindow.
@@ -49,7 +52,29 @@ public class GuiEventHandler {
         DialogBox mondayDialog = new DialogBox(response.text(), false, response.isError());
         dialogContainer.getChildren().add(mondayDialog);
 
-        Platform.runLater(() -> scrollPane.setVvalue(1.0));
+        // Scroll to bottom using Timeline to ensure all layout passes complete
+        scrollToBottom();
+    }
+    
+    /**
+     * Scrolls the ScrollPane to the bottom after a delay to ensure layout is complete.
+     * Uses Platform.runLater + Timeline to handle JavaFX layout timing issues.
+     */
+    private void scrollToBottom() {
+        // First runLater to ensure content is added
+        Platform.runLater(() -> {
+            // Set initial scroll position
+            scrollPane.setVvalue(1.0);
+            
+            // Use Timeline with small delay to ensure all layout passes complete
+            Timeline timeline = new Timeline(new KeyFrame(
+                Duration.millis(50),
+                event -> {
+                    scrollPane.setVvalue(1.0);
+                }
+            ));
+            timeline.play();
+        });
     }
 
     /**
@@ -61,6 +86,8 @@ public class GuiEventHandler {
     public void showMessage(String message) {
         DialogBox dialog = new DialogBox(message, false, false);
         dialogContainer.getChildren().add(dialog);
-        Platform.runLater(() -> scrollPane.setVvalue(1.0));
+        
+        // Scroll to bottom using the same Timeline-based approach
+        scrollToBottom();
     }
 }
