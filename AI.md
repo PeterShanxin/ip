@@ -391,3 +391,51 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Orchestrator mode uses more tokens due to separate sessions per task
 - **Fixes applied**: None - implementation was successful
 - **Observations**: Kilo Code's orchestrator mode helps models follow instructions more effectively. GLM 4.7 remains capable, but GLM 5.0 is available for future upgrades. Time saved: 5-6 hours.
+#### A-FullCommitMessage: Full Commit Message Practice
+
+- **What was attempted**: Practice writing multi-part commit messages (subject + body) by applying dark theme to GUI
+- **What worked**:
+  - Dark theme applied to GUI for better visual comfort in low-light environments
+  - Commit message follows se-edu format: situation → reason → "Let's" body
+  - .gitignore updated for Kilo Code migration
+- **What didn't work**: Nothing - straightforward styling + documentation task
+- **Observations**: Increment is primarily about commit message discipline. GLM 4.7 generated compliant multi-line messages. Time saved: ~0.25 hours.
+
+### Week 6
+
+_AI Tools: MiniMax M2.5 (primary) / Claude Sonnet 4.6 (assist — switched partway due to MiniMax plan limits)_
+
+#### A-BetterGui / A-AiAssisted: Improved GUI Layout
+
+- **What was attempted**: Redesign GUI with asymmetric chat layout, circular letter avatar, external CSS, and fix auto-scroll
+- **What worked**:
+  - Asymmetric layout: user messages right-aligned, bot messages left-aligned
+  - Circular letter avatar component added to each DialogBox
+  - External CSS stylesheet for consistent theming
+  - GuiResponse wrapper added with error state support
+  - ARM64 x64 JDK workaround maintained
+- **What didn't work**: Auto-scroll required multiple debugging iterations — took very long; MiniMax instincts less reliable than Claude/ChatGPT on tricky bugs
+- **Fixes applied**: Two-commit fix for ScrollPane auto-scroll (initial fix missed edge case after 3rd message)
+- **Observations**: MiniMax M2.5 performance roughly equivalent to GLM 4.7; significant gap vs top-tier models on debugging. Explicit instructions and defined workflow compensate somewhat. Still, time saved: ~2 hours despite overhead.
+
+#### A-UserGuide: User Guide Restructure
+
+- **What was attempted**: Restructure user guide with screenshot and command reference documentation
+- **What worked**:
+  - MiniMax M2.5 produced initial user guide structure and command reference
+  - Claude Sonnet 4.6 improved quality, wording, and formatting of the guide
+  - Representative product screenshot added to docs
+  - README restructured as a proper user-facing guide
+- **What didn't work**: MiniMax's initial output needed refinement — not polished enough without Sonnet follow-up
+- **Fixes applied**: Sonnet 4.6 pass improved clarity and completeness
+- **Observations**: Multi-model collaboration (MiniMax draft → Sonnet polish) produced better results than either alone. Sonnet's output quality on documentation tasks clearly superior. Time saved: ~0.5 hours.
+
+#### A-Release: Cross-Platform JAR Release
+
+- **What was attempted**: Build and publish cross-platform fat JAR as GitHub release artifact
+- **What worked**:
+  - Claude Sonnet 4.6 handled the increment mostly independently
+  - JAR built with existing shadowJar Gradle configuration
+  - Release notes generated and published to GitHub via gh CLI
+- **What didn't work**: Nothing - existing build infrastructure handled this cleanly
+- **Observations**: Sonnet 4.6 navigated the release workflow efficiently with minimal guidance. A simple Claude Sonnet 4.6 clearly outperforms open-source models like MiniMax/GLM on agentic tasks requiring judgment. Time saved: ~0.25 hours.
