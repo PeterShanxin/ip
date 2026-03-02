@@ -9,6 +9,7 @@ import monday.exception.ParseException;
 import monday.parser.Parser;
 import monday.storage.Storage;
 import monday.task.TaskList;
+import monday.ui.GuiResponse;
 import monday.ui.Ui;
 
 /**
@@ -45,9 +46,9 @@ public class CommandProcessor {
      * Processes a user input and returns the response.
      *
      * @param userInput The user's input string.
-     * @return The response to display.
+     * @return The GuiResponse with text and error state.
      */
-    public String processCommand(String userInput) {
+    public GuiResponse processCommand(String userInput) {
         try {
             Command command = parser.parseCommand(userInput);
             CommandResult result = command.execute(taskList, ui, storage);
@@ -60,12 +61,12 @@ public class CommandProcessor {
                 handleExit();
             }
 
-            return ui.getLastResponse();
+            return new GuiResponse(ui.getLastResponse(), false);
 
         } catch (ParseException e) {
-            return ErrorHandler.handleParseException(e);
+            return new GuiResponse(ErrorHandler.handleParseException(e), true);
         } catch (CommandException e) {
-            return ErrorHandler.handleCommandException(e);
+            return new GuiResponse(ErrorHandler.handleCommandException(e), true);
         }
     }
 

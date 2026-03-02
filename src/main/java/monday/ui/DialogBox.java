@@ -21,6 +21,17 @@ public class DialogBox extends HBox {
      * @param isUser true if user message, false if MONDAY's response.
      */
     public DialogBox(String text, boolean isUser) {
+        this(text, isUser, false);
+    }
+
+    /**
+     * Creates a new dialog box with error styling option.
+     *
+     * @param text The text content.
+     * @param isUser true if user message, false if MONDAY's response.
+     * @param isError true if this is an error message.
+     */
+    public DialogBox(String text, boolean isUser, boolean isError) {
         Label label = new Label(text);
         label.setWrapText(true);
         label.setTextFill(Color.web("#e0e0e0"));
@@ -29,6 +40,10 @@ public class DialogBox extends HBox {
         if (isUser) {
             label.setBackground(new Background(new BackgroundFill(
                 Color.web("#3d4a5c"), new CornerRadii(5), Insets.EMPTY)));
+            label.setPadding(new Insets(10));
+        } else if (isError) {
+            label.setBackground(new Background(new BackgroundFill(
+                Color.web("#5c2d2d"), new CornerRadii(5), Insets.EMPTY)));
             label.setPadding(new Insets(10));
         } else {
             label.setBackground(new Background(new BackgroundFill(

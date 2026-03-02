@@ -1,6 +1,7 @@
 package monday;
 
 import monday.exception.ErrorHandler;
+import monday.ui.GuiResponse;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -52,18 +53,18 @@ public class Monday extends Application {
      * Called by GUI when user submits a command.
      *
      * @param userInput The user's input string.
-     * @return The response to display.
+     * @return The GuiResponse with text and error state.
      */
-    public String getResponse(String userInput) {
+    public GuiResponse getResponse(String userInput) {
         try {
             if (userInput.isEmpty()) {
-                return "Ugh, you didn't actually say anything. Try again.";
+                return new GuiResponse("Ugh, you didn't actually say anything. Try again.", true);
             }
 
             return commandProcessor.processCommand(userInput);
 
         } catch (Exception e) {
-            return ErrorHandler.handleUnexpectedException(e);
+            return new GuiResponse(ErrorHandler.handleUnexpectedException(e), true);
         }
     }
 

@@ -39,28 +39,26 @@ public class GuiEventHandler {
      */
     public void handleUserInput() {
         String input = userInput.getText();
-        DialogBox userDialog = new DialogBox(input, true);
+        DialogBox userDialog = new DialogBox(input, true, false);
         dialogContainer.getChildren().add(userDialog);
 
         userInput.clear();
 
-        // Execute command through Monday
-        String response = monday.getResponse(input);
-        DialogBox mondayDialog = new DialogBox(response, false);
+        GuiResponse response = monday.getResponse(input);
+        DialogBox mondayDialog = new DialogBox(response.text(), false, response.isError());
         dialogContainer.getChildren().add(mondayDialog);
 
-        // Auto-scroll to bottom
         scrollPane.setVvalue(1.0);
     }
 
     /**
-     * Shows a message in the dialog container.
+     * Shows a bot message in the dialog container.
      * Used for greeting and initial messages.
      *
      * @param message The message to display.
      */
     public void showMessage(String message) {
-        DialogBox dialog = new DialogBox(message, false);
+        DialogBox dialog = new DialogBox(message, false, false);
         dialogContainer.getChildren().add(dialog);
         scrollPane.setVvalue(1.0);
     }
