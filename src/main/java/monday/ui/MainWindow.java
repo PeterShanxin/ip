@@ -47,20 +47,12 @@ public class MainWindow extends Application {
         sendButton = builder.buildSendButton();
         AnchorPane mainLayout = builder.buildMainLayout(scrollPane, userInput, sendButton);
 
-        // Step 2: Apply styles
-        styler.applyDialogContainerStyle(dialogContainer);
-        styler.applyScrollPaneStyle(scrollPane);
-        styler.applyInputFieldStyle(userInput);
-        styler.applyButtonStyle(sendButton);
-        styler.applyMainLayoutStyle(mainLayout);
-
-        // Step 3: Configure scene
-        scene = new Scene(mainLayout, 400, 600);
-        styler.applySceneStyle(scene);
-        styler.applyScrollbarStyle(scene);
+        // Step 2: Configure scene with external CSS
+        scene = new Scene(mainLayout, 420, 600);
+        styler.loadStylesheet(scene);
         styler.configureStage(stage, scene);
 
-        // Step 4: Setup event handling
+        // Step 3: Setup event handling
         eventHandler = new GuiEventHandler(monday, userInput, dialogContainer, scrollPane);
         sendButton.setOnMouseClicked(event -> eventHandler.handleUserInput());
         userInput.setOnAction(event -> eventHandler.handleUserInput());

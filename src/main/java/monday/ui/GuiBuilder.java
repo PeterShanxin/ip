@@ -19,8 +19,9 @@ public class GuiBuilder {
      */
     public VBox buildDialogContainer() {
         VBox dialogContainer = new VBox();
-        dialogContainer.setSpacing(10);
+        dialogContainer.setSpacing(8);
         dialogContainer.prefHeight(javafx.scene.layout.Region.USE_COMPUTED_SIZE);
+        dialogContainer.getStyleClass().add("dialog-container");
         return dialogContainer;
     }
 
@@ -35,6 +36,7 @@ public class GuiBuilder {
         scrollPane.setContent(dialogContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setVvalue(1.0);
+        scrollPane.getStyleClass().add("scroll-pane");
         return scrollPane;
     }
 
@@ -46,6 +48,7 @@ public class GuiBuilder {
     public TextField buildInputField() {
         TextField userInput = new TextField();
         userInput.setPromptText("Tell me what to do...");
+        userInput.getStyleClass().add("input-field");
         return userInput;
     }
 
@@ -55,7 +58,9 @@ public class GuiBuilder {
      * @return The configured Button.
      */
     public Button buildSendButton() {
-        return new Button("Send");
+        Button button = new Button("Send");
+        button.getStyleClass().add("send-button");
+        return button;
     }
 
     /**
