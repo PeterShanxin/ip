@@ -76,6 +76,10 @@
 }
 
 /* ===== Input Area ===== */
+.input-row {
+    -fx-spacing: 10;
+}
+
 .input-field {
     -fx-background-color: #252525;
     -fx-text-fill: #e0e0e0;
