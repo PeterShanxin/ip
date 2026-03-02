@@ -1,0 +1,109 @@
+/* ===== Root & Container ===== */
+.root {
+    -fx-background-color: #1a1a1a;
+}
+
+.dialog-container {
+    -fx-background-color: #1a1a1a;
+    -fx-padding: 8;
+}
+
+/* ===== Scroll Pane ===== */
+.scroll-pane {
+    -fx-background-color: #1a1a1a;
+    -fx-background: #1a1a1a;
+    -fx-control-inner-background: #1a1a1a;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: #1a1a1a;
+}
+
+/* ===== Scrollbar ===== */
+.scroll-bar {
+    -fx-background-color: #1a1a1a;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #404040;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #2a2a2a;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #2a2a2a;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* ===== Message Bubbles ===== */
+.user-bubble {
+    -fx-background-color: #2d3d4f;
+    -fx-text-fill: #e0e0e0;
+    -fx-background-radius: 12;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13;
+}
+
+.bot-bubble {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #e0e0e0;
+    -fx-background-radius: 12;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 13;
+}
+
+.error-bubble {
+    -fx-background-color: #3d1a1a;
+    -fx-text-fill: #ff6b6b;
+    -fx-background-radius: 0 12 12 0;
+    -fx-border-color: #ff4444;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 0 12 12 0;
+    -fx-padding: 8 12 8 14;
+    -fx-font-size: 13;
+}
+
+/* ===== Input Area ===== */
+.input-field {
+    -fx-background-color: #252525;
+    -fx-text-fill: #e0e0e0;
+    -fx-prompt-text-fill: #666666;
+    -fx-border-color: #404040;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 10 6 10;
+}
+
+.input-field:focused {
+    -fx-border-color: #5a4a6e;
+}
+
+.send-button {
+    -fx-background-color: #3d3d3d;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #505050;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+
+.send-button:hover {
+    -fx-background-color: #4a4a4a;
+}
+
+.send-button:pressed {
+    -fx-background-color: #5a4a6e;
+}
