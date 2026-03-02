@@ -173,3 +173,156 @@ Notes:
 - Both `/from` and `/to` markers are required in the correct order
 - Times can be in any format (e.g., "Mon 2pm", "2024-12-25 14:00", "Friday evening")
 - Missing either marker or providing them in the wrong order will trigger an error message
+
+## Deleting a task
+
+Remove a task from your list by typing `delete` followed by the task number.
+
+Example: `delete 1`
+
+Expected output:
+
+```
+____________________________________________________________
+Fine. I've deleted this task:
+  [ ] read book
+Now you have 0 tasks in the list.
+____________________________________________________________
+```
+
+Notes:
+- Task numbers are based on the order shown in the `list` command
+- Deleting a task shifts all subsequent task numbers down by one
+- If you provide an invalid task number, MONDAY will grumpily tell you the valid range
+- The `delete` command is case-insensitive
+
+## Viewing tasks for a specific date
+
+View tasks scheduled for a particular date by typing `view` followed by the date.
+
+Example: `view tomorrow`
+
+Expected output:
+
+```
+____________________________________________________________
+Here are the tasks for tomorrow:
+1. [ ] return book (by: tomorrow 6pm)
+____________________________________________________________
+```
+
+Notes:
+- The date can be in any format (e.g., "tomorrow", "Monday", "2024-12-25")
+- Only deadline and event tasks are shown; todo tasks have no date
+- If no tasks are scheduled for that date, MONDAY will let you know
+
+## Finding tasks by keyword
+
+Search for tasks containing a specific keyword by typing `find` followed by your search term.
+
+Example: `find book`
+
+Expected output:
+
+```
+____________________________________________________________
+Here are the matching tasks:
+1. [ ] read book
+2. [X] return book
+____________________________________________________________
+```
+
+Notes:
+- The search is case-insensitive
+- Searches task descriptions for partial matches
+- If no matching tasks are found, MONDAY will inform you
+
+## Viewing help
+
+Display all available commands by typing `help`.
+
+Example: `help`
+
+Expected output:
+
+```
+____________________________________________________________
+Available commands:
+- todo: Add a simple task
+- deadline: Add a task with deadline
+- event: Add an event
+- list: Show all tasks
+- mark: Mark task as done
+- unmark: Mark task as not done
+- delete: Remove a task
+- view: View tasks for a date
+- find: Search tasks
+- help: Show this message
+- cheer: Get motivated
+- remind: See upcoming tasks
+- bye: Exit
+____________________________________________________________
+```
+
+Notes:
+- The `help` command provides a quick reference for all commands
+- Typing an unknown command will also trigger the help message
+
+## Getting cheered up
+
+When you need some motivation (or sarcasm), type `cheer`.
+
+Example: `cheer`
+
+Expected output:
+
+```
+____________________________________________________________
+Ugh, fine. Here's something to read while you're procrastinating:
+"You'll regret this later. Probably."
+____________________________________________________________
+```
+
+Notes:
+- MONDAY will display a grumpy motivational quote
+- Quotes are randomly selected from the available pool
+- The `cheer` command is perfect for those moments when you need a reality check
+
+## Viewing task reminders
+
+Get a summary of your tasks and see your earliest upcoming task by typing `remind` (or `reminders`).
+
+Example: `remind`
+
+Expected output:
+
+```
+____________________________________________________________
+You have 3 tasks total, 2 of which are incomplete.
+Your next task: return book (by: tomorrow 6pm)
+____________________________________________________________
+```
+
+Notes:
+- Shows total task count and incomplete task count
+- Displays the earliest upcoming deadline or event
+- Useful for a quick overview of what needs to be done
+
+## Exiting the application
+
+Exit MONDAY gracefully by typing `bye` or `exit`.
+
+Example: `bye`
+
+Expected output:
+
+```
+____________________________________________________________
+Goodbye. Try not to come back too soon. ... Just kidding, I'm always here.
+____________________________________________________________
+```
+
+Notes:
+- Both `bye` and `exit` work identically
+- Your tasks are automatically saved when you exit
+- MONDAY will miss you... maybe.
