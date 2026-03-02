@@ -6,6 +6,8 @@ job done — just don't expect it to be happy about it.
 
 > If you can type fast, MONDAY can manage your tasks faster than any GUI app. Probably.
 
+![MONDAY UI screenshot](Ui.png)
+
 ---
 
 ## Table of Contents
