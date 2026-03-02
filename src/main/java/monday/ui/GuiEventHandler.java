@@ -2,6 +2,7 @@ package monday.ui;
 
 import monday.Monday;
 
+import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -48,7 +49,7 @@ public class GuiEventHandler {
         DialogBox mondayDialog = new DialogBox(response.text(), false, response.isError());
         dialogContainer.getChildren().add(mondayDialog);
 
-        scrollPane.setVvalue(1.0);
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 
     /**
@@ -60,6 +61,6 @@ public class GuiEventHandler {
     public void showMessage(String message) {
         DialogBox dialog = new DialogBox(message, false, false);
         dialogContainer.getChildren().add(dialog);
-        scrollPane.setVvalue(1.0);
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 }
