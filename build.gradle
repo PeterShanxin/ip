@@ -22,10 +22,13 @@ ext {
 
 dependencies {
     // Use platform-classified JavaFX artifacts: unclassified jars are metadata-only.
-    implementation "org.openjfx:javafx-base:$javafxVersion:$javafxPlatform"
-    implementation "org.openjfx:javafx-graphics:$javafxVersion:$javafxPlatform"
-    implementation "org.openjfx:javafx-controls:$javafxVersion:$javafxPlatform"
-    implementation "org.openjfx:javafx-fxml:$javafxVersion:$javafxPlatform"
+    // Include all platforms to produce a cross-platform fat JAR.
+    for (platform in ['win', 'linux', 'mac']) {
+        implementation "org.openjfx:javafx-base:$javafxVersion:$platform"
+        implementation "org.openjfx:javafx-graphics:$javafxVersion:$platform"
+        implementation "org.openjfx:javafx-controls:$javafxVersion:$platform"
+        implementation "org.openjfx:javafx-fxml:$javafxVersion:$platform"
+    }
 
     // Test dependencies
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
