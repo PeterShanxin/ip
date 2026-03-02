@@ -1,19 +1,12 @@
 package monday.parser;
 
-import monday.command.AddDeadlineCommand;
-import monday.command.AddEventCommand;
-import monday.command.AddToDoCommand;
 import monday.command.CheerCommand;
 import monday.command.Command;
 import monday.command.CommandType;
-import monday.command.DeleteCommand;
 import monday.command.ExitCommand;
-import monday.command.FindCommand;
 import monday.command.HelpCommand;
 import monday.command.ListCommand;
-import monday.command.MarkCommand;
 import monday.command.RemindCommand;
-import monday.command.ViewCommand;
 import monday.constants.MessageConstants;
 import monday.exception.ParseException;
 

@@ -6,7 +6,6 @@ import monday.constants.ValidationConstants;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Generates greeting messages for the UI.
