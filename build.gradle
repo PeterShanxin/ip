@@ -16,14 +16,22 @@ repositories {
 
 ext {
     javafxVersion = '21.0.1'
-    javafxPlatform = org.gradle.internal.os.OperatingSystem.current().isWindows() ? 'win'
-            : (org.gradle.internal.os.OperatingSystem.current().isLinux() ? 'linux' : 'mac')
+    // Default to current platform, can be overridden with -PjavafxPlatform=win|linux|mac
+    javafxPlatform = project.hasProperty('javafxPlatform') ? project.property('javafxPlatform')
+            : (org.gradle.internal.os.OperatingSystem.current().isWindows() ? 'win'
+            : (org.gradle.internal.os.OperatingSystem.current().isLinux() ? 'linux' : 'mac'))
+    // By default, include ALL platforms for cross-platform distribution
+    // Set -PjavafxPlatformOnly=true to build for current platform only
+    includeAllPlatforms = !(project.hasProperty('javafxPlatformOnly') && project.property('javafxPlatformOnly').toBoolean())
 }
 
 dependencies {
     // Use platform-classified JavaFX artifacts: unclassified jars are metadata-only.
-    // Include all platforms to produce a cross-platform fat JAR.
-    for (platform in ['win', 'linux', 'mac']) {
+    // By default, include ALL platforms for cross-platform distribution.
+    // Use -PjavafxPlatformOnly=true to build for current platform only.
+    def platformsToInclude = includeAllPlatforms ? ['win', 'linux', 'mac'] : [javafxPlatform]
+    
+    for (platform in platformsToInclude) {
         implementation "org.openjfx:javafx-base:$javafxVersion:$platform"
         implementation "org.openjfx:javafx-graphics:$javafxVersion:$platform"
         implementation "org.openjfx:javafx-controls:$javafxVersion:$platform"
@@ -74,6 +82,12 @@ shadowJar {
     manifest {
         attributes 'Main-Class': 'Launcher'
     }
+    
+    // Merge service files for proper JavaFX native library loading
+    mergeServiceFiles()
+    
+    // Java runtime will automatically select the correct native libraries based on OS and architecture.
+    // This allows the JAR to work on Windows (x86_64), Linux (x86_64, ARM64), and Mac (x86_64, ARM64).
 }
 
 run {
