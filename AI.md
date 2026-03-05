@@ -401,7 +401,7 @@ This separation of concerns improves code quality significantly.
 - **What didn't work**: Nothing - straightforward styling + documentation task
 - **Observations**: Increment is primarily about commit message discipline. GLM 4.7 generated compliant multi-line messages. Time saved: ~0.25 hours.
 
-### Week 6
+### Week 7
 
 _AI Tools: MiniMax M2.5 (primary) / Claude Sonnet 4.6 (assist — switched partway due to MiniMax plan limits)_
 
