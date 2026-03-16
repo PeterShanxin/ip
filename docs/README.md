@@ -1,10 +1,8 @@
 # MONDAY User Guide
 
-MONDAY is a grumpy but efficient task manager for power users who prefer keyboard commands
-over mouse clicks. Named after everyone's least favourite day of the week, MONDAY gets the
-job done — just don't expect it to be happy about it.
-
-> If you can type fast, MONDAY can manage your tasks faster than any GUI app. Probably.
+MONDAY is a desktop task manager for keeping track of todos, deadlines, and events.
+It accepts short text commands and replies in a grumpy tone, but the core workflow is
+simple: enter a command, review the response, and let MONDAY save your task list for you.
 
 ![MONDAY UI screenshot](Ui.png)
 
@@ -43,7 +41,8 @@ job done — just don't expect it to be happy about it.
    ```
    java -jar monday.jar
    ```
-5. A GUI window (or CLI prompt) will appear. Type a command and press **Enter** to execute it.
+5. A GUI window will appear. Type a command and press **Enter** or click **Send**.
+   If you launched MONDAY from a terminal, you may also see the same responses printed there.
 
    Some example commands to try:
    - `list` — lists all your tasks
@@ -66,8 +65,8 @@ job done — just don't expect it to be happy about it.
 >   e.g. in `todo DESCRIPTION`, `DESCRIPTION` is a parameter such as `todo read book`.
 > - Parameters **must** appear in the order shown.
 > - All commands are **case-insensitive** — `TODO`, `Todo`, and `todo` all work.
-> - Extraneous parameters for commands that take no arguments (e.g. `list`, `help`, `bye`)
->   will be ignored.
+> - Some commands have aliases. For example, `exit` works the same as `bye`,
+>   and `reminders` works the same as `remind`.
 
 ---
 
@@ -81,20 +80,20 @@ Expected output:
 
 ```
 ____________________________________________________________
-Available commands:
-- todo: Add a simple task
-- deadline: Add a task with deadline
-- event: Add an event
-- list: Show all tasks
-- mark: Mark task as done
-- unmark: Mark task as not done
-- delete: Remove a task
-- view: View tasks for a date
-- find: Search tasks
-- help: Show this message
-- cheer: Get motivated
-- remind: See upcoming reminders
-- bye: Exit
+Ugh. Fine. Here's what I understand (not that you'll listen):
+  todo <description>           - Add a todo task
+  deadline <desc> /by <time>   - Add a deadline task
+  event <desc> /from <start> /to <end> - Add an event
+  list                         - Show all tasks
+  find <keyword>               - Find tasks by keyword
+  view <date>                  - Show tasks for a specific date (yyyy-MM-dd)
+  mark <number>                - Mark task as done
+  unmark <number>              - Mark task as not done
+  delete <number>              - Delete a task (no going back)
+  cheer                        - Get "motivated" (you'll need it)
+  remind / reminders            - Show task summary and upcoming tasks
+  help                         - Show this help (you're welcome)
+  bye / exit                   - Get rid of me
 ____________________________________________________________
 ```
 
@@ -326,7 +325,7 @@ Notes:
 
 ### Getting a motivational quote : `cheer`
 
-Displays a randomly selected grumpy motivational quote (in eye-catching yellow).
+Displays a randomly selected grumpy motivational quote.
 
 Format: `cheer`
 
@@ -334,14 +333,14 @@ Expected output:
 
 ```
 ____________________________________________________________
-Ugh, fine. Here's something to read while you're procrastinating:
-"You'll regret this later. Probably."
+Congratulations on doing the bare minimum. That's still more than most people manage.
 ____________________________________________________________
 ```
 
 Notes:
 - Quotes are read from `data/cheer.txt`. If the file is missing, MONDAY falls back gracefully.
-- Perfect for those moments when you need a reality check.
+- In the terminal, the quote is shown in yellow.
+- In the GUI, the quote is shown as normal text in the chat bubble.
 
 ---
 
@@ -355,14 +354,17 @@ Expected output:
 
 ```
 ____________________________________________________________
-You have 3 tasks total, 2 of which are incomplete.
-Your next task: return book (by: Mar 10 2026 2359)
+Ugh. Fine. Here's your reality check:
+You have 3 tasks total. Done: 1. Pending: 2.
+ToDos: 1. Deadlines: 1. Events: 1.
+Earliest upcoming: [D][ ] return book (by: Mar 10 2026 2359)
 ____________________________________________________________
 ```
 
 Notes:
 - Useful for a quick overview of what needs to be done.
-- If all tasks are complete (or there are none), MONDAY acknowledges it grudgingly.
+- If all tasks are complete, MONDAY says so directly.
+- If there are no upcoming deadlines or events, MONDAY tells you that nothing is coming up.
 
 ---
 
@@ -376,7 +378,7 @@ Expected output:
 
 ```
 ____________________________________________________________
-Goodbye. Try not to come back too soon. ... Just kidding, I'm always here.
+Finally, you're leaving. Don't come back too soon.
 ____________________________________________________________
 ```
 
