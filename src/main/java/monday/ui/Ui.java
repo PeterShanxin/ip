@@ -6,6 +6,7 @@ import monday.task.TaskCounts;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * Handles all user interface interactions for MONDAY.
@@ -13,6 +14,7 @@ import java.util.Scanner;
  * This class acts as a facade that delegates to specialized formatters.
  */
 public class Ui {
+    private static final Pattern ANSI_ESCAPE_PATTERN = Pattern.compile("\\u001B\\[[;\\d]*m");
 
     private final MessageFormatter messageFormatter;
     private final TaskListFormatter taskListFormatter;
@@ -205,7 +207,12 @@ public class Ui {
      * @param quote The motivational quote to display (may contain ANSI color codes).
      */
     public void showCheerMessage(String quote) {
+        lastResponse = stripAnsiCodes(quote);
         messageFormatter.showCheerMessage(quote);
+    }
+
+    private String stripAnsiCodes(String message) {
+        return ANSI_ESCAPE_PATTERN.matcher(message).replaceAll("");
     }
 
     /**
