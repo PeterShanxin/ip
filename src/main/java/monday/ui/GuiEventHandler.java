@@ -15,6 +15,7 @@ import javafx.util.Duration;
  * Manages user input processing and message display.
  */
 public class GuiEventHandler {
+    private static final double EXIT_DELAY_MILLIS = 2500.0;
 
     private final Monday monday;
     private final TextField userInput;
@@ -54,6 +55,10 @@ public class GuiEventHandler {
 
         // Scroll to bottom using Timeline to ensure all layout passes complete
         scrollToBottom();
+
+        if (response.shouldExit()) {
+            scheduleExit();
+        }
     }
     
     /**
@@ -75,6 +80,17 @@ public class GuiEventHandler {
             ));
             timeline.play();
         });
+    }
+
+    /**
+     * Delays application shutdown so the user can read the final farewell message.
+     */
+    private void scheduleExit() {
+        Timeline exitTimeline = new Timeline(new KeyFrame(
+            Duration.millis(EXIT_DELAY_MILLIS),
+            event -> Platform.exit()
+        ));
+        exitTimeline.play();
     }
 
     /**

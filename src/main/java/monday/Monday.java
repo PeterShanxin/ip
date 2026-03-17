@@ -58,13 +58,13 @@ public class Monday extends Application {
     public GuiResponse getResponse(String userInput) {
         try {
             if (userInput.isEmpty()) {
-                return new GuiResponse("Ugh, you didn't actually say anything. Try again.", true);
+                return new GuiResponse("Ugh, you didn't actually say anything. Try again.", true, false);
             }
 
             return commandProcessor.processCommand(userInput);
 
         } catch (Exception e) {
-            return new GuiResponse(ErrorHandler.handleUnexpectedException(e), true);
+            return new GuiResponse(ErrorHandler.handleUnexpectedException(e), true, false);
         }
     }
 

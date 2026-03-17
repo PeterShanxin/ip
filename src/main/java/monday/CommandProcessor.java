@@ -58,29 +58,27 @@ public class CommandProcessor {
             }
 
             if (result.shouldExit()) {
-                handleExit();
+                prepareExit();
             }
 
-            return new GuiResponse(ui.getLastResponse(), false);
+            return new GuiResponse(ui.getLastResponse(), false, result.shouldExit());
 
         } catch (ParseException e) {
-            return new GuiResponse(ErrorHandler.handleParseException(e), true);
+            return new GuiResponse(ErrorHandler.handleParseException(e), true, false);
         } catch (CommandException e) {
-            return new GuiResponse(ErrorHandler.handleCommandException(e), true);
+            return new GuiResponse(ErrorHandler.handleCommandException(e), true, false);
         }
     }
 
     /**
      * Handles the exit command.
-     * Saves tasks if corruption was detected and schedules application exit.
+     * Saves tasks if corruption was detected before the GUI exits.
      */
-    private void handleExit() {
+    private void prepareExit() {
         // Save on exit if corruption was detected
         if (hasCorruption) {
             saveTasksIfPossible();
         }
-        // Schedule exit after current event processing
-        javafx.application.Platform.exit();
     }
 
     /**
