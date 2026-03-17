@@ -18,7 +18,6 @@ public class DialogBox extends HBox {
 
     private static final Color BOT_AVATAR_COLOR = Color.web("#5a4a6e");
     private static final Color USER_AVATAR_COLOR = Color.web("#3d5a6e");
-    private static final double BUBBLE_MAX_WIDTH_RATIO = 0.70;
     private static final double AVATAR_SPACING = 6.0;
     private static final Insets BOX_PADDING = new Insets(4, 8, 4, 8);
 
@@ -37,7 +36,8 @@ public class DialogBox extends HBox {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        bubble.maxWidthProperty().bind(this.widthProperty().multiply(BUBBLE_MAX_WIDTH_RATIO));
+        bubble.maxWidthProperty().bind(this.widthProperty()
+                .multiply(BubbleLayoutPolicy.resolveBubbleMaxWidthRatio(isUser, isError, text)));
 
         this.setPadding(BOX_PADDING);
         this.setSpacing(AVATAR_SPACING);
@@ -68,6 +68,8 @@ public class DialogBox extends HBox {
             label.getStyleClass().add("user-bubble");
         } else if (isError) {
             label.getStyleClass().add("error-bubble");
+        } else if (BubbleLayoutPolicy.shouldUsePreformattedBubble(text)) {
+            label.getStyleClass().add("preformatted-bubble");
         } else {
             label.getStyleClass().add("bot-bubble");
         }

@@ -16,6 +16,8 @@ import javafx.stage.Stage;
  * Displays a dialog interface with input field and output area.
  */
 public class MainWindow extends Application {
+    static final double DEFAULT_WINDOW_WIDTH = 560.0;
+    static final double DEFAULT_WINDOW_HEIGHT = 640.0;
 
     private ScrollPane scrollPane;
     private VBox dialogContainer;
@@ -48,7 +50,7 @@ public class MainWindow extends Application {
         AnchorPane mainLayout = builder.buildMainLayout(scrollPane, userInput, sendButton);
 
         // Step 2: Configure scene with external CSS
-        scene = new Scene(mainLayout, 420, 600);
+        scene = new Scene(mainLayout, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
         styler.loadStylesheet(scene);
         styler.configureStage(stage, scene);
 

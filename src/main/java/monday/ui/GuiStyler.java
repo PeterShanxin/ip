@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 public class GuiStyler {
 
     private static final String STYLESHEET_PATH = "/monday/ui/styles.css";
-    private static final double MIN_WIDTH = 300.0;
+    private static final double MIN_WIDTH = 460.0;
     private static final double MIN_HEIGHT = 400.0;
 
     /**
